@@ -1,0 +1,62 @@
+.login_form_box {
+   width:25%;
+   margin: 0 auto;
+   margin-top: 5%;
+   border: 1px solid black;
+   border-radius: 15px;
+}
+
+.actual_form {
+    margin-top: 10%;
+    margin-bottom: 10%;
+    margin-left:10%;
+    margin-right: 10%;
+}
+.login_field_label {
+    position: relative;
+    margin-left: 0px;
+    margin-bottom: 3%;
+}
+
+.form_button_login {
+    margin:0 auto;
+    margin-top: 20%;
+    display: inline-block;
+    margin-left: 15%;
+    margin-right:10%;
+}
+
+.form_button_reset {
+    margin:0 auto;
+    margin-top: 20%;
+    display: inline-block;
+    margin-right:5%;
+}
+
+
+img {
+    display: block;
+    margin-left:auto;
+    margin-right: auto;
+}
+
+.login_box_header {
+    margin-top: -5%;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 2.5em;
+}
+
+.password_form_group {
+    margin-top: 10%;
+}
+
+.button_form_group {
+    display: block;
+    margin-top: 20%;
+    text-align: center;
+}
+
+.form_control {
+    margin-top: -3%;
+}
