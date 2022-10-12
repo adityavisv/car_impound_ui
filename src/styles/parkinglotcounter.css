@@ -1,0 +1,11 @@
+.table_container {
+    margin: 0 auto;
+    width: 80%;
+    
+}
+
+table {
+    /* display: block; */
+    height: 300px;
+    overflow-y: scroll;
+}

@@ -1,0 +1,16 @@
+.search_form {
+    width: 70%;
+    margin: 0 auto;
+    margin-left:26%;
+    padding-top: 2%;
+    /* text-align: center; */
+}
+
+.results_div {
+    margin: 0 auto;
+    width: 70%;
+}
+
+table {
+    margin-top: 3%;
+}

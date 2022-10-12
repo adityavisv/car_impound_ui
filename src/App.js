@@ -1,10 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
-import Loginpage from './pages/Loginpage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Registerpage from './pages/RegisterPage';
-import SidebarComponent from './components/SidebarComponent';
+import ParkingLotCounterViewPage from './pages/ParkingLotCounterViewPage';
 import CarRegistrationPage from './pages/CarRegistrationPage';
+import SearchPage from './pages/SearchPage';
+import ParkingLotSelectorView from './components/ParkingSelectorView';
+import { Loginpage } from './pages/Loginpage';
 
 function App() {
   return (
@@ -14,8 +15,10 @@ function App() {
         <Routes>
             <Route path="/login" element={<Loginpage />}></Route>
             <Route path="/register" element={<Registerpage />}/>
-            <Route path="/home" element={<SidebarComponent />}/>
+            <Route path="/home" element={<ParkingLotCounterViewPage />}/>
             <Route path="/registerCar" element={<CarRegistrationPage />}/>
+            <Route path="/search" element={<SearchPage />}/>
+            <Route path="/parkingview" element={<ParkingLotSelectorView />} />
         </Routes>
       </BrowserRouter>
       {/* <Loginpage/> */}
