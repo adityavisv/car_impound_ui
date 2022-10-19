@@ -9,3 +9,19 @@ table {
     height: 300px;
     overflow-y: scroll;
 }
+
+#close_btn {
+    float:right;
+}
+
+.canvas {
+    width: 1500px;
+    max-width: 1000px;
+    height: 400px;
+    background-color: white;
+    overflow-x: auto
+}
+
+tr:hover {
+    cursor: pointer;
+}

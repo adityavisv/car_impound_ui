@@ -5,14 +5,28 @@ import '../styles/carregistrationcomponent.css';
 
 
 class CarRegistrationForm extends React.Component {
+    constructor(props) {
+        super(props);
+        const zoneLabels = "ABCDEFGHIJKLMNOT".split("");
+        var zoneLabelSlotNums = []
+        for (const label of zoneLabels) {
+            for (let i = 1; i <= 80; i++) {
+                zoneLabelSlotNums.push(label + i);
+            }
+        }
+        this.state = {
+            parkingSlots: zoneLabelSlotNums
+        };;
+    }
 
     render = () => {
+        const {parkingSlots} = this.state;
         return (
             <>
                 <Form>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Reg Date</Form.Label>
+                            <Form.Label>Reg Date *</Form.Label>
                             <Form.Control type="date" placeholder="text" required={true}/>
                         </Form.Group>
 
@@ -28,7 +42,7 @@ class CarRegistrationForm extends React.Component {
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Reg Time</Form.Label>
+                            <Form.Label>Reg Time *</Form.Label>
                             <TimePicker required={true}/>
                         </Form.Group>
 
@@ -38,14 +52,14 @@ class CarRegistrationForm extends React.Component {
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label>Vehcile Model</Form.Label>
+                            <Form.Label>Vehicle Model *</Form.Label>
                             <Form.Control type="text" placeholder="text" required={true}/>
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Department</Form.Label>
+                            <Form.Label>Department *</Form.Label>
                             <Form.Select required={true}>
                                 <option>Country 1</option>
                                 <option>Country 2</option>
@@ -61,26 +75,37 @@ class CarRegistrationForm extends React.Component {
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label>Vehicle Color</Form.Label>
+                            <Form.Label>Vehicle Colour *</Form.Label>
                             <Form.Control type="text" placeholder="color" required={true}/>
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Case Number</Form.Label>
+                            <Form.Label>Case Number *</Form.Label>
                             <Form.Control type="text" placeholder="text" required={true}/>
                         </Form.Group>
 
                         <Form.Group as={Col}>
                             <Form.Label>ID Number</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true}/>
+                            <Form.Control type="text" placeholder="text"/>
+                        </Form.Group>
+
+                        <Form.Group as={Col}>
+                            <Form.Label>Parking Slot Num. *</Form.Label>
+                            <Form.Select required={true}>
+                                {
+                                    Array.from(parkingSlots).map((element, index) => (
+                                        <option key={element}>{element}</option>
+                                    ))
+                                }
+                            </Form.Select>
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Mulkia Number</Form.Label>
+                            <Form.Label>Mulkia Number *</Form.Label>
                             <Form.Control type="text" placeholder="text" required={true}/>
                         </Form.Group>
 

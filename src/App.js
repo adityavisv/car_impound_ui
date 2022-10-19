@@ -4,8 +4,8 @@ import Registerpage from './pages/RegisterPage';
 import ParkingLotCounterViewPage from './pages/ParkingLotCounterViewPage';
 import CarRegistrationPage from './pages/CarRegistrationPage';
 import SearchPage from './pages/SearchPage';
-import ParkingLotSelectorView from './components/ParkingSelectorView';
 import { Loginpage } from './pages/Loginpage';
+import ReleaseCarPage from './pages/ReleaseCarPage';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
             <Route path="/home" element={<ParkingLotCounterViewPage />}/>
             <Route path="/registerCar" element={<CarRegistrationPage />}/>
             <Route path="/search" element={<SearchPage />}/>
-            <Route path="/parkingview" element={<ParkingLotSelectorView />} />
+            <Route path="/release" element={<ReleaseCarPage />}/>
         </Routes>
       </BrowserRouter>
       {/* <Loginpage/> */}
