@@ -1,61 +1,115 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import {Form, Button} from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import '../styles/Loginpage.css';
 import { useTranslation } from "react-i18next";
 import "../translations/i18n";
+import { login } from '../actions/auth';
+import { connect } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
-export const  Loginpage = () => {
-    
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {};
-    // }
+class Loginpage extends React.Component {
 
-    // render = () => {
-        const {t, i18n} = useTranslation();
-        const changeLanguage = lng => {
-            i18n.changeLanguage(lng);
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            password: '',
+            isLoading: false,
+            isLoggedIn: this.props.isLoggedIn
         };
+    }
 
+    componentDidUpdate = (prevProps, prevState) => {
+        if (prevProps.isLoggedIn !== this.props.isLoggedIn) {
+            this.setState({
+                isLoggedIn: this.props.isLoggedIn
+            });
+        }
+    }
+    
+    // const { t, i18n } = useTranslation();
+    // const changeLanguage = lng => {
+    //     i18n.changeLanguage(lng);
+    // };
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        const { dispatch  } = this.props;
+        const { username, password } = this.state;
+        dispatch(login(username, password))
+    }
+
+    onChangeUsername = (event) => {
+        this.setState({ username: event.target.value });
+    }
+
+    onChangePassword = (event) => {
+        this.setState({ password: event.target.value });
+    }
+
+    render = () => {
+        const {username, password, isLoggedIn} = this.state;
+        if (isLoggedIn) {
+            return <Navigate replace to="/home"/>;
+        }
         return (
             <div>
-                {/* <div className="color_bar">
-                    &nbsp;
-                </div> */}
                 <div className="login_form_box">
                     <div className="logo_icon">
-                        <img src={require("../logo-social.png")} height="150" width="150" alt="logo"/>
+                        <img src={require("../logo-social.png")} height="150" width="150" alt="logo" />
                     </div>
                     <div className="login_box_header">
-                        {t("login")}
+                        {/* {t("login")} */}
+                        Login
                     </div>
-                    
-                    <Form className="actual_form">
+
+                    <Form className="actual_form" onSubmit={this.handleSubmit}>
                         <Form.Group className="mb-3">
                             <Form.Label className="login_field_label">Username (*)</Form.Label>
-                            <Form.Control type="text" placeholder="Username" required={true} className="form_control" />
-                            {/* <Form.Text className="text-muted">
-                                Some placeholder text below form controls
-                            </Form.Text> */}
+                            <Form.Control
+                                type="text"
+                                placeholder="Username"
+                                required={true}
+                                className="form_control"
+                                value={username}
+                                onChange={this.onChangeUsername}
+                            />
                         </Form.Group>
 
                         <Form.Group className="mb-3 password_form_group">
                             <Form.Label className="login_field_label">Password (*)</Form.Label>
-                            <Form.Control type="password" placeholder="Password" required={true}  className="form_control"/>
-                            <Form.Check type="checkbox" label="Show password"/>
+                            <Form.Control
+                                type="password"
+                                placeholder="Password"
+                                required={true}
+                                className="form_control"
+                                value={password}
+                                onChange={this.onChangePassword}
+                            />
+                            <Form.Check type="checkbox" label="Show password" />
                         </Form.Group>
-                            <div id="button_container">
-                                    <Button variant="outline-primary" type="submit" className="form_button_login" onClick={() => changeLanguage("arab")}>
-                                        Sign in
+                        <div id="button_container">
+                            <Button variant="outline-primary" type="submit" className="form_button_login">
+                                {/* onClick={() => changeLanguage("arab")}> */}
+                                Sign in
                                     </Button>
-                                    <Button variant="outline-secondary" className="form_button_reset">Sign Up</Button>
-                            </div>
+                            <Button variant="outline-secondary" className="form_button_reset">Sign Up</Button>
+                        </div>
                     </Form>
                 </div>
             </div>
         )
-    // }
+    }
 }
 
-// export default Loginpage;
+function mapStateToProps(state) {
+    const { isLoggedIn } = state.auth;
+    const { message } = state.message;
+    return {
+        isLoggedIn,
+        message
+    };
+}
+
+export default connect(mapStateToProps)(Loginpage);

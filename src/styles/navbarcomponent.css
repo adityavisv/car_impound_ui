@@ -1,3 +1,7 @@
 .nav_text {
     padding-left: -1%;
 }
+
+.clickable_text:hover {
+    cursor: pointer;
+}

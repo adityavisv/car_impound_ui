@@ -1,171 +1,177 @@
 import React from 'react';
-import { Modal, Container, Row } from 'react-bootstrap';
+import { Modal, Container, Row, Button, Col } from 'react-bootstrap';
 import '../styles/gridsvg.css';
+import CarRegistrationForm from './CarRegistrationForm';
+import ReleaseCarForm from './ReleaseCarForm';
 
 class GridSvg extends React.Component {
     constructor(props) {
         super(props);
 
-        // generate dummy slot data
-        
         this.state = {
-            slotsInZone: [
-                {
-                    slotId: 'A1',
-                    status: 'available',
-                },
-                {
-                    slotId: 'A2',
-                    status: 'occupied',
-                    occupiedCar: {
-                        make: 'Toyota',
-                        model: 'Corolla',
-                        year: '2010',
-                        colour: 'Red'
-                    }
-                }
-            ],
+            clickedZoneData: this.props.clickedZoneData,
             selectedSlot: {},
-            shouldDisplaySlotModal: false
+            shouldDisplaySlotModal: false,
+            shouldShowRegisterModal: false,
+            showShowReleaseModal: false,
         }
     }
 
-    showSlotModal = (event) => {
-        const {slotsInZone} = this.state;
-        const selectedSlotId = event.currentTarget.id;
-        const selectedSlotData = slotsInZone.find(slot => slot.slotId === selectedSlotId);
-        this.setState ({
+    showSlotModal = (selectedZoneLabel, selectedSlotNumber) => {
+        const { clickedZoneData } = this.state;
+        const selectedSlotData = clickedZoneData.find(slot => (slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber));
+        this.setState({
             selectedSlot: selectedSlotData,
             shouldDisplaySlotModal: true
         });
     }
 
-    closeSlotModal = () => {
-        this.setState ({
+    showRegisterModal = () => {
+        this.setState({
+            shouldShowRegisterModal: true,
             shouldDisplaySlotModal: false
         });
     }
 
+    showReleaseForm = () => {
+        this.setState({
+            shouldShowRegisterModal: false,
+            shouldDisplaySlotModal: false,
+            shouldShowReleaseModal: true
+        });
+    }
+
+    closeSlotModal = () => {
+        this.setState({
+            shouldDisplaySlotModal: false,
+            selectedSlot: {}
+        });
+    }
+
+    closeRegisterModal = () => {
+        this.setState({
+            shouldShowRegisterModal: false
+        });
+    }
+
+    closeReleaseModal = () => {
+        this.setState({
+            shouldShowReleaseModal: false
+        });
+    }
+
+    renderGridSvg = () => {
+        const { clickedZoneData } = this.state;
+        const rowOneSlice = clickedZoneData.slice(0, 28);
+        const rowOneElements = rowOneSlice.map((item, index) => (
+            <rect id={item.zoneLabel + item.slotNumber}
+                x={`${index * 30}`} 
+                y="0" 
+                stroke="black"
+                width="30"
+                height="30"
+                fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                strokeWidth="2"
+                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber)}
+            />
+        ));
+
+        const rowTwoSlice = clickedZoneData.slice(28, 56);
+        const rowTwoElements = rowTwoSlice.map((item, index) => (
+            <rect id={item.zoneLabel + item.slotNumber}
+                x={index * 30}
+                y="30"
+                stroke="black"
+                width="30"
+                height="30"
+                fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                strokeWidth="2"
+                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber)}
+            />
+        ));
+
+        const rowThreeSlice = clickedZoneData.slice(56, 89);
+        const rowThreeElements = rowThreeSlice.map((item, index) => (
+            <rect id={item.zoneLabel + item.slotNumber}
+            x={index * 30}
+            y="120"
+            stroke="black"
+            width="30"
+            height="30"
+            fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+            strokeWidth="2"
+            onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber)}
+            />
+        ));
+        return (
+            <>
+                {rowOneElements}
+                {rowTwoElements}
+                {rowThreeElements}
+            </>
+        );
+    }
+
     render = () => {
-        const {selectedSlot, shouldDisplaySlotModal} = this.state;
+        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal } = this.state;
+
         return (
             <div>
                 <Modal show={shouldDisplaySlotModal} onHide={this.closeSlotModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Slot Status</Modal.Title>
+                        <Modal.Title>Slot Status - <span className={selectedSlot.occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
+                                    {selectedSlot.occupancyStatus}</span> </Modal.Title>
                     </Modal.Header>
-                    
+
                     <Modal.Body>
                         <Container>
                             <Row>
-                                Slot Number : {selectedSlot.slotId}
+                                Zone Label : {selectedSlot.zoneLabel}
                             </Row>
                             <Row>
-                                Occupation Status: {selectedSlot.status}
+                                Slot Number: {selectedSlot.slotNumber}
                             </Row>
-                            {selectedSlot.status === 'occupied' ?
-                            <> 
-                                <Row>
-                                    Make: {selectedSlot.occupiedCar.make}
-                                </Row>
-                                <Row>
-                                    Model: {selectedSlot.occupiedCar.model}
-                                </Row>
-                            </> : <></>
+                            {selectedSlot.occupancyStatus === 'OCCUPIED' ?
+                                <>
+                                    <Row>
+                                        Make: {selectedSlot.occupiedVehicle.make}
+                                    </Row>
+                                    <Row>
+                                        Model: {selectedSlot.occupiedVehicle.model}
+                                    </Row>
+                                </> : <></>
                             }
                         </Container>
                     </Modal.Body>
+                    <Modal.Footer>
+                        {selectedSlot.occupancyStatus === "AVAILABLE" ? 
+                            <>
+                                <Button variant="primary" onClick={this.showRegisterModal}>Register</Button>
+                                <Button variant="primary">Register Multiple Slots</Button>
+                            </> : <Button variant="primary" onClick={this.showReleaseForm}>Release</Button>}
+                        
+                    </Modal.Footer>
                 </Modal>
+                <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="lg">
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Vehicle Registration</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <CarRegistrationForm closeForm={this.closeRegisterModal} selectedSlot={selectedSlot} callZoneSummaryService={this.props.callZoneSummaryService} closeGridSvg={this.props.closeGridSvg}/>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal show={shouldShowReleaseModal} onHide={this.closeReleaseModal} size="lg">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Vehicle Release</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <ReleaseCarForm />
+                    </Modal.Body>
+                </Modal>
+
                 <svg viewBox="0 0 1000 1000" className="zoneSvg">
-                    <rect id="A1" x="0" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A2" x="30" y="0" width="30" height="30" stroke="black" fill="red" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A3" x="60" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A4" x="90" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A5" x="120" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A6" x="150" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A7" x="180" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A8" x="210" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A9" x="240" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A10" x="270" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A11" x="300" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A12" x="330" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A13" x="360" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A14" x="390" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A15" x="420" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A16" x="450" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A17" x="480" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A18" x="510" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A19" x="540" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A20" x="570" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A21" x="600" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A22" x="630" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A23" x="660" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A24" x="690" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A25" x="720" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A26" x="750" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A27" x="780" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A28" x="810" y="0" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A29" x="0" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A30" x="30" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A31" x="60" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A32" x="90" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A33" x="120" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A34" x="150" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A35" x="180" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A36" x="210" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A37" x="240" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A38" x="270" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A39" x="300" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A40" x="330" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A41" x="360" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A42" x="390" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A43" x="420" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A44" x="450" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A45" x="480" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A46" x="510" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A47" x="540" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A48" x="570" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A49" x="600" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A50" x="630" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A51" x="660" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A52" x="690" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A53" x="720" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A54" x="750" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A55" x="780" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A56" x="810" y="30" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A57" x="0" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A58" x="30" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A59" x="60" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A60" x="90" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A61" x="120" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A62" x="150" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A63" x="180" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A64" x="210" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A65" x="240" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A66" x="270" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A67" x="300" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A68" x="330" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A69" x="360" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A70" x="390" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A71" x="420" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A72" x="450" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A73" x="480" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A74" x="510" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A75" x="540" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A76" x="570" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A77" x="600" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A78" x="630" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A79" x="660" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A80" x="690" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A81" x="720" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A82" x="750" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A83" x="780" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A84" x="810" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A85" x="840" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A86" x="870" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A87" x="900" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A88" x="930" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
-                    <rect id="A89" x="960" y="120" width="30" height="30" stroke="black" fill="green" strokeWidth="2" onClick={this.showSlotModal} />
+                    {this.renderGridSvg()}
                     <text x="480" y="100" className="heavy" fontSize="2em">ZONE A</text>
                 </svg>
             </div>

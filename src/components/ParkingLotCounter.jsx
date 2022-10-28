@@ -1,5 +1,6 @@
 import React from 'react';
 import { CloseButton, ProgressBar, Table } from 'react-bootstrap';
+import LoadingOverlay from 'react-loading-overlay';
 import GridSvg from './GridSvg';
 import GridSVGB from './GridSVGB';
 import GridSVGC from './GridSVGC';
@@ -17,136 +18,73 @@ import GridSVGL from './GridSVGL';
 import GridSVGM from './GridSVGM';
 import GridSVGN from './GridSVGN';
 import GridSVGO from './GridSVGO';
+import UserService from '../services/user.service';
 
 class ParkingLotCounter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             clickedZone: '',
+            clickedZoneData: [],
+            isSelectedZoneDataReady: false,
             parkingAllotmentColumns: [
                 {
                     dataField: 'zoneLabel',
                     text: 'Zone Label'
                 },
                 {
-                    dataField: 'zoneCount',
+                    dataField: 'totalCapacity',
                     text: 'Count'
                 },
                 {
-                    dataField: 'zoneOccupiedCount',
+                    dataField: 'occupiedCount',
                     text: 'Occupied'
-                }
-            ],
-            parkingAllotments: [
-                {
-                    zoneLabel: 'A',
-                    zoneCount: 89,
-                    zoneOccupiedCount: 0,
-                },
-                {
-                    zoneLabel: 'B',
-                    zoneCount: 71,
-                    zoneOccupiedCount: 10
-                },
-                {
-                    zoneLabel: 'C',
-                    zoneCount: 76,
-                    zoneOccupiedCount: 0
-                },
-                {
-                    zoneLabel: 'D',
-                    zoneCount: 86,
-                    zoneOccupiedCount: 40
-                },
-                {
-                    zoneLabel: 'E',
-                    zoneCount: 95,
-                    zoneOccupiedCount: 0
-                },
-                {
-                    zoneLabel: 'F',
-                    zoneCount: 101,
-                    zoneOccupiedCount: 0
-                },
-                {
-                    zoneLabel: 'G',
-                    zoneCount: 109,
-                    zoneOccupiedCount: 109
-                },
-                {
-                    zoneLabel: 'H',
-                    zoneCount: 118,
-                    zoneOccupiedCount: 20
-                },
-                {
-                    zoneLabel: 'I',
-                    zoneCount: 129,
-                    zoneOccupiedCount: 35
-                },
-                {
-                    zoneLabel: 'J',
-                    zoneCount: 144,
-                    zoneOccupiedCount: 44
-                },
-                {
-                    zoneLabel: 'K',
-                    zoneCount: 165,
-                    zoneOccupiedCount: 0
-                },
-                {
-                    zoneLabel: 'L',
-                    zoneCount: 165,
-                    zoneOccupiedCount: 11
-                },
-                {
-                    zoneLabel: 'M',
-                    zoneCount: 193,
-                    zoneOccupiedCount: 100
-                },
-                {
-                    zoneLabel: 'N',
-                    zoneCount: 213,
-                    zoneOccupiedCount: 111
-                },
-                {
-                    zoneLabel: 'O',
-                    zoneCount: 111,
-                    zoneOccupiedCount: 100
-                },
-                {
-                    zoneLabel: 'T',
-                    zoneCount: 134,
-                    zoneOccupiedCount: 80
                 }
             ]
         }
     }
 
+
+
     progressBar = (element) => {
-        const available = element.zoneCount - element.zoneOccupiedCount;
         return (<>
 
             <ProgressBar>
-                <ProgressBar animated now={element.zoneOccupiedCount} max={element.zoneCount} key={1} variant="danger" label={`${element.zoneOccupiedCount}`} />
-                <ProgressBar animated now={available} max={element.zoneCount} key={2} variant="success" label={`${available}`} />
+                <ProgressBar animated now={element.occupiedCount} max={element.totalCapacity} key={1} variant="danger" label={`${element.occupiedCount}`} />
+                <ProgressBar animated now={element.availableCount} max={element.totalCapacity} key={2} variant="success" label={`${element.availableCount}`} />
             </ProgressBar>
         </>
 
         );
     }
 
+
     handleRowClick = (event) => {
-        this.setState({
-            clickedZone: event.currentTarget.id
-        });
+        const clickedZone = event.currentTarget.id;
+        UserService.getZone(clickedZone)
+            .then((response) => {
+                this.setState({
+                    clickedZone,
+                    clickedZoneData: response.data.parkingSpots,
+                    isSelectedZoneDataReady: true
+                });
+            })
+            .catch((error) => {
+                this.setState({
+                    clickedZone,
+                    isSelectedZoneDataReady: false
+                });
+                if (error.response.status === 401)
+                    this.props.callLogout();
+            });
     }
 
-    svgToRender = () => {
-        const {clickedZone} = this.state;
-        switch(clickedZone) {
+    svgToRender = (close) => {
+        const { clickedZone, clickedZoneData } = this.state;
+        switch (clickedZone) {
             case 'A':
                 return (
-                    <GridSvg />
+                    <GridSvg clickedZoneData={clickedZoneData} callZoneSummaryService={this.props.callZoneSummaryService} closeGridSvg={close} />
                 );
             case 'B':
                 return (
@@ -208,7 +146,9 @@ class ParkingLotCounter extends React.Component {
     }
 
     render = () => {
-        const { parkingAllotments, selectedZone } = this.state;
+        const { parkingZoneSummaries } = this.props;
+        const { isSelectedZoneDataReady } = this.state;
+
         return (
             <div className="table_container">
                 <Table responsive className="table" hover>
@@ -220,16 +160,22 @@ class ParkingLotCounter extends React.Component {
                     </thead>
                     <tbody>
                         {
-                            Array.from(parkingAllotments).map((element, index) => (
+                            Array.from(parkingZoneSummaries).map((element, index) => (
                                 <InfoOverlay
-                                    render={({ close, labelId, descriptionId }) =>(
-                                        <div className="canvas">
-                                            <CloseButton onClick={close} id="close_btn" />
-                                            {this.svgToRender()}
-                                        </div>
+                                    render={({ close, labelId, descriptionId }) => (
+                                        <LoadingOverlay
+                                            active={!isSelectedZoneDataReady}
+                                            spinner
+                                            text='Loading...'
+                                        >
+                                            <div className="canvas">
+                                                <CloseButton onClick={close} id="close_btn" />
+                                                {this.svgToRender(close)}
+                                            </div>
+                                        </LoadingOverlay>
                                     )}
                                 >
-                            
+
                                     <tr id={element.zoneLabel} key={element.zoneLabel} onClick={this.handleRowClick}>
                                         <td>{element.zoneLabel}</td>
                                         <td>{this.progressBar(element)}</td>

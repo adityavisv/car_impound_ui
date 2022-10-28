@@ -8,56 +8,7 @@ export default class SearchForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [
-                {
-                    foo: 'abc',
-                    bar: 'abc',
-                    foo2: 'abc',
-                    bar2: 'abc',
-                    foo3: 'abc',
-                    baz: 'abc'
-                },
-                {
-                    foo: 'abc',
-                    bar: 'abc',
-                    foo2: 'abc',
-                    bar2: 'abc',
-                    foo3: 'abc',
-                    baz: 'abc'
-                },
-                {
-                    foo: 'abc',
-                    bar: 'abc',
-                    foo2: 'abc',
-                    bar2: 'abc',
-                    foo3: 'abc',
-                    baz: 'abc'
-                },
-                {
-                    foo: 'abc',
-                    bar: 'abc',
-                    foo2: 'abc',
-                    bar2: 'abc',
-                    foo3: 'abc',
-                    baz: 'abc'
-                },
-                {
-                    foo: 'abc',
-                    bar: 'abc',
-                    foo2: 'abc',
-                    bar2: 'abc',
-                    foo3: 'abc',
-                    baz: 'abc'
-                },
-                {
-                    foo: 'abc',
-                    bar: 'abc',
-                    foo2: 'abc',
-                    bar2: 'abc',
-                    foo3: 'abc',
-                    baz: 'abc'
-                }
-            ],
+            data: [],
             columns: [
                 {
                     dataField: 'foo',
