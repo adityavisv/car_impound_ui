@@ -60,6 +60,48 @@ class GridSvg extends React.Component {
         });
     }
 
+    renderNumberSvg = () => {
+        const { clickedZoneData } = this.state;
+        const rowOneSlice = clickedZoneData.slice(0, 28);
+        const rowOneNumbers = rowOneSlice.map((item, index) => (
+            <text
+                x={`${(index * 30) + 7.5}`}
+                y="15" fontSize="15" className="box_text">
+                    {item.slotNumber}
+            </text>
+                
+        ));
+        
+
+        const rowTwoSlice = clickedZoneData.slice(28,56);
+        const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+            <text
+                x={`${(index * 30) + 6.5}`}
+                y="45"
+                fontSize="15" className="box_text">
+                    {item.slotNumber}
+                </text>
+        ));
+
+        const rowThreeSlice = clickedZoneData.slice(56, 88);
+        const rowThreeNumbers = rowThreeSlice.map((item, index) => (
+            <text
+                x={`${(index * 30) + 6.5}`}
+                y="170"
+                fontSize="15" className="box_text">
+                    {item.slotNumber}
+                </text>
+        ));
+
+        return (
+            <>
+                {rowOneNumbers}
+                {rowTwoNumbers}
+                {rowThreeNumbers}
+            </>
+        );
+    }
+
     renderGridSvg = () => {
         const { clickedZoneData } = this.state;
         const rowOneSlice = clickedZoneData.slice(0, 28);
@@ -94,7 +136,7 @@ class GridSvg extends React.Component {
         const rowThreeElements = rowThreeSlice.map((item, index) => (
             <rect id={item.zoneLabel + item.slotNumber}
             x={index * 30}
-            y="120"
+            y="150"
             stroke="black"
             width="30"
             height="30"
@@ -139,6 +181,9 @@ class GridSvg extends React.Component {
                                     <Row>
                                         Model: {selectedSlot.occupiedVehicle.model}
                                     </Row>
+                                    <Row>
+                                        Number Plate: {selectedSlot.occupiedVehicle.numberPlate}
+                                    </Row>
                                 </> : <></>
                             }
                         </Container>
@@ -146,8 +191,8 @@ class GridSvg extends React.Component {
                     <Modal.Footer>
                         {selectedSlot.occupancyStatus === "AVAILABLE" ? 
                             <>
-                                <Button variant="primary" onClick={this.showRegisterModal}>Register</Button>
-                                <Button variant="primary">Register Multiple Slots</Button>
+                                <Button variant="primary" onClick={this.showRegisterModal}>Assign</Button>
+                                {/* <Button variant="primary">Register Multiple Slots</Button> */}
                             </> : <Button variant="primary" onClick={this.showReleaseForm}>Release</Button>}
                         
                     </Modal.Footer>
@@ -166,13 +211,14 @@ class GridSvg extends React.Component {
                         <Modal.Title>Vehicle Release</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <ReleaseCarForm />
+                        <ReleaseCarForm closeForm={this.closeReleaseModal} selectedSlot={selectedSlot} callZoneSummaryService={this.props.callZoneSummaryService} closeGridSvg={this.props.closeGridSvg} />
                     </Modal.Body>
                 </Modal>
 
                 <svg viewBox="0 0 1000 1000" className="zoneSvg">
                     {this.renderGridSvg()}
-                    <text x="480" y="100" className="heavy" fontSize="2em">ZONE A</text>
+                    {this.renderNumberSvg()}
+                    <text x="480" y="115" className="heavy" fontSize="2em">ZONE A</text>
                 </svg>
             </div>
         )

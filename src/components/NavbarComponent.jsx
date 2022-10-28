@@ -12,18 +12,10 @@ class NavbarComponent extends React.Component {
             <div>
                 <Navbar bg="dark" variant="dark" expand="lg">
                     <Container>
-                        <Navbar.Brand href="/home">Sharjah</Navbar.Brand>
+                        <Navbar.Brand href="/home"> <img src={require("../sp-meta-logo.png")} height="55" width="55" alt="logo" /></Navbar.Brand>
                         <Navbar.Toggle />
                         <Navbar.Collapse>
                             <Nav className="me-auto">
-                                {/* <Nav.Link href="/registerCar">
-                                    <FontAwesomeIcon icon={faLock} size="sm" fixedWidth />
-                                    <span className="nav_text"> Registration </span>
-                                </Nav.Link>
-                                <Nav.Link href="/release" className="nav_link">
-                                    <FontAwesomeIcon icon={faUnlock} fixedWidth />
-                                    <span className="nav_text"> Release</span>
-                                </Nav.Link> */}
                                 <Nav.Link href="/home" className="nav_link">
                                     <FontAwesomeIcon icon={faParking} fixedWidth />
                                     <span className="nav_text"> Parking View </span>

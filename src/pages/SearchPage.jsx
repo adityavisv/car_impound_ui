@@ -1,10 +1,12 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
+import { connect } from 'react-redux';
 import NavbarComponent from '../components/NavbarComponent';
 import SearchForm from '../components/SearchForm';
+import { logout } from '../actions/auth';
 
-export default class SearchPage extends React.Component {
+class SearchPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +38,7 @@ export default class SearchPage extends React.Component {
         return (
             <>
                 <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} />
-                <SearchForm />
+                <SearchForm callLogout={this.callLogout} />
             </>
         );
     }
@@ -51,3 +53,5 @@ function mapStateToProps(state) {
         message
     }
 }
+
+export default connect(mapStateToProps)(SearchPage)

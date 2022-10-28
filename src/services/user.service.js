@@ -2,6 +2,7 @@ import axios from 'axios';
 import authHeader from './auth-header';
 
 const API_URL = 'http://Adityas-MacBook-Pro.local:8080/api/v1/zone';
+const VEHICLE_API_URL = 'http://Adityas-MacBook-Pro.local:8080/api/v1/vehicle';
 
 class UserService {
     getZone(zone) {
@@ -51,6 +52,25 @@ class UserService {
                 slotNumber
             },
             headers: authHeader()
+        });
+    }
+
+    searchVehicles(searchterms) {
+        return axios.get(VEHICLE_API_URL + '/search', {
+            params: {...searchterms },
+            headers: authHeader()
+        });
+    }
+
+    releaseVehicle(zone, slotNumber) {
+        return axios({
+            method: 'put',
+            url: API_URL + '/release',
+            headers: authHeader(),
+            params: {
+                zone,
+                slotNumber
+            }
         });
     }
 }

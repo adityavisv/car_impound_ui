@@ -270,7 +270,6 @@ class CarRegistrationForm extends React.Component {
         this.setState({
             isVehicleAssignStarted: true
         });
-        const { dispatch } = this.props;
         var { newVehiclePayload, selectedSlot: {zoneLabel, slotNumber } } = this.state;
         const { registrationTime, registrationDate } = newVehiclePayload;
         newVehiclePayload = {
@@ -279,9 +278,13 @@ class CarRegistrationForm extends React.Component {
         }
         UserService.assignCarToSpot(newVehiclePayload, zoneLabel, slotNumber)
             .then((response) => {
+                this.setState({
+                    isVehicleAssignDone: true
+                });
                 this.props.closeForm();
                 this.props.closeGridSvg();
                 this.props.callZoneSummaryService();
+                
             })
             .catch((error) => {
                 
@@ -296,6 +299,7 @@ class CarRegistrationForm extends React.Component {
             else
                 return true;
         }
+        return false;
     }
 
     render = () => {

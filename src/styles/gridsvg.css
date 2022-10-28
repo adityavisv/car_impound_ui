@@ -20,6 +20,10 @@ rect:hover {
     color: red;
 }
 
+.box_text {
+    fill: white;
+}
+
 
 /* 
 text {

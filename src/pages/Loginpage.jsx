@@ -16,7 +16,8 @@ class Loginpage extends React.Component {
             username: '',
             password: '',
             isLoading: false,
-            isLoggedIn: this.props.isLoggedIn
+            isLoggedIn: this.props.isLoggedIn,
+            isPasswordVisible: false,
         };
     }
 
@@ -48,8 +49,15 @@ class Loginpage extends React.Component {
         this.setState({ password: event.target.value });
     }
 
+    togglePasswordView = () => {
+        const { isPasswordVisible } = this.state;
+        this.setState({
+            isPasswordVisible: ! isPasswordVisible
+        });
+    }
+
     render = () => {
-        const {username, password, isLoggedIn} = this.state;
+        const {username, password, isLoggedIn, isPasswordVisible} = this.state;
         if (isLoggedIn) {
             return <Navigate replace to="/home"/>;
         }
@@ -57,7 +65,7 @@ class Loginpage extends React.Component {
             <div>
                 <div className="login_form_box">
                     <div className="logo_icon">
-                        <img src={require("../logo-social.png")} height="150" width="150" alt="logo" />
+                        <img src={require("../sp-meta-logo.png")} height="120" width="120" alt="logo" />
                     </div>
                     <div className="login_box_header">
                         {/* {t("login")} */}
@@ -80,21 +88,21 @@ class Loginpage extends React.Component {
                         <Form.Group className="mb-3 password_form_group">
                             <Form.Label className="login_field_label">Password (*)</Form.Label>
                             <Form.Control
-                                type="password"
+                                type={isPasswordVisible ? "text" : "password"}
                                 placeholder="Password"
                                 required={true}
                                 className="form_control"
                                 value={password}
                                 onChange={this.onChangePassword}
                             />
-                            <Form.Check type="checkbox" label="Show password" />
+                            <Form.Check type="checkbox" label="Show password" onChange={this.togglePasswordView} />
                         </Form.Group>
                         <div id="button_container">
                             <Button variant="outline-primary" type="submit" className="form_button_login">
                                 {/* onClick={() => changeLanguage("arab")}> */}
                                 Sign in
                                     </Button>
-                            <Button variant="outline-secondary" className="form_button_reset">Sign Up</Button>
+                            {/* <Button variant="outline-secondary" className="form_button_reset">Sign Up</Button> */}
                         </div>
                     </Form>
                 </div>

@@ -1,18 +1,19 @@
 .login_form_box {
-   width:25%;
-   margin: 0 auto;
-   margin-top: 3%;
-   border: 1px solid black;
-   border-radius: 15px;
-   /* background-color:#d1d0cf; */
+    width: 25%;
+    margin: 0 auto;
+    margin-top: 3%;
+    border: 1px solid black;
+    border-radius: 15px;
+    /* background-color:#d1d0cf; */
 }
 
 .actual_form {
     margin-top: 10%;
     margin-bottom: 10%;
-    margin-left:10%;
+    margin-left: 10%;
     margin-right: 10%;
 }
+
 .login_field_label {
     position: relative;
     margin-left: 0px;
@@ -24,7 +25,7 @@
     margin-top: 20%;
     /* display: inline-block; */
     /* margin-left: 15%; */
-    margin-right:10%;
+    margin-right: 10%;
 }
 
 .form_button_reset {
@@ -35,19 +36,22 @@
     /* margin-right:5%; */
 }
 
-
 #button_container {
     text-align: center;
 }
 
 img {
     display: block;
-    margin-left:auto;
+    margin-left: auto;
     margin-right: auto;
 }
 
+.logo_icon {
+    padding-top: 5%;
+}
+
 .login_box_header {
-    margin-top: -5%;
+    margin-top: 1%;
     text-align: center;
     vertical-align: middle;
     font-size: 2.5em;
