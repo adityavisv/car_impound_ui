@@ -161,7 +161,7 @@ export default class SearchForm extends React.Component {
                             <Form.Group as={Col}>
                                 <Form.Label>Slot Number</Form.Label>
                                 <Form.Select value={slot} onChange={this.changeSlot}>
-                                    <option>Select an option</option>
+                                    <option value=''>Select an option</option>
                                     <option value="A1">A1</option>
                                     <option value="A2">A2</option>
                                     <option value="A3">A3</option>

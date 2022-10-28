@@ -118,7 +118,7 @@ class CarRegistrationForm extends React.Component {
         this.setState({
             newVehiclePayload: {
                 ...newVehiclePayload,
-                isCarTobeAuctioned: event.target.value === 'Yes'
+                isCarToBeAuctioned: event.target.value === 'Yes'
             }
         });
     }
@@ -413,7 +413,7 @@ class CarRegistrationForm extends React.Component {
 
                         <Form.Group as={Col}>
                             <Form.Label>Case in Court Status:</Form.Label>
-                            <Form.Select required={true} onChange={this.changeIsCaseInCourt} value={isCaseInCourt}>
+                            <Form.Select required={true} onChange={this.changeIsCaseInCourt} value={isCaseInCourt ? 'Yes' : 'No'}>
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </Form.Select>
@@ -421,7 +421,7 @@ class CarRegistrationForm extends React.Component {
 
                         <Form.Group as={Col}>
                             <Form.Label>To Auction?</Form.Label>
-                            <Form.Select required={true} onChange={this.changeIsCarToBeAuctioned} value={isCarToBeAuctioned}>
+                            <Form.Select required={true} onChange={this.changeIsCarToBeAuctioned} value={isCarToBeAuctioned ? 'Yes' : 'No'}>
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </Form.Select>
