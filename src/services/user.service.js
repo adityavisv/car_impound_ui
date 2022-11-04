@@ -7,14 +7,18 @@ const VEHICLE_API_URL = 'http://Adityas-MacBook-Pro.local:8080/api/v1/vehicle';
 class UserService {
     getZone(zone) {
         return axios.get(API_URL, {
-            params: { zone: zone },
+            params: {
+                zone: zone
+            },
             headers: authHeader()
         });
     }
 
     getZoneSummary(zone) {
         return axios.get(API_URL + '/summary', {
-            params: { zone: zone },
+            params: {
+                zone: zone
+            },
             headers: authHeader()
         }).then(response => {
             return response;
@@ -24,7 +28,6 @@ class UserService {
     }
 
     getAllZoneSummaries() {
-        console.log("Auth header = ");
         return axios.get(API_URL + '/summary', {
                 headers: authHeader()
             })
@@ -51,18 +54,21 @@ class UserService {
                 zone,
                 slotNumber
             },
-            headers: authHeader()
+            headers: {
+                ...authHeader()
+            }
         });
     }
 
     searchVehicles(searchterms) {
         return axios.get(VEHICLE_API_URL + '/search', {
-            params: {...searchterms },
+            params: {...searchterms
+            },
             headers: authHeader()
         });
     }
 
-    releaseVehicle(zone, slotNumber) {
+    releaseVehicle(zone, slotNumber, releasePayload) {
         return axios({
             method: 'put',
             url: API_URL + '/release',
@@ -70,7 +76,28 @@ class UserService {
             params: {
                 zone,
                 slotNumber
+            },
+            data: {
+                ...releasePayload
             }
+        });
+    }
+
+    assignImageToVehicle(vehicleId, file) {
+        return axios({
+            method: 'post',
+            url: VEHICLE_API_URL + '/image',
+            params: {
+                vehicleId
+            },
+            headers: {
+                ...authHeader(),
+                'Content-Type': 'multipart/form-data'
+            },
+            data: {
+                file
+            }
+
         });
     }
 }

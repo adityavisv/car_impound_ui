@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Container, Row } from 'react-bootstrap';
-import '../styles/gridsvg.css';
+import '../../styles/gridsvg.css';
 
 class GridSVGF extends React.Component {
 

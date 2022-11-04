@@ -1,8 +1,9 @@
 import React from 'react';
 import { Modal, Container, Row, Button, Col } from 'react-bootstrap';
-import '../styles/gridsvg.css';
-import CarRegistrationForm from './CarRegistrationForm';
-import ReleaseCarForm from './ReleaseCarForm';
+import '../../styles/gridsvg.css';
+import CarRegistrationForm from '../CarRegistrationForm';
+import ReleaseCarForm from '../ReleaseCarForm';
+import SingleSlotOverviewModal from '../SingleSlotOverview';
 
 class GridSvg extends React.Component {
     constructor(props) {
@@ -10,20 +11,48 @@ class GridSvg extends React.Component {
 
         this.state = {
             clickedZoneData: this.props.clickedZoneData,
-            selectedSlot: {},
+            selectedSlot: [{}],
             shouldDisplaySlotModal: false,
             shouldShowRegisterModal: false,
             showShowReleaseModal: false,
+            isMultSlotMode: false
         }
     }
 
-    showSlotModal = (selectedZoneLabel, selectedSlotNumber) => {
-        const { clickedZoneData } = this.state;
-        const selectedSlotData = clickedZoneData.find(slot => (slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber));
-        this.setState({
-            selectedSlot: selectedSlotData,
-            shouldDisplaySlotModal: true
-        });
+    showSlotModal = (selectedZoneLabel, selectedSlotNumber, selectedSlotStatus) => {
+        const { isMultSlotMode } = this.state;
+        if (! isMultSlotMode ) {
+            const { clickedZoneData } = this.state;
+            const selectedSlotData = clickedZoneData.find(
+                slot => (
+                    slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber
+            ));
+            this.setState({
+                selectedSlot: [selectedSlotData],
+                shouldDisplaySlotModal: true
+            });
+        }
+        else {
+            if (selectedSlotStatus === "AVAILABLE") {
+                const { clickedZoneData } = this.state;
+                var { selectedSlot } = this.state;
+
+                const secondSelectedSlotData = clickedZoneData.find(
+                    slot => (
+                        slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber
+                    )
+                );
+                selectedSlot.push(secondSelectedSlotData);
+
+                this.setState({
+                    selectedSlot,
+                    shouldDisplaySlotModal: false
+                })
+                this.showRegisterModal();
+            }
+            
+        }
+       
     }
 
     showRegisterModal = () => {
@@ -33,7 +62,7 @@ class GridSvg extends React.Component {
         });
     }
 
-    showReleaseForm = () => {
+    showReleaseModal = () => {
         this.setState({
             shouldShowRegisterModal: false,
             shouldDisplaySlotModal: false,
@@ -44,19 +73,28 @@ class GridSvg extends React.Component {
     closeSlotModal = () => {
         this.setState({
             shouldDisplaySlotModal: false,
-            selectedSlot: {}
+            selectedSlot: [{}]
         });
     }
 
     closeRegisterModal = () => {
         this.setState({
-            shouldShowRegisterModal: false
+            shouldShowRegisterModal: false,
+            selectedSlot: [{}]
         });
     }
 
     closeReleaseModal = () => {
         this.setState({
             shouldShowReleaseModal: false
+        });
+    }
+
+    setFirstSelectedSlot = () => {
+        // const { selectedSlot } = this.state;
+        this.setState({
+            isMultSlotMode: true,
+            shouldDisplaySlotModal: false
         });
     }
 
@@ -102,6 +140,22 @@ class GridSvg extends React.Component {
         );
     }
 
+    
+
+    generateClassName = (itemSlotNumber, itemSlotStatus) => {
+        const { selectedSlot, isMultSlotMode } = this.state;
+        var slotNumber;
+        if (selectedSlot.length > 0)
+            slotNumber = selectedSlot[0].slotNumber;
+        if (itemSlotStatus === 'AVAILABLE') {
+            if (isMultSlotMode )
+                if (slotNumber === itemSlotNumber)
+                    return "available selected";
+            return "available clickable_rect";
+        }
+        return "occupied clickable_rect";
+    }
+
     renderGridSvg = () => {
         const { clickedZoneData } = this.state;
         const rowOneSlice = clickedZoneData.slice(0, 28);
@@ -112,9 +166,10 @@ class GridSvg extends React.Component {
                 stroke="black"
                 width="30"
                 height="30"
-                fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
                 strokeWidth="2"
-                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber)}
+                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
             />
         ));
 
@@ -126,9 +181,10 @@ class GridSvg extends React.Component {
                 stroke="black"
                 width="30"
                 height="30"
-                fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
                 strokeWidth="2"
-                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber)}
+                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
             />
         ));
 
@@ -140,9 +196,10 @@ class GridSvg extends React.Component {
             stroke="black"
             width="30"
             height="30"
-            fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+            className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+            // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
             strokeWidth="2"
-            onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber)}
+            onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
             />
         ));
         return (
@@ -159,50 +216,24 @@ class GridSvg extends React.Component {
 
         return (
             <div>
-                <Modal show={shouldDisplaySlotModal} onHide={this.closeSlotModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Slot Status - <span className={selectedSlot.occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
-                                    {selectedSlot.occupancyStatus}</span> </Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        <Container>
-                            <Row>
-                                Zone Label : {selectedSlot.zoneLabel}
-                            </Row>
-                            <Row>
-                                Slot Number: {selectedSlot.slotNumber}
-                            </Row>
-                            {selectedSlot.occupancyStatus === 'OCCUPIED' ?
-                                <>
-                                    <Row>
-                                        Make: {selectedSlot.occupiedVehicle.make}
-                                    </Row>
-                                    <Row>
-                                        Model: {selectedSlot.occupiedVehicle.model}
-                                    </Row>
-                                    <Row>
-                                        Number Plate: {selectedSlot.occupiedVehicle.numberPlate}
-                                    </Row>
-                                </> : <></>
-                            }
-                        </Container>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        {selectedSlot.occupancyStatus === "AVAILABLE" ? 
-                            <>
-                                <Button variant="primary" onClick={this.showRegisterModal}>Assign</Button>
-                                {/* <Button variant="primary">Register Multiple Slots</Button> */}
-                            </> : <Button variant="primary" onClick={this.showReleaseForm}>Release</Button>}
-                        
-                    </Modal.Footer>
-                </Modal>
-                <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="lg">
+                <SingleSlotOverviewModal
+                    selectedSlot={selectedSlot[0]}
+                    shouldDisplaySlotModal={shouldDisplaySlotModal}
+                    closeSlotModal={this.closeSlotModal}
+                    showRegisterModal={this.showRegisterModal}
+                    showReleaseModal={this.showReleaseModal}
+                    setFirstSelectedSlot={this.setFirstSelectedSlot}
+                />
+                 <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="lg">
                     <Modal.Header closeButton>
                         <Modal.Title>New Vehicle Registration</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <CarRegistrationForm closeForm={this.closeRegisterModal} selectedSlot={selectedSlot} callZoneSummaryService={this.props.callZoneSummaryService} closeGridSvg={this.props.closeGridSvg}/>
+                        <CarRegistrationForm 
+                            closeForm={this.closeRegisterModal}
+                            selectedSlot={selectedSlot}
+                            callZoneSummaryService={this.props.callZoneSummaryService}
+                            closeGridSvg={this.props.closeGridSvg}/>
                     </Modal.Body>
                 </Modal>
 
@@ -211,7 +242,12 @@ class GridSvg extends React.Component {
                         <Modal.Title>Vehicle Release</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <ReleaseCarForm closeForm={this.closeReleaseModal} selectedSlot={selectedSlot} callZoneSummaryService={this.props.callZoneSummaryService} closeGridSvg={this.props.closeGridSvg} />
+                        <ReleaseCarForm 
+                            closeForm={this.closeReleaseModal}
+                            selectedSlot={selectedSlot[0]} 
+                            callZoneSummaryService={this.props.callZoneSummaryService} 
+                            closeGridSvg={this.props.closeGridSvg} 
+                        />
                     </Modal.Body>
                 </Modal>
 

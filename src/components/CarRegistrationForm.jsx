@@ -9,6 +9,13 @@ import UserService from '../services/user.service';
 class CarRegistrationForm extends React.Component {
     constructor(props) {
         super(props);
+        const { selectedSlot } = this.props;
+        var parkingSlot = '';
+        if (selectedSlot.length === 1)
+            parkingSlot = selectedSlot[0].zoneLabel + selectedSlot[0].slotNumber;
+        else if (selectedSlot.length === 2) {
+            parkingSlot = `${selectedSlot[0].zoneLabel}${selectedSlot[0].slotNumber},${selectedSlot[1].zoneLabel}${selectedSlot[1].slotNumber}`;
+        }
         this.state = {
             selectedSlot: this.props.selectedSlot,
             newVehiclePayload: {
@@ -20,7 +27,7 @@ class CarRegistrationForm extends React.Component {
                 caseNumber: '',
                 mulkiaNumber: '',
                 color: '',
-                parkingSlot: this.props.selectedSlot.zoneLabel + this.props.selectedSlot.slotNumber,
+                parkingSlot,
                 isCaseInCourt: false,
                 isCarToBeAuctioned: false,
                 numberPlate: '',
@@ -28,12 +35,12 @@ class CarRegistrationForm extends React.Component {
                     firstName: '',
                     lastName: '',
                     emailAddress: '',
-                    idType: '',
+                    idType: 'Passport',
                     idNumber: '',
                     contactNumber: '',
                     nationality: ''
                 },
-                department: ''
+                department: 'CID'
 
             },
             isVehicleAssignStarted: false,
@@ -236,6 +243,32 @@ class CarRegistrationForm extends React.Component {
         })
     }
 
+    changeFirstName = (event) => {
+        const { newVehiclePayload } = this.state;
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                owner: {
+                    ...newVehiclePayload.owner,
+                    firstName: event.target.value
+                }
+            }
+        });
+    }
+
+    changeLastName = (event) => {
+        const { newVehiclePayload } = this.state;
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                owner: {
+                    ...newVehiclePayload.owner,
+                    lastName: event.target.value
+                }
+            }
+        });
+    }
+
     changeName = (event) => {
         const { newVehiclePayload } = this.state;
         const names = event.target.value.split(" ");
@@ -265,30 +298,61 @@ class CarRegistrationForm extends React.Component {
         });
     }
 
+    changeImage1 = (event) => {
+        const fileUpload = event.target.files;
+        const { newVehiclePayload } = this.state;
+        this.setState ({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                imageFile: fileUpload[0]
+            }
+        });
+    }
+
+    changeImage2 = (event) => {
+        const fileUpload = event.target.files;
+        console.log(fileUpload);
+    }
+
     submitVehicle = (event) => {
         event.preventDefault();
         this.setState({
             isVehicleAssignStarted: true
         });
-        var { newVehiclePayload, selectedSlot: {zoneLabel, slotNumber } } = this.state;
+        var { newVehiclePayload, selectedSlot: {zoneLabel, slotNumber }, selectedSlot } = this.state;
+
         const { registrationTime, registrationDate } = newVehiclePayload;
         newVehiclePayload = {
             ...newVehiclePayload,
             registrationDateTime: registrationDate + ' ' + registrationTime
         }
-        UserService.assignCarToSpot(newVehiclePayload, zoneLabel, slotNumber)
-            .then((response) => {
-                this.setState({
-                    isVehicleAssignDone: true
+
+        for (const slot of selectedSlot ) {
+            const { zoneLabel, slotNumber} = slot;
+            const { newVehiclePayload: { imageFile }} = this.state;
+            UserService.assignCarToSpot(newVehiclePayload, zoneLabel, slotNumber)
+                .then((response) => {
+                    UserService.assignImageToVehicle(response.data.occupiedVehicle.id, imageFile)
+                        .then((response) => {
+                            this.setState({
+                                isVehicleAssignDone: true,
+                                isVehicleAssignStarted: false
+                            });
+                            this.props.closeForm();
+                            this.props.closeGridSvg();
+                            this.props.callZoneSummaryService();
+                        })
+                        .catch((error) => {
+
+                        });
+                
+                })
+                .catch((error) => {
+                
                 });
-                this.props.closeForm();
-                this.props.closeGridSvg();
-                this.props.callZoneSummaryService();
-                
-            })
-            .catch((error) => {
-                
-            })
+        }
+       
+        
     }
 
     shouldShowLoadingScreen = () => {
@@ -305,7 +369,7 @@ class CarRegistrationForm extends React.Component {
     render = () => {
         const { newVehiclePayload: {
             make, model, registrationDate, registrationTime, caseNumber, mulkiaNumber, color, parkingSlot, isCaseInCourt, isCarToBeAuctioned, releaseDate,
-            numberPlate, department, remarks, owner: { name, emailAddress, idType, idNumber, contactNumber, nationality }
+            numberPlate, department, remarks, owner: { firstName, lastName, emailAddress, idType, idNumber, contactNumber, nationality }
         } } = this.state
         return (
             <LoadingOverlay active={this.shouldShowLoadingScreen()} spinner text='Saving vehicle...'>
@@ -328,10 +392,23 @@ class CarRegistrationForm extends React.Component {
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
+                            <Form.Label>Image 1</Form.Label>
+                            <Form.Control type="file" onChange={this.changeImage1} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Image 2</Form.Label>
+                            <Form.Control type="file" onChange={this.changeImage2} />
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col}>
                             <Form.Label>Department *</Form.Label>
                             <Form.Select required={true} onChange={this.changeDepartment} value={department}>
-                                <option value="Country 1">Country 1</option>
-                                <option value="Country 2">Country 2</option>
+                                <option value="CID">CID</option>
+                                <option value="Drugs">Drugs</option>
+                                <option value="Alcohol">Alcohol</option>
+                                <option value="Traffic">Traffic</option>
+                                <option value="Accident and other">Accident and other</option>
                             </Form.Select>
                         </Form.Group>
 
@@ -363,11 +440,25 @@ class CarRegistrationForm extends React.Component {
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Parking Slot Num. *</Form.Label>
-                            <Form.Control type="text" disabled={true} value={parkingSlot} />
+                            <Form.Control type="text" disabled value={parkingSlot} />
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label>First Name *</Form.Label>
+                            <Form.Control type="text" required={true} value={firstName} onChange={this.changeFirstName} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Last Name *</Form.Label>
+                            <Form.Control type="text" required={true} value={lastName} onChange={this.changeLastName} />
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                    <Form.Group as={Col}>
+                            <Form.Label>Nationality</Form.Label>
+                            <Form.Control type="text" placeholder="text" required={true} value={nationality} onChange={this.changeNationality}/>
+                        </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>ID Type</Form.Label>
                             <Form.Select required={true} onChange={this.changeIdType} value={idType}>
@@ -381,17 +472,6 @@ class CarRegistrationForm extends React.Component {
                         <Form.Group as={Col}>
                             <Form.Label>ID Number</Form.Label>
                             <Form.Control type="text" placeholder="text" value={idNumber} onChange={this.changeIdNumber}/>
-                        </Form.Group>
-                    </Row>
-                    <Row className="mb-3">
-                        <Form.Group as={Col}>
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={name} onChange={this.changeName} />
-                        </Form.Group>
-
-                        <Form.Group as={Col}>
-                            <Form.Label>Nationality</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={nationality} onChange={this.changeNationality}/>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">

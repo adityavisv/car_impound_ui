@@ -1,8 +1,8 @@
 import React from 'react';
 import { Modal, Container, Row } from 'react-bootstrap';
-import '../styles/gridsvg.css';
+import '../../styles/gridsvg.css';
 
-class GridSVGO extends React.Component {
+class GridSVGT extends React.Component {
 
     constructor(props) {
         super(props);
@@ -218,4 +218,4 @@ class GridSVGO extends React.Component {
     }
 }
 
-export default GridSVGO;
+export default GridSVGT;

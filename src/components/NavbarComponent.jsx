@@ -12,11 +12,11 @@ class NavbarComponent extends React.Component {
             <div>
                 <Navbar bg="dark" variant="dark" expand="lg">
                     <Container>
-                        <Navbar.Brand href="/home"> <img src={require("../sp-meta-logo.png")} height="55" width="55" alt="logo" /></Navbar.Brand>
+                        <Navbar.Brand href="/"> <img src={require("../sp-meta-logo.png")} height="55" width="55" alt="logo" /></Navbar.Brand>
                         <Navbar.Toggle />
                         <Navbar.Collapse>
                             <Nav className="me-auto">
-                                <Nav.Link href="/home" className="nav_link">
+                                <Nav.Link href="/" className="nav_link">
                                     <FontAwesomeIcon icon={faParking} fixedWidth />
                                     <span className="nav_text"> Parking View </span>
                                 </Nav.Link>

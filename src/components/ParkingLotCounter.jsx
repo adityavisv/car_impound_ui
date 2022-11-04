@@ -1,23 +1,23 @@
 import React from 'react';
 import { CloseButton, ProgressBar, Table } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
-import GridSvg from './GridSvg';
-import GridSVGB from './GridSVGB';
-import GridSVGC from './GridSVGC';
+import GridSvg from './GridSVG/GridSvg';
+import GridSVGB from './GridSVG/GridSVGB';
+import GridSVGC from './GridSVG/GridSVGC';
 import '../styles/parkinglotcounter.css';
 import InfoOverlay from './InfoOverlay';
-import GridSVGD from './GridSVGD';
-import GridSVGE from './GridSVGE';
-import GridSVGF from './GridSVGF';
-import GridSVGG from './GridSVGG';
-import GridSVGH from './GridSVGH';
-import GridSVGI from './GridSVGI';
-import GridSVGJ from './GridSVGJ';
-import GridSVGK from './GridSVGK';
-import GridSVGL from './GridSVGL';
-import GridSVGM from './GridSVGM';
-import GridSVGN from './GridSVGN';
-import GridSVGO from './GridSVGO';
+import GridSVGD from './GridSVG/GridSVGD';
+import GridSVGE from './GridSVG/GridSVGE';
+import GridSVGF from './GridSVG/GridSVGF';
+import GridSVGG from './GridSVG/GridSVGG';
+import GridSVGH from './GridSVG/GridSVGH';
+import GridSVGI from './GridSVG/GridSVGI';
+import GridSVGJ from './GridSVG/GridSVGJ';
+import GridSVGK from './GridSVG/GridSVGK';
+import GridSVGL from './GridSVG/GridSVGL';
+import GridSVGM from './GridSVG/GridSVGM';
+import GridSVGN from './GridSVG/GridSVGN';
+import GridSVGO from './GridSVG/GridSVGO';
 import UserService from '../services/user.service';
 
 class ParkingLotCounter extends React.Component {

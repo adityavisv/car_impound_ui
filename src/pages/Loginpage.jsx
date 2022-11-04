@@ -59,7 +59,7 @@ class Loginpage extends React.Component {
     render = () => {
         const {username, password, isLoggedIn, isPasswordVisible} = this.state;
         if (isLoggedIn) {
-            return <Navigate replace to="/home"/>;
+            return <Navigate replace to="/"/>;
         }
         return (
             <div>

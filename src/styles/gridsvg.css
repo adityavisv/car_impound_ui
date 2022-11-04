@@ -1,7 +1,7 @@
-rect:hover {
+/* rect:hover {
     fill-opacity: 0.4;
     cursor: pointer;
-}
+} */
 
 .zoneSvg {
     margin-top: 10%;
@@ -22,6 +22,23 @@ rect:hover {
 
 .box_text {
     fill: white;
+}
+
+.occupied {
+    fill: red;
+}
+
+.available {
+    fill: green;
+}
+
+.selected {
+    fill-opacity: 0.4;
+}
+
+.clickable_rect:hover {
+    fill-opacity: 0.4;
+    cursor: pointer;
 }
 
 
