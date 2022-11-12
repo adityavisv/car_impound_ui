@@ -1,12 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import '../styles/Loginpage.css';
 import { useTranslation } from "react-i18next";
 import "../translations/i18n";
-import { login } from '../actions/auth';
+import { login, logout } from '../actions/auth';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import SignOutConfirmModal from '../components/GridSVG/SignOutConfirmModal';
 
 class Loginpage extends React.Component {
 
@@ -18,13 +19,16 @@ class Loginpage extends React.Component {
             isLoading: false,
             isLoggedIn: this.props.isLoggedIn,
             isPasswordVisible: false,
+            message: '',
         };
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.isLoggedIn !== this.props.isLoggedIn) {
+        if (prevProps.isLoggedIn !== this.props.isLoggedIn
+            || prevProps.message !== this.props.message) {
             this.setState({
-                isLoggedIn: this.props.isLoggedIn
+                isLoggedIn: this.props.isLoggedIn,
+                message: this.props.message
             });
         }
     }
@@ -56,14 +60,22 @@ class Loginpage extends React.Component {
         });
     }
 
+    showErrorBanner = () => {
+        const { message } = this.state;
+        return message !== '' && message !== undefined;
+    }
+
     render = () => {
         const {username, password, isLoggedIn, isPasswordVisible} = this.state;
         if (isLoggedIn) {
-            return <Navigate replace to="/"/>;
+            return <Navigate to="/" replace />
         }
         return (
             <div>
                 <div className="login_form_box">
+                    {this.showErrorBanner() ? <Alert variant="danger">
+                        Invalid username or password.
+                    </Alert> : <></>}
                     <div className="logo_icon">
                         <img src={require("../sp-meta-logo.png")} height="120" width="120" alt="logo" />
                     </div>

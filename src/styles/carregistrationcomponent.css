@@ -1,4 +1,12 @@
-
 textarea {
     width: 100vh;
+}
+
+.form_text {
+    font-size: 1.5em;
+    text-decoration: underline
+}
+
+.required_form_label {
+    font-weight: bold;
 }

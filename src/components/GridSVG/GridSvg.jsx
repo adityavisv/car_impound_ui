@@ -11,11 +11,21 @@ class GridSvg extends React.Component {
 
         this.state = {
             clickedZoneData: this.props.clickedZoneData,
+            selectedZoneLabel: this.props.selectedZoneLabel,
             selectedSlot: [{}],
             shouldDisplaySlotModal: false,
             shouldShowRegisterModal: false,
             showShowReleaseModal: false,
             isMultSlotMode: false
+        }
+    }
+
+    componentDidUpdate = (prevProps, prevState) => {
+        if (prevProps.clickedZoneData !== this.props.clickedZoneData) {
+            this.setState({
+                clickedZoneData: this.props.clickedZoneData,
+                selectedZoneLabel: this.props.selectedZoneLabel
+            });
         }
     }
 
@@ -33,9 +43,11 @@ class GridSvg extends React.Component {
             });
         }
         else {
-            if (selectedSlotStatus === "AVAILABLE") {
+            var { selectedSlot } = this.state;
+            const { slotNumber: firstSlotNumber } = selectedSlot[0];
+
+            if (selectedSlotStatus === "AVAILABLE" && (selectedSlotNumber + 1 === firstSlotNumber || selectedSlotNumber - 1 === firstSlotNumber)) {
                 const { clickedZoneData } = this.state;
-                var { selectedSlot } = this.state;
 
                 const secondSelectedSlotData = clickedZoneData.find(
                     slot => (
@@ -73,20 +85,23 @@ class GridSvg extends React.Component {
     closeSlotModal = () => {
         this.setState({
             shouldDisplaySlotModal: false,
-            selectedSlot: [{}]
+            selectedSlot: [{}],
+            isMultSlotMode: false
         });
     }
 
     closeRegisterModal = () => {
         this.setState({
             shouldShowRegisterModal: false,
-            selectedSlot: [{}]
+            selectedSlot: [{}],
+            isMultSlotMode: false
         });
     }
 
     closeReleaseModal = () => {
         this.setState({
-            shouldShowReleaseModal: false
+            shouldShowReleaseModal: false,
+            isMultSlotMode: false
         });
     }
 
@@ -148,9 +163,13 @@ class GridSvg extends React.Component {
         if (selectedSlot.length > 0)
             slotNumber = selectedSlot[0].slotNumber;
         if (itemSlotStatus === 'AVAILABLE') {
-            if (isMultSlotMode )
+            if (isMultSlotMode ) {
                 if (slotNumber === itemSlotNumber)
                     return "available selected";
+                if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1)
+                    return "available clickable_rect"
+                return "available greyedout";
+            }
             return "available clickable_rect";
         }
         return "occupied clickable_rect";
@@ -233,7 +252,9 @@ class GridSvg extends React.Component {
                             closeForm={this.closeRegisterModal}
                             selectedSlot={selectedSlot}
                             callZoneSummaryService={this.props.callZoneSummaryService}
-                            closeGridSvg={this.props.closeGridSvg}/>
+                            closeGridSvg={this.props.closeGridSvg}
+                            callLogout={this.props.callLogout}
+                        />
                     </Modal.Body>
                 </Modal>
 
@@ -251,10 +272,13 @@ class GridSvg extends React.Component {
                     </Modal.Body>
                 </Modal>
 
+                <Container>
+                    <h3>ZONE A</h3>
+                </Container>
                 <svg viewBox="0 0 1000 1000" className="zoneSvg">
                     {this.renderGridSvg()}
                     {this.renderNumberSvg()}
-                    <text x="480" y="115" className="heavy" fontSize="2em">ZONE A</text>
+                    {/* <text x="480" y="10" className="heavy" fontSize="2em">ZONE A</text> */}
                 </svg>
             </div>
         )

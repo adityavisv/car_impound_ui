@@ -1,16 +1,20 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Col, Form, FormLabel, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
 import '../styles/searchform.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import UserService from '../services/user.service';
+import 'bootstrap/dist/css/bootstrap.css';
+import LoginRedirectModal from './LoginRedirectModal';
+import CarRegistrationForm from './CarRegistrationForm';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             searchInit: false,
+            shouldShowRedirectLoginModal: false,
             searchDone: false,
             data: [],
             make: '',
@@ -18,6 +22,8 @@ export default class SearchForm extends React.Component {
             color: '',
             slot: '',
             numberPlate: '',
+            showResultModal: false,
+            selectedResult: {},
             columns: [
                 {
                     dataField: 'make',
@@ -38,11 +44,44 @@ export default class SearchForm extends React.Component {
                 {
                     dataField: 'numberPlate',
                     text: 'Number Plate'
+                },
+                {
+                    dataField: 'registrationDateTime',
+                    text: 'Registration Date/Time'
+                },
+                {
+                    dataField: 'department',
+                    text: 'Department'
+                },
+                {
+                    dataField: 'caseNumber',
+                    text: 'Case Number'
+                },
+                {
+                    dataField: 'mulkiaNumber',
+                    text: 'Mulkia Number'
                 }
             ],
             showResults: false,
-            results: []
+            results: [],
+            selectRow: {
+                mode: 'radio',
+                clickToSelect: true,
+                onSelect: (row, isSelect, rowIndex, e) => {
+                    this.setState({
+                        showResultModal: true,
+                        selectedResult: row
+                    });
+                }
+            }
         }
+    }
+
+    hideRedirectLoginModal = () => {
+        this.setState({
+            shouldShowRedirectLoginModal: false
+        });
+        this.props.callLogout();
     }
 
     onClickSearch = (event) => {
@@ -82,6 +121,12 @@ export default class SearchForm extends React.Component {
         });
     }
 
+    closeResultModal = () => {
+        this.setState({
+            showResultModal: false
+        });
+    }
+
     hitSearch = (event) => {
         event.preventDefault();
         this.setState({
@@ -109,11 +154,13 @@ export default class SearchForm extends React.Component {
                     searchDone: true
                 })
             })
-                .catch((error) => {
-                    if (error.response.status === 401) {
-                        this.props.callLogout();
-                    }
-                })
+            .catch((error) => {
+                if (error.response !== undefined && error.response.status === 401) {
+                    this.setState({
+                        shouldShowRedirectLoginModal: true
+                    });
+                }
+            })
     }
 
     loadingOverlayController = () => {
@@ -128,8 +175,20 @@ export default class SearchForm extends React.Component {
         return false;
     }
 
+    generateVehicleInfoTable = () => {
+        const { selectedResult } = this.state;
+        const rows = Array.from(Object.keys(selectedResult)).map((key, index) => (
+            <tr>
+                <td>{key}</td>
+                <td>{selectedResult[key]}</td>
+            </tr>
+        ));
+        return rows;
+    }
+
     render = () => {
-        const {results, columns, showResults, make, model, color, slot, numberPlate} = this.state;
+        const {results, columns, showResults, make, model, color, 
+            slot, numberPlate, selectRow, showResultModal, selectedResult, shouldShowRedirectLoginModal} = this.state;
         return (
             <LoadingOverlay
                 active={this.loadingOverlayController()}
@@ -142,7 +201,7 @@ export default class SearchForm extends React.Component {
                         <Row className="mb-3">
                             <Form.Group as={Col}>
                                 <Form.Label>Make</Form.Label>
-                                <Form.Control type="text" placeholder="text" value={make} onChange={this.changeMake}/>
+                                <Form.Control type="text"  value={make} onChange={this.changeMake}/>
                             </Form.Group>
                             <Form.Group as={Col}>
                                 <Form.Label>Model</Form.Label>
@@ -175,8 +234,22 @@ export default class SearchForm extends React.Component {
             </div>
             <div className="results_div">
                     { showResults ? 
-                    <BootstrapTable data={results} columns={columns} keyField="numberPlate"/> : null}
+                    <BootstrapTable selectRow={selectRow} hover data={results} columns={columns} keyField="numberPlate"/> : null}
             </div>
+            <Modal show={showResultModal} onHide={this.closeResultModal} animation={false} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Search Result</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedResult !== null && selectedResult.owner !== undefined ?
+                        <CarRegistrationForm vehicle={selectedResult} /> : <> </>
+                    }
+                </Modal.Body>
+            </Modal>
+            <LoginRedirectModal
+                shouldShowRedirectLoginModal={shouldShowRedirectLoginModal}
+                hideRedirectLoginModal={this.hideRedirectLoginModal}
+            />
             </LoadingOverlay>
         )
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloseButton, ProgressBar, Table } from 'react-bootstrap';
+import { Alert, CloseButton, ProgressBar, Table } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
 import GridSvg from './GridSVG/GridSvg';
 import GridSVGB from './GridSVG/GridSVGB';
@@ -27,6 +27,9 @@ class ParkingLotCounter extends React.Component {
             clickedZone: '',
             clickedZoneData: [],
             isSelectedZoneDataReady: false,
+            selectedZoneRequestInit: false,
+            selectedZoneRequestFin: false,
+            selectedZoneRequestFail: false,
             parkingAllotmentColumns: [
                 {
                     dataField: 'zoneLabel',
@@ -58,23 +61,38 @@ class ParkingLotCounter extends React.Component {
         );
     }
 
+    handleGridSvgClose = (close) => {
+        this.setState({
+            clickedZone: '',
+            clickedZoneData: [],
+        });
+        close();
+    }
 
     handleRowClick = (event) => {
         const clickedZone = event.currentTarget.id;
+        this.setState({
+            selectedZoneRequestInit: true,
+            selectedZoneRequestFail: false,
+            selectedZoneRequestFin: false,
+            clickedZone
+        })
         UserService.getZone(clickedZone)
             .then((response) => {
                 this.setState({
-                    clickedZone,
                     clickedZoneData: response.data.parkingSpots,
-                    isSelectedZoneDataReady: true
+                    selectedZoneRequestInit: false,
+                    selectedZoneRequestFin: true,
+                    selectedZoneRequestFail: false
                 });
             })
             .catch((error) => {
                 this.setState({
-                    clickedZone,
-                    isSelectedZoneDataReady: false
+                    selectedZoneRequestInit: false,
+                    selectedZoneRequestFin: false,
+                    selectedZoneRequestFail: true,
                 });
-                if (error.response.status === 401)
+                if (error.response !== undefined && error.response.status === 401)
                     this.props.callLogout();
             });
     }
@@ -84,7 +102,12 @@ class ParkingLotCounter extends React.Component {
         switch (clickedZone) {
             case 'A':
                 return (
-                    <GridSvg clickedZoneData={clickedZoneData} callZoneSummaryService={this.props.callZoneSummaryService} closeGridSvg={close} />
+                    <GridSvg
+                        clickedZoneData={clickedZoneData}
+                        callZoneSummaryService={this.props.callZoneSummaryService}
+                        closeGridSvg={() => this.handleGridSvgClose(close)}
+                        callLogout={this.props.callLogout}
+                    />
                 );
             case 'B':
                 return (
@@ -147,7 +170,7 @@ class ParkingLotCounter extends React.Component {
 
     render = () => {
         const { parkingZoneSummaries } = this.props;
-        const { isSelectedZoneDataReady } = this.state;
+        const { selectedZoneRequestInit, selectedZoneRequestFail } = this.state;
 
         return (
             <div className="table_container">
@@ -164,12 +187,13 @@ class ParkingLotCounter extends React.Component {
                                 <InfoOverlay
                                     render={({ close, labelId, descriptionId }) => (
                                         <LoadingOverlay
-                                            active={!isSelectedZoneDataReady}
+                                            active={selectedZoneRequestInit}
                                             spinner
                                             text='Loading...'
                                         >
                                             <div className="canvas">
-                                                <CloseButton onClick={close} id="close_btn" />
+                                                {selectedZoneRequestFail ? <Alert variant="danger">Failed fetching selected zone data. Something went wrong!</Alert> : null}
+                                                <CloseButton onClick={() => this.handleGridSvgClose(close)} id="close_btn" />
                                                 {this.svgToRender(close)}
                                             </div>
                                         </LoadingOverlay>

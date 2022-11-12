@@ -48,15 +48,19 @@ class UserService {
         });
     }
 
-    assignCarToSpot(vehicle, zone, slotNumber) {
-        return axios.put(API_URL + '/assign', vehicle, {
-            params: {
-                zone,
-                slotNumber
+    assignCarToSpot(vehicle, spots) {
+        var params = new URLSearchParams();
+        for (const spot of spots) {
+            params.append("spot", spot);
+        }
+        return axios({
+            method: 'put',
+            url: API_URL + '/assign',
+            params,
+            data: {
+                ...vehicle
             },
-            headers: {
-                ...authHeader()
-            }
+            headers: authHeader()
         });
     }
 
@@ -83,21 +87,24 @@ class UserService {
         });
     }
 
-    assignImageToVehicle(vehicleId, file) {
+    assignImageToVehicle(vehicleId, files) {
+        var imageparams = new FormData();
+        for (const file of files) {
+            imageparams.append("file", file);
+        }
         return axios({
             method: 'post',
             url: VEHICLE_API_URL + '/image',
             params: {
                 vehicleId
             },
+            data: {
+                ...imageparams
+            },
             headers: {
                 ...authHeader(),
                 'Content-Type': 'multipart/form-data'
-            },
-            data: {
-                file
             }
-
         });
     }
 }

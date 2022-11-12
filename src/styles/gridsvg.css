@@ -12,6 +12,10 @@
     /* position: fixed; */
 }
 
+h3 {
+    text-align: center;
+}
+
 .availableMode {
     color: green;
 }
@@ -33,12 +37,16 @@
 }
 
 .selected {
-    fill-opacity: 0.4;
+    fill: #eb6e34
 }
 
 .clickable_rect:hover {
     fill-opacity: 0.4;
     cursor: pointer;
+}
+
+.greyedout {
+    fill-opacity: 0.2;
 }
 
 

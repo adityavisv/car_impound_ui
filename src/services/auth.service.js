@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth-header';
 
 const API_URL = "http://Adityas-MacBook-Pro.local:8080/api/auth/";
 
@@ -23,10 +24,16 @@ class AuthService {
     }
 
     register(username, email, password) {
-        return axios.post(API_URL + "signup", {
-            username,
-            email,
-            password
+        return axios({
+            method: 'post',
+            url: API_URL + "signup",
+            headers: authHeader(),
+            data: {
+                username,
+                email,
+                password,
+                role: ["user"]
+            }
         });
     }
 }

@@ -7,11 +7,23 @@
 
 .results_div {
     margin: 0 auto;
-    width: 70%;
+    width: 90%;
     height: 200px;
     overflow-y: scroll;
 }
 
 table {
     margin-top: 3%;
+}
+
+.text_info {
+    float: left;
+}
+
+.image_box {
+    float: right;
+}
+
+td.fieldname {
+    font-weight: bold;
 }
