@@ -6,12 +6,12 @@ import '../styles/Loginpage.css';
 import { connect } from 'react-redux';
 import AuthService from '../services/auth.service';
 import { Alert } from 'react-bootstrap';
-import { Navigate, redirect } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import SignOutConfirmModal from '../components/GridSVG/SignOutConfirmModal';
 import { logout } from '../actions/auth';
 import InsufficientPrivModal from '../components/InsufficientPrivModal';
 
-class RegisterPage extends React.Component {
+class SignUpPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,6 +20,7 @@ class RegisterPage extends React.Component {
             passwordRep: '',
             showFailureAlert: false,
             showSuccessAlert: false,
+            showPasswordMismatchAlert: false,
             isLoggedIn: this.props.isLoggedIn,
             user: this.props.user,
             hasClickedOkInsufficientPriv: false
@@ -61,6 +62,18 @@ class RegisterPage extends React.Component {
         });
     }
 
+    showPasswordMismatch = () => {
+        this.setState({
+            showPasswordMismatchAlert: true
+        });
+    }
+
+    hidePasswordMismatch = () => {
+        this.setState({
+            showPasswordMismatchAlert: false
+        });
+    }
+
     changeUsername = (event) => {
         this.setState({ username: event.target.value });
     }
@@ -80,6 +93,7 @@ class RegisterPage extends React.Component {
         const { username, password, passwordRep } = this.state;
         const email = `${username}@foobar.com`;
         if (password === passwordRep) {
+            this.hidePasswordMismatch();
             AuthService.register(username, email, password)
                 .then((response) => {
                     this.hideSignUpFail();
@@ -91,6 +105,7 @@ class RegisterPage extends React.Component {
                     this.showSignUpFail();
                 })
         }
+        
     }
 
     showSignoutConfirmation = () => {
@@ -117,14 +132,12 @@ class RegisterPage extends React.Component {
     }
 
     render = () => {
-        const { showFailureAlert, showSuccessAlert, username, password, passwordRep, shouldShowSignoutConfirm, isLoggedIn, user, hasClickedOkInsufficientPriv } = this.state;
+        const { showFailureAlert, showSuccessAlert, showPasswordMismatchAlert, username, password, passwordRep, shouldShowSignoutConfirm, isLoggedIn, user, hasClickedOkInsufficientPriv } = this.state;
         if (! isLoggedIn) {
-            console.log("NOT LOGGED IN");
             return <Navigate to="/login" replace />
         }
         else {
             if (user.roles.includes("ROLE_ADMIN")) {
-                console.log("CORRECT PRIV")
                 return (
                     <div>
                         <SignOutConfirmModal
@@ -134,11 +147,13 @@ class RegisterPage extends React.Component {
                         <div className="login_form_box">
                             <Alert variant="danger" show={showFailureAlert}>A user with this username already exists! Please pick a different username.</Alert>
                             <Alert variant="success" show={showSuccessAlert}>Account created</Alert>
+                            <Alert variant="danger" show={showPasswordMismatchAlert}>Make sure passwords match!</Alert>
                             <div className="logo_icon">
-                                <img src={require("../logo-social.png")} height="150" width="150" alt="logo"/>
+                                <Link to="/"><img src={require("../SharjahPoliceLogo.png")} height="150" width="150" alt="logo"/></Link>
+                                
                             </div>
                             <div className="login_box_header">
-                                Register
+                                SIGN UP
                             </div>
                             
                             <Form className="actual_form" onSubmit={this.hitSignUp}>
@@ -152,9 +167,6 @@ class RegisterPage extends React.Component {
                                         onChange={this.changeUsername} 
                                         value={username}    
                                     />
-                                    {/* <Form.Text className="text-muted">
-                                        Some placeholder text below form controls
-                                    </Form.Text> */}
                                 </Form.Group>
         
                                 <Form.Group className="mb-3 password_form_group">
@@ -206,4 +218,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(RegisterPage);
+export default connect(mapStateToProps)(SignUpPage);

@@ -2,16 +2,20 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
-import '../styles/searchform.css';
-import BootstrapTable from 'react-bootstrap-table-next';
 import UserService from '../services/user.service';
 import 'bootstrap/dist/css/bootstrap.css';
+import '../styles/searchform.css';
 import LoginRedirectModal from './LoginRedirectModal';
 import CarRegistrationForm from './CarRegistrationForm';
+import ResultsTable from './ResultsTable';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
         super(props);
+        var slots = []
+        for (var i = 1; i <= 88; i++) {
+            slots.push(`A${i}`);
+        }
         this.state = {
             searchInit: false,
             shouldShowRedirectLoginModal: false,
@@ -24,56 +28,9 @@ export default class SearchForm extends React.Component {
             numberPlate: '',
             showResultModal: false,
             selectedResult: {},
-            columns: [
-                {
-                    dataField: 'make',
-                    text: 'Make'
-                },
-                {
-                    dataField: 'model',
-                    text: 'Model'
-                },
-                {
-                    dataField: 'color',
-                    text: 'Colour'
-                },
-                {
-                    dataField: 'parkingSlot',
-                    text: 'Slot Number'
-                },
-                {
-                    dataField: 'numberPlate',
-                    text: 'Number Plate'
-                },
-                {
-                    dataField: 'registrationDateTime',
-                    text: 'Registration Date/Time'
-                },
-                {
-                    dataField: 'department',
-                    text: 'Department'
-                },
-                {
-                    dataField: 'caseNumber',
-                    text: 'Case Number'
-                },
-                {
-                    dataField: 'mulkiaNumber',
-                    text: 'Mulkia Number'
-                }
-            ],
             showResults: false,
             results: [],
-            selectRow: {
-                mode: 'radio',
-                clickToSelect: true,
-                onSelect: (row, isSelect, rowIndex, e) => {
-                    this.setState({
-                        showResultModal: true,
-                        selectedResult: row
-                    });
-                }
-            }
+            slots
         }
     }
 
@@ -157,7 +114,15 @@ export default class SearchForm extends React.Component {
             .catch((error) => {
                 if (error.response !== undefined && error.response.status === 401) {
                     this.setState({
-                        shouldShowRedirectLoginModal: true
+                        shouldShowRedirectLoginModal: true,
+                        searchInit: false,
+                        searchDone: true
+                    });
+                }
+                else {
+                    this.setState({
+                        searchInit: false,
+                        searchDone: true
                     });
                 }
             })
@@ -186,9 +151,19 @@ export default class SearchForm extends React.Component {
         return rows;
     }
 
+    handleRowClick = (event) => {
+        const resultId = event.currentTarget.id;
+        const { results } = this.state;
+        const selectedResult = results.find(result => result.id === parseInt(resultId));
+        this.setState({
+            selectedResult,
+            showResultModal: true,
+        })
+    }
+
     render = () => {
-        const {results, columns, showResults, make, model, color, 
-            slot, numberPlate, selectRow, showResultModal, selectedResult, shouldShowRedirectLoginModal} = this.state;
+        const {results,  showResults, make, model, color, slots, 
+            slot, numberPlate, showResultModal, selectedResult, shouldShowRedirectLoginModal} = this.state;
         return (
             <LoadingOverlay
                 active={this.loadingOverlayController()}
@@ -221,9 +196,11 @@ export default class SearchForm extends React.Component {
                                 <Form.Label>Slot Number</Form.Label>
                                 <Form.Select value={slot} onChange={this.changeSlot}>
                                     <option value=''>Select an option</option>
-                                    <option value="A1">A1</option>
-                                    <option value="A2">A2</option>
-                                    <option value="A3">A3</option>
+                                    {
+                                        Array.from(slots).map((element, index) => (
+                                            <option value={element}>{element}</option>
+                                        ))
+                                        }
                                 </Form.Select>
                             </Form.Group>
                         </Row>
@@ -234,7 +211,9 @@ export default class SearchForm extends React.Component {
             </div>
             <div className="results_div">
                     { showResults ? 
-                    <BootstrapTable selectRow={selectRow} hover data={results} columns={columns} keyField="numberPlate"/> : null}
+                    <>
+                        Found results: {results.length}
+                        <ResultsTable results={results} handleRowClick={this.handleRowClick} /> </>: null}
             </div>
             <Modal show={showResultModal} onHide={this.closeResultModal} animation={false} size="lg">
                 <Modal.Header closeButton>

@@ -29,13 +29,8 @@ class UserService {
 
     getAllZoneSummaries() {
         return axios.get(API_URL + '/summary', {
-                headers: authHeader()
-            })
-            // .then(response => {
-            //     return response;
-            // }).catch(error => {
-            //     return error;
-            // });
+            headers: authHeader()
+        })
     }
 
     getParkingSpot(zone, slotNumber) {
@@ -92,20 +87,18 @@ class UserService {
         for (const file of files) {
             imageparams.append("file", file);
         }
-        return axios({
-            method: 'post',
-            url: VEHICLE_API_URL + '/image',
-            params: {
-                vehicleId
-            },
-            data: {
-                ...imageparams
-            },
-            headers: {
-                ...authHeader(),
-                'Content-Type': 'multipart/form-data'
+        return axios.post(
+            VEHICLE_API_URL + '/image',
+            imageparams, {
+                headers: {
+                    ...authHeader(),
+                    'Content-Type': 'multipart/form-data'
+                },
+                params: {
+                    vehicleId
+                }
             }
-        });
+        );
     }
 }
 

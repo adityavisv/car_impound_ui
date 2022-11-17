@@ -46,7 +46,8 @@ class GridSvg extends React.Component {
             var { selectedSlot } = this.state;
             const { slotNumber: firstSlotNumber } = selectedSlot[0];
 
-            if (selectedSlotStatus === "AVAILABLE" && (selectedSlotNumber + 1 === firstSlotNumber || selectedSlotNumber - 1 === firstSlotNumber)) {
+            if (selectedSlotStatus === "AVAILABLE" && 
+            (selectedSlotNumber + 1 === firstSlotNumber || selectedSlotNumber - 1 === firstSlotNumber || selectedSlotNumber + 28 === firstSlotNumber || selectedSlotNumber - 28 === firstSlotNumber)) {
                 const { clickedZoneData } = this.state;
 
                 const secondSelectedSlotData = clickedZoneData.find(
@@ -166,7 +167,7 @@ class GridSvg extends React.Component {
             if (isMultSlotMode ) {
                 if (slotNumber === itemSlotNumber)
                     return "available selected";
-                if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1)
+                if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1 || slotNumber === itemSlotNumber - 28 || slotNumber === itemSlotNumber + 28)
                     return "available clickable_rect"
                 return "available greyedout";
             }

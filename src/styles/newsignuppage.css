@@ -1,0 +1,13 @@
+#button_container_signup {
+    text-align: center;
+}
+
+.form_box {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.form_text {
+    font-size: 1.8em;
+    text-decoration: underline
+}

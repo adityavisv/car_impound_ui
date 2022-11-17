@@ -8,12 +8,13 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import RegisterPage from "./pages/RegisterPage";
+import NewSignUpPage from "./pages/NewSignUpPage";
 import ParkingLotCounterViewPage from "./pages/ParkingLotCounterViewPage";
 import SearchPage from "./pages/SearchPage";
 import Loginpage from "./pages/Loginpage";
+import ZoneLayoutReferencePage from './pages/ZoneLayoutReferencePage';
+import NotFoundPage from './pages/NotFoundPage';
 import { logout } from "./actions/auth";
-import UserService from "./services/user.service";
 
 class App extends React.Component {
   constructor(props) {
@@ -58,27 +59,6 @@ class App extends React.Component {
             showSignupPage: user.roles.includes("ROLE_ADMIN"),
             isLoggedIn: true
         });
-    //   UserService.getAllZoneSummaries().then(
-    //     (response) => {
-    //       this.setState({
-    //         parkingZoneSummaries: response.data.zoneSummaries,
-    //         currentUser: user,
-    //         showHomepage:
-    //           user.roles.includes("ROLE_USER") ||
-    //           user.roles.includes("ROLE_ADMIN"),
-    //         showSignupPage: user.roles.includes("ROLE_ADMIN"),
-    //       });
-    //     },
-    //     (error) => {
-    //       if (error.response.status === 401)
-    //         this.setState({
-    //           showHomepage: false,
-    //           showSignupPage: false,
-    //           currentUser: user,
-    //         });
-    //       this.logOut();
-    //     }
-    //   );
     }
   }
 
@@ -97,14 +77,16 @@ class App extends React.Component {
             <Route path="/login" element={<Loginpage />}>
             </Route>
             <Route
-              path="/register"
-              element={<RegisterPage />}
+              path="/signup"
+              element={<NewSignUpPage />}
             />{" "}
             <Route path="/" element={<ParkingLotCounterViewPage />} />
             <Route
               path="/search"
               element={<SearchPage />}
             />
+            <Route path="/layoutref" element={<ZoneLayoutReferencePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </div>

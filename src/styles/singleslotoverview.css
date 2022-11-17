@@ -5,3 +5,7 @@
 .image_box {
     float: right
 }
+
+td {
+    height: 50px;
+}

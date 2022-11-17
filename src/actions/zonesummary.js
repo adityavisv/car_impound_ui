@@ -1,8 +1,17 @@
 import UserService from "../services/user.service"
-import { ZONE_SUMMARY_FAIL, ZONE_SUMMARY_SUCCESS } from "./types"
+import {
+    ZONE_SUMMARY_FAIL,
+    ZONE_SUMMARY_SUCCESS,
+    ZONE_SUMMARY_START
+} from "./types"
 
 export const retrieveZoneSummary = () => (dispatch) => {
-    return UserService.getAllZoneSummaries()
+    dispatch({
+        type: ZONE_SUMMARY_START,
+        payload: {}
+    });
+
+    UserService.getAllZoneSummaries()
         .then(
             (response) => {
                 dispatch({
@@ -12,12 +21,14 @@ export const retrieveZoneSummary = () => (dispatch) => {
                         statusCode: response.statusCode
                     }
                 });
-                return Promise.resolve();
-            }).catch((error) => {
+            })
+        .catch((error) => {
+            console.log(error);
             dispatch({
                 type: ZONE_SUMMARY_FAIL,
-                payload: { statusCode: error.response.status }
+                payload: {
+                    statusCode: error.response !== undefined ? error.response.status : 0
+                }
             });
-            return Promise.reject();
         });
 };

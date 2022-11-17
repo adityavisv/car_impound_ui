@@ -30,20 +30,6 @@ class ParkingLotCounter extends React.Component {
             selectedZoneRequestInit: false,
             selectedZoneRequestFin: false,
             selectedZoneRequestFail: false,
-            parkingAllotmentColumns: [
-                {
-                    dataField: 'zoneLabel',
-                    text: 'Zone Label'
-                },
-                {
-                    dataField: 'totalCapacity',
-                    text: 'Count'
-                },
-                {
-                    dataField: 'occupiedCount',
-                    text: 'Occupied'
-                }
-            ]
         }
     }
 
@@ -174,11 +160,13 @@ class ParkingLotCounter extends React.Component {
 
         return (
             <div className="table_container">
-                <Table responsive className="table" hover>
+                <Table responsive hover size="sm" variant="dark">
                     <thead>
                         <tr>
                             <th>Zone</th>
-                            <th>Status</th>
+                            <th>Available</th>
+                            <th>Occupied</th>
+                            <th>Live Counter</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,9 +188,11 @@ class ParkingLotCounter extends React.Component {
                                     )}
                                 >
 
-                                    <tr id={element.zoneLabel} key={element.zoneLabel} onClick={this.handleRowClick}>
-                                        <td>{element.zoneLabel}</td>
-                                        <td>{this.progressBar(element)}</td>
+                                    <tr id={element.zoneLabel} key={element.zoneLabel} onClick={this.handleRowClick} className="regular_tr">
+                                        <td className="plaintext">{element.zoneLabel}</td>
+                                        <td className="plaintext">{element.availableCount}</td>
+                                        <td className="plaintext">{element.occupiedCount}</td>
+                                        <td><div className="progress_bar">{this.progressBar(element)}</div></td>
                                     </tr>
                                 </InfoOverlay>
                             ))

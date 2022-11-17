@@ -5,11 +5,16 @@
     /* text-align: center; */
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .results_div {
     margin: 0 auto;
     width: 90%;
-    height: 200px;
+    height: 230px;
     overflow-y: scroll;
+    border-radius: 10px;
 }
 
 table {
@@ -24,6 +29,23 @@ table {
     float: right;
 }
 
-td.fieldname {
-    font-weight: bold;
+th {
+    font-size: 0.8em;
+}
+
+td {
+    text-align: center;
+    max-height: 10px;
+}
+
+tr {
+    line-height: 10px;
+}
+
+.plaintext {
+    padding-left: -5%;
+    padding-right: -5%;
+    font-size: 0.8em;
+    line-height: 10px;
+    padding-bottom: -5%;
 }

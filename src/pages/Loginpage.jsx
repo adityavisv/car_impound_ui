@@ -13,22 +13,31 @@ class Loginpage extends React.Component {
 
     constructor(props) {
         super(props);
+        const { isLoggedIn, message, statusCode } = this.props;
         this.state = {
             username: '',
             password: '',
             isLoading: false,
-            isLoggedIn: this.props.isLoggedIn,
+            isLoggedIn,
             isPasswordVisible: false,
-            message: '',
+            message,
+            shouldShowNetworkErrAlert: false,
+            shouldShowInvalidLoginAlert: false,
+            statusCode
         };
     }
 
     componentDidUpdate = (prevProps, prevState) => {
         if (prevProps.isLoggedIn !== this.props.isLoggedIn
-            || prevProps.message !== this.props.message) {
+            || prevProps.message !== this.props.message
+            || prevProps.statusCode !== this.props.statusCode) {
+                const { isLoggedIn, message, statusCode } = this.props;
             this.setState({
-                isLoggedIn: this.props.isLoggedIn,
-                message: this.props.message
+                isLoggedIn,
+                message,
+                statusCode,
+                shouldShowNetworkErrAlert: message === 'Network Error',
+                shouldShowInvalidLoginAlert: statusCode === 400
             });
         }
     }
@@ -66,18 +75,26 @@ class Loginpage extends React.Component {
     }
 
     render = () => {
-        const {username, password, isLoggedIn, isPasswordVisible} = this.state;
+        const {username, password, isLoggedIn, isPasswordVisible, shouldShowInvalidLoginAlert, shouldShowNetworkErrAlert} = this.state;
         if (isLoggedIn) {
             return <Navigate to="/" replace />
         }
         return (
             <div>
                 <div className="login_form_box">
-                    {this.showErrorBanner() ? <Alert variant="danger">
+                    {shouldShowInvalidLoginAlert ? <Alert variant="danger">
+                        <Alert.Heading>
+                            Sign-in failed!
+                        </Alert.Heading>
                         Invalid username or password.
                     </Alert> : <></>}
+                    {
+                        shouldShowNetworkErrAlert ? <Alert variant="danger" dismissible>
+                            <Alert.Heading>Sign-in failed!</Alert.Heading>
+                            Network Error, Please try again.
+                        </Alert> : <></>}
                     <div className="logo_icon">
-                        <img src={require("../sp-meta-logo.png")} height="120" width="120" alt="logo" />
+                        <img src={require("../SharjahPoliceLogo.png")} height="120" width="120" alt="logo" />
                     </div>
                     <div className="login_box_header">
                         {/* {t("login")} */}
@@ -125,10 +142,11 @@ class Loginpage extends React.Component {
 
 function mapStateToProps(state) {
     const { isLoggedIn } = state.auth;
-    const { message } = state.message;
+    const { message, statusCode } = state.message;
     return {
         isLoggedIn,
-        message
+        message,
+        statusCode
     };
 }
 

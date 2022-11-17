@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Row, Container, Button } from 'react-bootstrap';
+import { Modal, Row, Container, Button, Carousel } from 'react-bootstrap';
 import '../styles/singleslotoverview.css';
 
 class SingleSlotOverviewModal extends React.Component {
@@ -27,6 +27,7 @@ class SingleSlotOverviewModal extends React.Component {
                     <Modal.Body>
                         <Container>
                             <div className="text_info">
+                               
                                 <Row>
                                     Zone Label : {selectedSlot.zoneLabel}
                                 </Row>
@@ -49,12 +50,18 @@ class SingleSlotOverviewModal extends React.Component {
                                     </> : <></>}
                             </div>
                             <div className="image_box">
-                                {selectedSlot.occupancyStatus === 'OCCUPIED' && selectedSlot.occupiedVehicle.image !== undefined ?
-                                    <img 
-                                        src={"data:image/png;base64," + selectedSlot.occupiedVehicle.image}
-                                        width="200"
-                                        height="200"
-                                        /> :
+                                {selectedSlot.occupancyStatus === 'OCCUPIED' && selectedSlot.occupiedVehicle.images !== undefined ?
+                                   <Carousel>
+                                   {Array.from(selectedSlot.occupiedVehicle.images).map((image, index) => (
+                                       <Carousel.Item>
+                                           <img
+                                               src={"data:image/png;base64," + image}
+                                               width="200"
+                                               height="200"
+                                               />
+                                       </Carousel.Item>
+                                   ))}
+                               </Carousel> :
                                     <></>}
                             </div>
                            

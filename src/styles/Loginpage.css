@@ -4,7 +4,11 @@
     margin-top: 3%;
     border: 1px solid black;
     border-radius: 15px;
-    /* background-color:#d1d0cf; */
+    background-color: #ccd2ed;
+}
+
+.background {
+    background-color: #3d3c3c
 }
 
 .actual_form {
@@ -55,6 +59,7 @@ img {
     text-align: center;
     vertical-align: middle;
     font-size: 2.5em;
+    color: #5c5d5e;
 }
 
 .password_form_group {

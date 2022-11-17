@@ -9,33 +9,79 @@ import 'bootstrap/dist/css/bootstrap.css';
 class CarRegistrationForm extends React.Component {
     constructor(props) {
         super(props);
-        var { selectedSlot = [], vehicle } = this.props;
+        var { selectedSlot = [], vehicle = {} } = this.props;
         
         var parkingSlot = '';
-        if (selectedSlot.length === 1) {
-            parkingSlot = selectedSlot[0].zoneLabel + selectedSlot[0].slotNumber;
+        
+        const readOnly = vehicle && Object.keys(vehicle).length > 0;
+        if (readOnly) {
+            if (vehicle.releaseIdentity === null) {
+                vehicle = {...vehicle, releaseIdentity: {}}
+            }
         }
-        else if (selectedSlot.length === 2) {
-            parkingSlot = `${selectedSlot[0].zoneLabel}${selectedSlot[0].slotNumber},${selectedSlot[1].zoneLabel}${selectedSlot[1].slotNumber}`;
+        else  {
+            if (selectedSlot.length === 1) {
+                parkingSlot = selectedSlot[0].zoneLabel + selectedSlot[0].slotNumber;
+            }
+            else if (selectedSlot.length === 2) {
+                parkingSlot = `${selectedSlot[0].zoneLabel}${selectedSlot[0].slotNumber},${selectedSlot[1].zoneLabel}${selectedSlot[1].slotNumber}`;
+            }
         }
+            
 
-        const readOnly = vehicle !== undefined;
-        if (! readOnly)
-            vehicle = {owner: {}};
-        const { make = '', model = '', registrationDateTime = new Date(), caseNumber = '', mulkiaNumber = '', color = '', parkingSlot: parkingSlotPreFill = '',
-            isCaseInCourt = false, isCarToBeAuctioned = false, numberPlate = '', department = 'CID', owner: {firstName = '', lastName = '', emailAddress = '', idType = 'Passport',
-            idNumber = '', contactNumber = '', nationality = '', images = []}
+        const { 
+                make = '',
+                model = '',
+                registrationDateTime = new Date(),
+                estimatedReleaseDate = '',
+                caseNumber = '', 
+                mulkiaNumber = '',
+                color = '',
+                parkingSlot: parkingSlotPreFill = '', 
+                images = [],
+                isCaseInCourt = false, 
+                isCarToBeAuctioned = false, 
+                numberPlate = '', 
+                department = 'CID', 
+                owner: {
+                    firstName = '', 
+                    lastName = '', 
+                    emailAddress = '', 
+                    idType = 'Passport', 
+                    idNumber = '', 
+                    contactNumber = '', 
+                    nationality = ''
+                } = {},
+                releaseIdentity: {
+                    firstName: releaseFirstName = '',
+                    lastName: releaseLastName = '',
+                    idNumber: releaseIdNumber = '',
+                    contactNumber: releaseContactNum = '',
+                    nationality: releaseNationality = '',
+                    idType: releaseIdType = '',
+                    emailAddress: releaseEmailAddress = '',
+                    releaseDateTime = '',
+                } = {}
         } = vehicle;
+
+        // const { 
+        //     firstName: releaseFirstName = '', lastName: releaseLastName = '', 
+        //     emailAddress: releaseEmailAddress = '', idType: releaseIdType = 'Passport',
+        //     idNumber: releaseIdNumber = '', contactNumber: releaseContactNum = '',
+        //     nationality: releaseNationality = ''} = vehicle.release !== undefined ? vehicle.release : {};
+        
         this.state = {
             selectedSlot,
             shouldShowRedirectLoginModal: false,
             readOnly,
+            isVehicleAssignStarted: false,
+            isVehicleAssignDone: false,
             newVehiclePayload: {
                 make,
                 model,
                 registrationDateTime,
-                registrationDate: readOnly ? registrationDateTime.split("T")[0] : '',
-                registrationTime: readOnly ? registrationDateTime.split("T")[1]: '',
+                registrationDate: readOnly ? registrationDateTime.split(" ")[0] : '',
+                registrationTime: readOnly ? registrationDateTime.split(" ")[1]: '',
                 caseNumber,
                 mulkiaNumber,
                 images: readOnly ? images : [],
@@ -44,6 +90,7 @@ class CarRegistrationForm extends React.Component {
                 isCaseInCourt,
                 isCarToBeAuctioned,
                 numberPlate,
+                estimatedReleaseDate,
                 owner: {
                     firstName,
                     lastName,
@@ -53,10 +100,19 @@ class CarRegistrationForm extends React.Component {
                     contactNumber,
                     nationality
                 },
+                releaseIdentity: {
+                    firstName: releaseFirstName,
+                    lastName: releaseLastName,
+                    nationality: releaseNationality,
+                    idType: releaseIdType,
+                    idNumber: releaseIdNumber,
+                    contactNumber: releaseContactNum,
+                    emailAddress: releaseEmailAddress,
+                    releaseDate: releaseDateTime !== null ? releaseDateTime.split(" ")[0] : '',
+                    releaseTime: releaseDateTime !== null ? releaseDateTime.split(" ")[1] : ''
+                },
                 department: readOnly ? department : 'CID'
-            },
-            isVehicleAssignStarted: false,
-            isVehicleAssignDone: false,
+            }
         };;
     }
 
@@ -144,12 +200,12 @@ class CarRegistrationForm extends React.Component {
         });
     }
 
-    changeReleaseDate = (event) => {
+    changeEstimatedReleaseDate = (event) => {
         const { newVehiclePayload } = this.state;
         this.setState({
             newVehiclePayload: {
                 ...newVehiclePayload,
-                releasedate: event.target.value
+                estimatedReleaseDate: event.target.value
             }
         });
     }
@@ -345,11 +401,13 @@ class CarRegistrationForm extends React.Component {
             numberPlate,
             department,
             owner,
+            estimatedReleaseDate
         }, selectedSlot } = this.state;
         const finalPayload = {
             make,
             model,
             registrationDateTime: registrationDate + ' ' + registrationTime,
+            estimatedReleaseDate,
             caseNumber,
             mulkiaNumber,
             color,
@@ -368,7 +426,8 @@ class CarRegistrationForm extends React.Component {
             .then((response) => {
                 const { data: {parkingSpots}} = response;
                 const { occupiedVehicle: {id: vehicleId}} = parkingSpots[0];
-                UserService.assignImageToVehicle(vehicleId, images)
+                if (images.length > 0) {
+                    UserService.assignImageToVehicle(vehicleId, images)
                     .then((nestedResponse) => {
                         this.setState({
                             isVehicleAssignDone: true,
@@ -386,6 +445,17 @@ class CarRegistrationForm extends React.Component {
                             this.props.closeForm();
                         }
                     });
+                }
+                else {
+                    this.setState({
+                        isVehicleAssignDone: true,
+                        isVehicleAssignStarted: false
+                    });
+                    this.props.closeForm();
+                    this.props.closeGridSvg();
+                    this.props.callZoneSummaryService();
+                }
+               
             })
             .catch((error) => {
                 if (error.response !== undefined && error.response.status === 401) {
@@ -409,8 +479,10 @@ class CarRegistrationForm extends React.Component {
     render = () => {
         const { shouldShowRedirectLoginModal, readOnly,
             newVehiclePayload: {
-            make, model, registrationDate, registrationTime, caseNumber, mulkiaNumber, color, parkingSlot, isCaseInCourt, isCarToBeAuctioned, releaseDate,
-            numberPlate, department, remarks, images, owner: { firstName, lastName, emailAddress, idType, idNumber, contactNumber, nationality }
+            make, model, registrationDate, registrationTime, caseNumber, mulkiaNumber, color, parkingSlot, isCaseInCourt, isCarToBeAuctioned, estimatedReleaseDate,
+            numberPlate, department, remarks, images, owner: { firstName, lastName, emailAddress, idType, idNumber, contactNumber, nationality },
+            releaseIdentity: {firstName: releaseFirstName, lastName: releaseLastName, emailAddress: releaseEmailAddress, idType: releaseIdType,
+            idNumber: releaseIdNumber, contactNumber: releaseContactNum, nationality: releaseNationality, releaseDate, releaseTime}
         } } = this.state
         return (
             <LoadingOverlay active={this.shouldShowLoadingScreen()} spinner text='Saving vehicle...'>
@@ -419,22 +491,54 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Text className="form_text">Vehicle Information</Form.Text>
                     </Row>
+                    { readOnly ?
+                    <Row className="mb-3">
+                       <Form.Group as={Col}>
+                           <Row className="mb-3">
+                                <Form.Label className="required_form_label">Make *</Form.Label>
+                                <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/>
+                           </Row>
+                           <Row className="mb-3">
+                                <Form.Label className="required_form_label">Model *</Form.Label>
+                                <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/>
+                           </Row>
+                           <Row className="mb-3">
+                                <Form.Label className="required_form_label">Colour *</Form.Label>
+                                <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
+                           </Row>
+                       </Form.Group>
+                      
+                        <Form.Group as={Col}>
+                            {images.length > 0 ?
+                                <Carousel variant="dark">
+                                    {Array.from(images).map((image, index) => (
+                                        <Carousel.Item>
+                                            <img
+                                                src={"data:image/png;base64," + image}
+                                                width="200"
+                                                height="200"
+                                            />
+                                        </Carousel.Item>
+                                    ))}
+                                </Carousel> : <></>}
+                        </Form.Group>
+                    </Row> : 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Make *</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={make} onChange={this.changeMake} disabled={readOnly}/>
+                            <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/>
                         </Form.Group>
 
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Model *</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={model} onChange={this.changeModel} disabled={readOnly}/>
+                            <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/>
                         </Form.Group> 
 
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Colour *</Form.Label>
-                            <Form.Control type="text" placeholder="color" required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
+                            <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
                         </Form.Group>
-                    </Row>
+                                    </Row> }
                     
                     <Row className="mb-3">
                         <Form.Text className="form_text">Registration</Form.Text>
@@ -445,22 +549,22 @@ class CarRegistrationForm extends React.Component {
                             <Form.Label className="required_form_label">Department *</Form.Label>
                             <Form.Select required={true} onChange={this.changeDepartment} value={department} disabled={readOnly}>
                                 <option value="CID">CID</option>
-                                <option value="Drugs">Drugs</option>
-                                <option value="Alcohol">Alcohol</option>
-                                <option value="Traffic">Traffic</option>
-                                <option value="Accident and other">Accident and other</option>
+                                <option value="DRUGS">Drugs</option>
+                                <option value="ALCOHOL">Alcohol</option>
+                                <option value="TRAFFIC">Traffic</option>
+                                <option value="ACCIDENT_AND_OTHER">Accident and other</option>
                             </Form.Select>
                         </Form.Group>
 
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Car No. Plate *</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
+                            <Form.Control type="text" required={true} value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Registration Date *</Form.Label>
-                               <Form.Control type="date" disabled={readOnly} required={true} value={registrationDate} onChange={this.changeRegistrationDate} />
+                               <Form.Control type="date" disabled={readOnly} required={true} value={registrationDate} onChange={this.changeRegistrationDate} data-date-format="DD/MM/YYYY" />
                         </Form.Group>
 
                         <Form.Group as={Col}>
@@ -472,11 +576,11 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Case Number *</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={caseNumber} onChange={this.changeCaseNumber} disabled={readOnly} />
+                            <Form.Control type="text"  required={true} value={caseNumber} onChange={this.changeCaseNumber} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Mulkia Number *</Form.Label>
-                            <Form.Control type="text" placeholder="text" required={true} value={mulkiaNumber} onChange={this.changeMulkiaNumber} disabled={readOnly} />
+                            <Form.Control type="text"  required={true} value={mulkiaNumber} onChange={this.changeMulkiaNumber} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Parking Slot Num. *</Form.Label>
@@ -486,7 +590,7 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label>Release Date</Form.Label>
-                            <Form.Control type="date" value={releaseDate} onChange={this.changeReleaseDate} disabled={readOnly} />
+                            <Form.Control type="date" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} disabled={readOnly} />
                         </Form.Group>
 
                         <Form.Group as={Col}>
@@ -509,39 +613,29 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label>Image 1</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} />
+                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 2</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} />
+                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 3</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} />
+                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 4</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} />
+                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 5</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} />
+                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
                         </Form.Group>
-                    </Row> : 
+                    </Row> : <></>}
                     <Row className="mb-3">
-                        <Carousel>
-                            {Array.from(images).map((image, index) => (
-                                <Carousel.Item>
-                                    <img
-                                        src={"data:image/png;base64," + image}
-                                        width="200"
-                                        height="200"
-                                        />
-                                </Carousel.Item>
-                            ))}
-                        </Carousel>
+                    
                     </Row>
-                    }
+                    
                     <Row className="mb-3">
                         <Form.Label>Remarks:</Form.Label>
                         <Form.Control as="textarea" rows={3} value={remarks} onChange={this.changeRemarks} disabled={readOnly} />
@@ -565,7 +659,7 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                     <Form.Group as={Col}>
                             <Form.Label>Nationality</Form.Label>
-                            <Form.Control type="text" placeholder="text" value={nationality} onChange={this.changeNationality} disabled={readOnly} />
+                            <Form.Control type="text"  value={nationality} onChange={this.changeNationality} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>ID Type</Form.Label>
@@ -579,13 +673,13 @@ class CarRegistrationForm extends React.Component {
 
                         <Form.Group as={Col}>
                             <Form.Label>ID Number</Form.Label>
-                            <Form.Control type="text" placeholder="text" value={idNumber} onChange={this.changeIdNumber} disabled={readOnly} />
+                            <Form.Control type="text"  value={idNumber} onChange={this.changeIdNumber} disabled={readOnly} />
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label>Contact No.</Form.Label>
-                            <Form.Control type="text" placeholder="text" value={contactNumber} onChange={this.changeContactNumber} disabled={readOnly}/>
+                            <Form.Control type="text"  value={contactNumber} onChange={this.changeContactNumber} disabled={readOnly}/>
                         </Form.Group>
 
                         <Form.Group as={Col}>
@@ -593,6 +687,61 @@ class CarRegistrationForm extends React.Component {
                             <Form.Control type="email" value={emailAddress} onChange={this.changeEmailAddress} disabled={readOnly}/>
                         </Form.Group>
                     </Row>
+                    {parkingSlot === null ? <>
+                    <Row className="mb-3">
+                        <Form.Text className="form_text">
+                            Release Identity
+                        </Form.Text>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label>First Name</Form.Label>
+                            <Form.Control type="text" value={releaseFirstName} disabled={true} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Last Name</Form.Label>
+                            <Form.Control type="text" value={releaseLastName} disabled />
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label>Release Date</Form.Label>
+                            <Form.Control type="date" value={releaseDate} disabled />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Release Time</Form.Label>
+                            <Form.Control type="time" value={releaseTime} disabled />
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label>Nationality</Form.Label>
+                            <Form.Control type="text" value={releaseNationality} disabled />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>ID Type</Form.Label>
+                            <Form.Select  value={releaseIdType} disabled >
+                                <option value="Passport}">Passport</option>
+                                <option value="Emirates ID">Emirates ID</option>
+                                <option value="National ID">National ID</option>
+                                <option value="Driving License">Driving License</option>
+                            </Form.Select>
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>ID Number</Form.Label>
+                            <Form.Control type="text" disabled value={releaseIdNumber} />
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label>Contact No.</Form.Label>
+                            <Form.Control type="text" value={releaseContactNum} disabled />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Email Address</Form.Label>
+                            <Form.Control type="email" value={releaseEmailAddress} disabled />
+                        </Form.Group>
+                    </Row></> : <></>}
 
                    
 
