@@ -5,6 +5,8 @@ import '../styles/carregistrationcomponent.css';
 import UserService from '../services/user.service';
 import LoginRedirectModal from './LoginRedirectModal';
 import 'bootstrap/dist/css/bootstrap.css';
+import { makeModelData } from '../newcardb';
+import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 
 class CarRegistrationForm extends React.Component {
     constructor(props) {
@@ -29,20 +31,32 @@ class CarRegistrationForm extends React.Component {
         }
             
 
+        const allMakes = makeModelData.map((value) => (
+            value.brand
+        ));
+        const allModels = makeModelData.map((value) => (
+            value.model
+        ));
+
+
+
         const { 
-                make = '',
-                model = '',
+                make = 'Alfa Romeo',
+                model = '124 Spider',
+                type = 'Car',
                 registrationDateTime = new Date(),
                 estimatedReleaseDate = '',
-                caseNumber = '', 
-                mulkiaNumber = '',
+                caseNumber = '',
+                chassisNumber = '',
                 color = '',
                 parkingSlot: parkingSlotPreFill = '', 
                 images = [],
-                isCaseInCourt = false, 
-                isCarToBeAuctioned = false, 
+                isWanted = false,
                 numberPlate = '', 
-                department = 'CID', 
+                department = 'CID',
+                category = '',
+                emirate = 'Abu Dhabi',
+                code = '',
                 owner: {
                     firstName = '', 
                     lastName = '', 
@@ -72,6 +86,8 @@ class CarRegistrationForm extends React.Component {
         
         this.state = {
             selectedSlot,
+            makesDropDownValues: [... new Set(allMakes)],
+            modelsDropDownValues: [... new Set(allModels)],
             shouldShowRedirectLoginModal: false,
             readOnly,
             isVehicleAssignStarted: false,
@@ -79,18 +95,21 @@ class CarRegistrationForm extends React.Component {
             newVehiclePayload: {
                 make,
                 model,
+                type,
                 registrationDateTime,
                 registrationDate: readOnly ? registrationDateTime.split(" ")[0] : '',
                 registrationTime: readOnly ? registrationDateTime.split(" ")[1]: '',
                 caseNumber,
-                mulkiaNumber,
+                chassisNumber,
                 images: readOnly ? images : [],
                 color,
                 parkingSlot: readOnly ? parkingSlotPreFill : parkingSlot,
-                isCaseInCourt,
-                isCarToBeAuctioned,
+                isWanted,
                 numberPlate,
                 estimatedReleaseDate,
+                category,
+                code,
+                emirate,
                 owner: {
                     firstName,
                     lastName,
@@ -159,12 +178,12 @@ class CarRegistrationForm extends React.Component {
         });
     }
 
-    changeMulkiaNumber = (event) => {
+    changeChassisNumber = (event) => {
         const { newVehiclePayload } = this.state;
         this.setState({
             newVehiclePayload: {
                 ...newVehiclePayload,
-                mulkiaNumber: event.target.value
+                chassisNumber: event.target.value
             }
         });
     }
@@ -180,22 +199,22 @@ class CarRegistrationForm extends React.Component {
         });
     }
 
-    changeIsCaseInCourt = (event) => {
+    changeType = (event) => {
         const { newVehiclePayload } = this.state;
         this.setState({
             newVehiclePayload: {
                 ...newVehiclePayload,
-                isCaseInCourt: event.target.value === 'Yes'
+                type: event.target.value
             }
         });
     }
 
-    changeIsCarToBeAuctioned = (event) => {
+    changeIsWanted = (event) => {
         const { newVehiclePayload } = this.state;
         this.setState({
             newVehiclePayload: {
                 ...newVehiclePayload,
-                isCarToBeAuctioned: event.target.value === 'Yes'
+                isWanted: event.target.value === 'Yes'
             }
         });
     }
@@ -246,6 +265,36 @@ class CarRegistrationForm extends React.Component {
             newVehiclePayload: {
                 ...newVehiclePayload,
                 department: event.target.value
+            }
+        });
+    }
+
+    changeEmirate = (event) => {
+        const { newVehiclePayload } = this.state;
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                emirate: event.target.value
+            }
+        });
+    }
+
+    changeCategory = (event) => {
+        const { newVehiclePayload } = this.state;
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                category: event.target.value
+            }
+        });
+    }
+
+    changeCode = (event) => {
+        const { newVehiclePayload } = this.state;
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                code: event.target.value
             }
         });
     }
@@ -389,34 +438,42 @@ class CarRegistrationForm extends React.Component {
         const { newVehiclePayload: {
             make,
             model,
+            type,
+            color,
+            department,
+            numberPlate,
+            chassisNumber,
             registrationDate,
             registrationTime,
+            isWanted,
             caseNumber,
-            mulkiaNumber,
-            images,
-            color,
+            estimatedReleaseDate,
             parkingSlot,
-            isCaseInCourt,
-            isCarToBeAuctioned,
-            numberPlate,
-            department,
+            emirate,
+            category,
+            code,
+            images,
+            remarks,
             owner,
-            estimatedReleaseDate
         }, selectedSlot } = this.state;
         const finalPayload = {
             make,
             model,
-            registrationDateTime: registrationDate + ' ' + registrationTime,
-            estimatedReleaseDate,
-            caseNumber,
-            mulkiaNumber,
+            type,
             color,
-            parkingSlot,
-            isCaseInCourt,
-            isCarToBeAuctioned,
+            department,
             numberPlate,
-            owner,
-            department
+            chassisNumber,
+            registrationDateTime: registrationDate + ' ' + registrationTime,
+            isWanted,
+            caseNumber,
+            estimatedReleaseDate,
+            parkingSlot,
+            emirate,
+            category,
+            code,
+            remarks,
+            owner
         };
         const spotParams = Array.from(selectedSlot).map((item, index) =>(
             `${item.zoneLabel}${item.slotNumber}`
@@ -476,14 +533,86 @@ class CarRegistrationForm extends React.Component {
         return false;
     }
 
+    populateCategoryDropdown = () => {
+        const { newVehiclePayload: {emirate}} = this.state;
+        const emirateMapData = EMIRATES_CATEGORY_CODE_MAP.filter((element) => (
+            element.emirate === emirate
+        ));
+        if (emirateMapData !== undefined) {
+            const options = Array.from(emirateMapData[0].categories).map((item) => (
+                <option value={item.value}>{item.display}</option>
+            ));
+            return (
+                <>
+                    {options}
+                </>
+            );
+        }
+       
+    }
+
+    populateCodeDropdown = () => {
+        const { newVehiclePayload: {emirate, category}} = this.state;
+        const emirateMapData = EMIRATES_CATEGORY_CODE_MAP.filter((element) => (
+            element.emirate === emirate
+        ));
+        if (emirateMapData.length > 0) {
+            const categoryObject = emirateMapData[0].categories.filter((element) => (element.value === category));
+            if (categoryObject.length > 0) {
+                const codeOptions = Array.from(categoryObject[0].codes).map((item) => (
+                    <option value={item.value}>{item.display}</option>
+                ));
+                return (
+                    <>
+                        {codeOptions}
+                    </>
+                );
+            }
+            else {
+                return (
+                    <>
+                    </>
+                );
+            }
+            
+        }
+    }
+
     render = () => {
-        const { shouldShowRedirectLoginModal, readOnly,
+        const { 
+            shouldShowRedirectLoginModal,
+            readOnly,
+            makesDropDownValues,
+            modelsDropDownValues,
             newVehiclePayload: {
-            make, model, registrationDate, registrationTime, caseNumber, mulkiaNumber, color, parkingSlot, isCaseInCourt, isCarToBeAuctioned, estimatedReleaseDate,
-            numberPlate, department, remarks, images, owner: { firstName, lastName, emailAddress, idType, idNumber, contactNumber, nationality },
-            releaseIdentity: {firstName: releaseFirstName, lastName: releaseLastName, emailAddress: releaseEmailAddress, idType: releaseIdType,
-            idNumber: releaseIdNumber, contactNumber: releaseContactNum, nationality: releaseNationality, releaseDate, releaseTime}
-        } } = this.state
+            make,
+            model,
+            type,
+            color,
+            department,
+            numberPlate,
+            chassisNumber,
+            registrationDate,
+            registrationTime,
+            isWanted,
+            caseNumber,
+            estimatedReleaseDate,
+            parkingSlot,
+            emirate,
+            category,
+            code,
+            images,
+            remarks,
+            owner: {
+                firstName,
+                lastName,
+                emailAddress,
+                idType,
+                idNumber,
+                contactNumber,
+                nationality
+            },
+        }, selectedSlot } = this.state;
         return (
             <LoadingOverlay active={this.shouldShowLoadingScreen()} spinner text='Saving vehicle...'>
                 {readOnly ? <Alert variant="info">You are viewing a read-only report of this registration</Alert> : null}
@@ -496,12 +625,25 @@ class CarRegistrationForm extends React.Component {
                        <Form.Group as={Col}>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Make *</Form.Label>
-                                <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/>
+                                <Form.Select value={make} onChange={this.changeMake} disabled>
+                                    {Array.from(makesDropDownValues).map((value) => (
+                                        <option value={value}>{value}</option>
+                                    ))}
+                            </Form.Select>
                            </Row>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Model *</Form.Label>
-                                <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/>
+                                <Form.Select value={model} required={true} disabled={readOnly} onChange={this.changeModel} disabled>
+                                    {Array.from(modelsDropDownValues).map((value) => (
+                                        <option value={value}>{value}</option>
+                                    ))}
+                                </Form.Select>
                            </Row>
+                           <Form.Select value={type} required={true} disabled onChange={this.changeType}>
+                                <option value="Bike">Bike</option>
+                                <option vlaue="Truck">Truck</option>
+                                <option value="Car">Car</option>
+                            </Form.Select>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Colour *</Form.Label>
                                 <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
@@ -526,13 +668,32 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Make *</Form.Label>
-                            <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/>
+                            <Form.Select value={make} onChange={this.changeMake}>
+                                    {Array.from(makesDropDownValues).map((value) => (
+                                        <option value={value}>{value}</option>
+                                    ))}
+                            </Form.Select>
+                            {/* <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/> */}
                         </Form.Group>
 
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Model *</Form.Label>
-                            <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/>
+                            <Form.Select value={model} required={true} disabled={readOnly} onChange={this.changeModel}>
+                                {Array.from(modelsDropDownValues).map((value) => (
+                                    <option value={value}>{value}</option>
+                                ))}
+                            </Form.Select>
+                            {/* <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/> */}
                         </Form.Group> 
+
+                        <Form.Group as={Col}>
+                            <Form.Label className="required_form_label">Type *</Form.Label>
+                            <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
+                                <option value="Bike">Bike</option>
+                                <option vlaue="Truck">Truck</option>
+                                <option value="Car">Car</option>
+                            </Form.Select>
+                        </Form.Group>
 
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Colour *</Form.Label>
@@ -560,6 +721,10 @@ class CarRegistrationForm extends React.Component {
                             <Form.Label className="required_form_label">Car No. Plate *</Form.Label>
                             <Form.Control type="text" required={true} value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
                         </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label className="required_form_label">Chassis Number *</Form.Label>
+                            <Form.Control type="text"  required={true} value={chassisNumber} onChange={this.changeChassisNumber} disabled={readOnly} />
+                        </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
@@ -575,39 +740,59 @@ class CarRegistrationForm extends React.Component {
 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
+                            <Form.Label className="required_form_label">Wanted * (Yes/No)</Form.Label>
+                            <Form.Select required={true} value={isWanted ? "Yes" : "No"} onChange={this.changeIsWanted} disabled={readOnly}>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                </Form.Select>
+                        </Form.Group>
+                        {isWanted ?
+                        <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Case Number *</Form.Label>
                             <Form.Control type="text"  required={true} value={caseNumber} onChange={this.changeCaseNumber} disabled={readOnly} />
-                        </Form.Group>
+                        </Form.Group> : <></>}
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Mulkia Number *</Form.Label>
-                            <Form.Control type="text"  required={true} value={mulkiaNumber} onChange={this.changeMulkiaNumber} disabled={readOnly} />
+                            <Form.Label>Estimated Release Date</Form.Label>
+                            <Form.Control type="date" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} disabled={readOnly} />
                         </Form.Group>
+                        
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Parking Slot Num. *</Form.Label>
+                            <Form.Label className="required_form_label">Parking Slot Number *</Form.Label>
                             <Form.Control type="text" disabled value={parkingSlot} disabled />
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Release Date</Form.Label>
-                            <Form.Control type="date" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} disabled={readOnly} />
+                        <Form.Label className="required_form_label">Emirate *</Form.Label>
+                        <Form.Select required disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
+                            <option value="Abu Dhabi">Abu Dhabi</option>
+                            <option value="Ajman">Ajman</option>
+                            <option value="Dubai">Dubai</option>
+                            <option value="Fujairah">Fujairah</option>
+                            <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+                            <option value="Sharjah">Sharjah</option>
+                            <option value="Umm Al Quwain">Umm Al Quwain</option>
+                        </Form.Select>
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label>Case in Court Status:</Form.Label>
-                            <Form.Select onChange={this.changeIsCaseInCourt} value={isCaseInCourt ? 'Yes' : 'No'} disabled={readOnly}>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
+                            <Form.Label className="required_form_label">Category *</Form.Label>
+                            <Form.Select required disabled={readOnly} onChange={this.changeCategory} value={category}>
+                                <option value=''>Select a category</option>
+                                {
+                                    this.populateCategoryDropdown()
+                                }
                             </Form.Select>
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label>To Auction?</Form.Label>
-                            <Form.Select onChange={this.changeIsCarToBeAuctioned} value={isCarToBeAuctioned ? 'Yes' : 'No'} disabled={readOnly}>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
+                            <Form.Label className="required_form_label">Code *</Form.Label>
+                            <Form.Select required disabled={readOnly} onChange={this.changeCode} value={code}>
+                                <option value=''>Select Code</option>
+                                {this.populateCodeDropdown()}
                             </Form.Select>
                         </Form.Group>
+                        
                     </Row>
                     {! readOnly ? 
                     <Row className="mb-3">
