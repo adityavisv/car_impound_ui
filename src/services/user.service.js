@@ -60,10 +60,13 @@ class UserService {
     }
 
     searchVehicles(searchterms) {
-        return axios.get(VEHICLE_API_URL + '/search', {
-            params: {...searchterms
-            },
-            headers: authHeader()
+        return axios({
+            method: 'put',
+            url: VEHICLE_API_URL + '/search',
+            headers: authHeader(),
+            data: {
+                ...searchterms
+            }
         });
     }
 

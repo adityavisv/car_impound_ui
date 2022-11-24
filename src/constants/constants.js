@@ -1,5 +1,5 @@
 export const EMIRATES_CATEGORY_CODE_MAP = [{
-    emirate: "Abu Dhabi",
+    emirate: "ABU_DHABI",
     categories: [{
         value: "Police",
         display: "Police",
@@ -205,7 +205,7 @@ export const EMIRATES_CATEGORY_CODE_MAP = [{
         }]
     }]
 }, {
-    emirate: "Dubai",
+    emirate: "DUBAI",
     categories: [{
         value: "DubaiPolice",
         display: "Dubai Police",
@@ -466,7 +466,7 @@ export const EMIRATES_CATEGORY_CODE_MAP = [{
         }]
     }]
 }, {
-    emirate: "Sharjah",
+    emirate: "SHARJAH",
     categories: [{
         value: "Police",
         display: "Police",
@@ -562,7 +562,7 @@ export const EMIRATES_CATEGORY_CODE_MAP = [{
         codes: []
     }]
 }, {
-    emirate: "Ajman",
+    emirate: "AJMAN",
     categories: [{
         value: "Motorcycle",
         display: "Motorcycle",
@@ -628,7 +628,7 @@ export const EMIRATES_CATEGORY_CODE_MAP = [{
         }]
     }]
 }, {
-    emirate: "Um Al Quewain",
+    emirate: "UMM_AL_QUWAIN",
     categories: [{
         value: "Government",
         display: "Government",
@@ -742,7 +742,7 @@ export const EMIRATES_CATEGORY_CODE_MAP = [{
         }]
     }]
 }, {
-    emirate: "Ras Al Khaymah",
+    emirate: "RAS_AL_KHAYMAH",
     categories: [{
         value: "Police",
         display: "Police",
@@ -912,7 +912,7 @@ export const EMIRATES_CATEGORY_CODE_MAP = [{
         }]
     }]
 }, {
-    emirate: "Fujairah",
+    emirate: "FUJAIRAH",
     categories: [{
         value: "Government",
         display: "Government",

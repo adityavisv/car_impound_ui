@@ -55,7 +55,7 @@ class CarRegistrationForm extends React.Component {
                 numberPlate = '', 
                 department = 'CID',
                 category = '',
-                emirate = 'Abu Dhabi',
+                emirate = 'ABU_DHABI',
                 code = '',
                 owner: {
                     firstName = '', 
@@ -639,11 +639,14 @@ class CarRegistrationForm extends React.Component {
                                     ))}
                                 </Form.Select>
                            </Row>
+                           <Row className="mb-3">
+                               <Form.Label className="required_form_label">Vehicle Type *</Form.Label>
                            <Form.Select value={type} required={true} disabled onChange={this.changeType}>
                                 <option value="Bike">Bike</option>
                                 <option vlaue="Truck">Truck</option>
                                 <option value="Car">Car</option>
                             </Form.Select>
+                            </Row>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Colour *</Form.Label>
                                 <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
@@ -689,9 +692,9 @@ class CarRegistrationForm extends React.Component {
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Type *</Form.Label>
                             <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
-                                <option value="Bike">Bike</option>
-                                <option vlaue="Truck">Truck</option>
-                                <option value="Car">Car</option>
+                                <option value="BIKE">Bike</option>
+                                <option vlaue="TRUCK">Truck</option>
+                                <option value="CAR">Car</option>
                             </Form.Select>
                         </Form.Group>
 
@@ -765,13 +768,13 @@ class CarRegistrationForm extends React.Component {
                         <Form.Group as={Col}>
                         <Form.Label className="required_form_label">Emirate *</Form.Label>
                         <Form.Select required disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
-                            <option value="Abu Dhabi">Abu Dhabi</option>
-                            <option value="Ajman">Ajman</option>
-                            <option value="Dubai">Dubai</option>
-                            <option value="Fujairah">Fujairah</option>
-                            <option value="Ras Al Khaimah">Ras Al Khaimah</option>
-                            <option value="Sharjah">Sharjah</option>
-                            <option value="Umm Al Quwain">Umm Al Quwain</option>
+                            <option value="ABU_DHABI">Abu Dhabi</option>
+                            <option value="AJMAN">Ajman</option>
+                            <option value="DUBAI">Dubai</option>
+                            <option value="FUJAIRAH">Fujairah</option>
+                            <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
+                            <option value="SHARJAH">Sharjah</option>
+                            <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
                         </Form.Select>
                         </Form.Group>
 
@@ -849,7 +852,8 @@ class CarRegistrationForm extends React.Component {
                         <Form.Group as={Col}>
                             <Form.Label>ID Type</Form.Label>
                             <Form.Select onChange={this.changeIdType} value={idType} disabled={readOnly} >
-                                <option value="Passport}">Passport</option>
+                                <option value="">Select an option</option>
+                                <option value="Passport">Passport</option>
                                 <option value="Emirates ID">Emirates ID</option>
                                 <option value="National ID">National ID</option>
                                 <option value="Driving License">Driving License</option>
