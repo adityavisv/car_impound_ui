@@ -31,24 +31,26 @@ class ParkingLotViewPage extends React.Component {
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.isLoggedIn !== this.props.isLoggedIn ||
-            prevProps.user !== this.props.user ||
-            prevProps.parkingZoneSummaries !== this.props.parkingZoneSummaries ||
-            prevProps.zoneSummaryReqInit !== this.props.zoneSummaryReqInit ||
-            prevProps.zoneSummaryReqFail !== this.props.zoneSummaryReqFail) {
-
-                const { user, parkingZoneSummaries, isLoggedIn, statusCode, zoneSummaryReqInit, zoneSummaryReqFail } = this.props;
-                if (statusCode === 401) {
-                    this.callLogout();
-                }
-                this.setState({
-                    isLoggedIn,
-                    currentUser: user,
-                    parkingZoneSummaries,
-                    statusCode,
-                    zoneSummaryReqInit,
-                    zoneSummaryReqFail
-                });
+        if (prevProps.isLoggedIn !== this.props.isLoggedIn) {
+            this.setState({
+                isLoggedIn: this.props.isLoggedIn
+            });
+        }
+        if (prevProps.user !== this.props.user) {
+            this.setState({user: this.props.user});
+        }
+        if (prevProps.parkingZoneSummaries !== this.props.parkingZoneSummaries) {
+            this.setState({parkingZoneSummaries: this.props.parkingZoneSummaries});
+        }
+        if (prevProps.zoneSummaryReqFail !== this.props.zoneSummaryReqFail) {
+            this.setState({zoneSummaryReqFail: this.props.zoneSummaryReqFail});
+        }
+        if (prevProps.zoneSummaryReqInit !== this.props.zoneSummaryReqInit) {
+            this.setState({zoneSummaryReqInit: this.props.zoneSummaryReqInit});
+        }
+        if (prevProps.statusCode !== this.props.statusCode) {
+            if (this.props.statusCode === 401)
+                this.callLogout();
         }
     }
 
@@ -91,6 +93,7 @@ class ParkingLotViewPage extends React.Component {
                     <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} />
                     <div>
                         <ParkingLotCounter
+                            currentUser={currentUser}
                             parkingZoneSummaries={parkingZoneSummaries}
                             callLogout={this.callLogout}
                             callZoneSummaryService={this.callZoneSummaryService}

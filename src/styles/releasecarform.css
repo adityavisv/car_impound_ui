@@ -1,0 +1,8 @@
+.required_form_label {
+    font-weight: bold;
+}
+
+#button_container {
+    padding-top: 2%;
+    text-align: center;
+}

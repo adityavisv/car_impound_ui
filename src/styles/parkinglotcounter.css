@@ -5,6 +5,12 @@
     border-radius: 10%;
 }
 
+#grid_svg_close_btn {
+    float: right;
+    padding-right: 2%;
+    padding-top: 2%;
+}
+
 table {
     /* display: block; */
     height: 300px;
@@ -26,6 +32,7 @@ table {
 .canvas {
     width: 1500px;
     max-width: 1000px;
+    overflow: scroll;
     height: 400px;
     background-color: white;
 }

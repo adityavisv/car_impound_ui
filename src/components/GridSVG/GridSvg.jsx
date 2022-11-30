@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Container, Row, Button, Col } from 'react-bootstrap';
+import { Modal, Container } from 'react-bootstrap';
 import '../../styles/gridsvg.css';
 import CarRegistrationForm from '../CarRegistrationForm';
 import ReleaseCarForm from '../ReleaseCarForm';
@@ -9,10 +9,12 @@ class GridSvg extends React.Component {
     constructor(props) {
         super(props);
 
+        const { clickedZoneData, zoneLabel, currentUser } = this.props;
         this.state = {
-            clickedZoneData: this.props.clickedZoneData,
-            selectedZoneLabel: this.props.selectedZoneLabel,
+            clickedZoneData,
+            zoneLabel,
             selectedSlot: [{}],
+            currentUser,
             shouldDisplaySlotModal: false,
             shouldShowRegisterModal: false,
             showShowReleaseModal: false,
@@ -24,7 +26,11 @@ class GridSvg extends React.Component {
         if (prevProps.clickedZoneData !== this.props.clickedZoneData) {
             this.setState({
                 clickedZoneData: this.props.clickedZoneData,
-                selectedZoneLabel: this.props.selectedZoneLabel
+            });
+        }
+        if (prevProps.currentUser !== this.props.currentUser) {
+            this.setState({
+                currentUser: this.props.currentUser
             });
         }
     }
@@ -115,45 +121,461 @@ class GridSvg extends React.Component {
     }
 
     renderNumberSvg = () => {
-        const { clickedZoneData } = this.state;
-        const rowOneSlice = clickedZoneData.slice(0, 28);
-        const rowOneNumbers = rowOneSlice.map((item, index) => (
-            <text
-                x={`${(index * 30) + 7.5}`}
-                y="15" fontSize="15" className="box_text">
-                    {item.slotNumber}
-            </text>
+        const { clickedZoneData, zoneLabel } = this.state;
+        switch(zoneLabel) {
+            case 'A': {
+                const rowOneSlice = clickedZoneData.slice(0, 28);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
                 
-        ));
         
+                const rowTwoSlice = clickedZoneData.slice(28,56);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="45"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+        
+                const rowThreeSlice = clickedZoneData.slice(56, 88);
+                const rowThreeNumbers = rowThreeSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="170"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+        
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                        {rowThreeNumbers}
+                    </>
+                );
+            }
+            case 'B': {
+                const rowOneSlice = clickedZoneData.slice(0, 34);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(34,71);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
 
-        const rowTwoSlice = clickedZoneData.slice(28,56);
-        const rowTwoNumbers = rowTwoSlice.map((item, index) => (
-            <text
-                x={`${(index * 30) + 6.5}`}
-                y="45"
-                fontSize="15" className="box_text">
-                    {item.slotNumber}
-                </text>
-        ));
+            }
+            case 'C': {
+                const rowOneSlice = clickedZoneData.slice(0, 37);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(37,75);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
 
-        const rowThreeSlice = clickedZoneData.slice(56, 88);
-        const rowThreeNumbers = rowThreeSlice.map((item, index) => (
-            <text
-                x={`${(index * 30) + 6.5}`}
-                y="170"
-                fontSize="15" className="box_text">
-                    {item.slotNumber}
-                </text>
-        ));
+            }
+            case 'D': {
+                const rowOneSlice = clickedZoneData.slice(0, 39);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(39,85);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'E': {
+                const rowOneSlice = clickedZoneData.slice(0, 46);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(46,95);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'F': {
+                const rowOneSlice = clickedZoneData.slice(0, 49);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(49,101);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'G': {
+                const rowOneSlice = clickedZoneData.slice(0, 53);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(53,109);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'H': {
+                const rowOneSlice = clickedZoneData.slice(0, 57);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(57,118);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'I': {
+                const rowOneSlice = clickedZoneData.slice(0, 62);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(62,129);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'J': {
+                const rowOneSlice = clickedZoneData.slice(0, 69);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(69,144);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'K': {
+                const rowOneSlice = clickedZoneData.slice(0, 78);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(78,165);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'L': {
+                const rowOneSlice = clickedZoneData.slice(0, 92);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(92,193);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'M': {
+                const rowOneSlice = clickedZoneData.slice(0, 104);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                
+        
+                const rowTwoSlice = clickedZoneData.slice(104, 213);
+                const rowTwoNumbers = rowTwoSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 6.5}`}
+                        y="105"
+                        fontSize="15" className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                        {rowTwoNumbers}
+                    </>
+                );
+            }
+            case 'N': {
+                const rowOneSlice = clickedZoneData.slice(0, 111);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                    </>
+                );
+            }
+            case 'O': {
+                const rowOneSlice = clickedZoneData.slice(0, 134);
+                const rowOneNumbers = rowOneSlice.map((item, index) => (
+                    <text
+                        x={`${(index * 30) + 7.5}`}
+                        y="15" fontSize="15" className="box_text">
+                            {item.slotNumber}
+                    </text>
+                        
+                ));
+                return (
+                    <>
+                        {rowOneNumbers}
+                    </>
+                );
+            }
+            case 'T': {
+                const colOneSlice = clickedZoneData.slice(0, 25);
+                const colOneNumbers = colOneSlice.map((item, index) => (
+                    <text
+                        x="130"
+                        y={`${(index * 30) + 15}`}
+                        fontSize="15"
+                        className="box_text">{item.slotNumber}
+                    </text>
+                ));
 
-        return (
-            <>
-                {rowOneNumbers}
-                {rowTwoNumbers}
-                {rowThreeNumbers}
-            </>
-        );
+                const colTwoSlice = clickedZoneData.slice(25, 50);
+                const colTwoNumbers = colTwoSlice.map((item, index) => (
+                    <text
+                        x="98"
+                        y={750 -((index * 30) + 15)}
+                        fontSize="15"
+                        className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+
+                const colThreeSlice = clickedZoneData.slice(50, 75);
+                const colThreeNumbers = colThreeSlice.map((item, index) => (
+                    <text
+                        x="38"
+                        y={`${(index * 30) + 15}`}
+                        fontSize="15"
+                        className="box_text">
+                            {item.slotNumber}
+                        </text>
+                ));
+
+                return (
+                    <>
+                        {colOneNumbers}
+                        {colTwoNumbers}
+                        {colThreeNumbers}
+                    </>
+                );
+            }
+        }
+        
     }
 
     
@@ -161,14 +583,197 @@ class GridSvg extends React.Component {
     generateClassName = (itemSlotNumber, itemSlotStatus) => {
         const { selectedSlot, isMultSlotMode } = this.state;
         var slotNumber;
-        if (selectedSlot.length > 0)
+        var zoneLabel;
+        if (selectedSlot.length > 0) {
             slotNumber = selectedSlot[0].slotNumber;
+            zoneLabel = selectedSlot[0].zoneLabel;
+        }
         if (itemSlotStatus === 'AVAILABLE') {
             if (isMultSlotMode ) {
                 if (slotNumber === itemSlotNumber)
                     return "available selected";
-                if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1 || slotNumber === itemSlotNumber - 28 || slotNumber === itemSlotNumber + 28)
-                    return "available clickable_rect"
+                if (zoneLabel === 'A') {
+                    if (slotNumber === 28 || slotNumber === 56 || slotNumber === 88) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'B') {
+                    if (slotNumber === 34 || slotNumber === 71) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'C') {
+                    if (slotNumber === 37 || slotNumber === 75) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'D') {
+                    if (slotNumber === 39 || slotNumber === 85) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'E') {
+                    if (slotNumber === 46 || slotNumber === 95) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'F') {
+                    if (slotNumber === 49 || slotNumber === 101) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'G') {
+                    if (slotNumber === 53 || slotNumber === 109) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'H') {
+                    if (slotNumber === 57 || slotNumber === 118) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'I') {
+                    if (slotNumber === 62 || slotNumber === 129) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'J') {
+                    if (slotNumber === 69 || slotNumber === 144) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'K') {
+                    if (slotNumber === 78 || slotNumber === 165) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                
+                }
+                else if (zoneLabel === 'L') {
+                    if (slotNumber === 92 || slotNumber === 193) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'M') {
+                    if (slotNumber === 104 || slotNumber === 213) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'N') {
+                    if (slotNumber === 111) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                else if (zoneLabel === 'O') {
+                    if (slotNumber === 134) {
+                        if (slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }   
+                    else {
+                        if (slotNumber === itemSlotNumber - 1 || slotNumber === itemSlotNumber + 1) {
+                            return "available clickable_rect"
+                        }
+                    }
+                }
+                
                 return "available greyedout";
             }
             return "available clickable_rect";
@@ -177,66 +782,695 @@ class GridSvg extends React.Component {
     }
 
     renderGridSvg = () => {
-        const { clickedZoneData } = this.state;
-        const rowOneSlice = clickedZoneData.slice(0, 28);
-        const rowOneElements = rowOneSlice.map((item, index) => (
-            <rect id={item.zoneLabel + item.slotNumber}
-                x={`${index * 30}`} 
-                y="0" 
-                stroke="black"
-                width="30"
-                height="30"
-                className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
-                // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
-                strokeWidth="2"
-                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
-            />
-        ));
+        const { clickedZoneData, zoneLabel } = this.state;
+        switch(zoneLabel) {
+            case 'A': {
+                const rowOneSlice = clickedZoneData.slice(0, 28);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+        
+                const rowTwoSlice = clickedZoneData.slice(28, 56);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="30"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+        
+                const rowThreeSlice = clickedZoneData.slice(56, 88);
+                const rowThreeElements = rowThreeSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                    x={index * 30}
+                    y="150"
+                    stroke="black"
+                    width="30"
+                    height="30"
+                    className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                    // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                    strokeWidth="2"
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                        {rowThreeElements}
+                    </>
+                );
+            }
+            case 'B': {
+                const rowOneSlice = clickedZoneData.slice(0, 34);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
 
-        const rowTwoSlice = clickedZoneData.slice(28, 56);
-        const rowTwoElements = rowTwoSlice.map((item, index) => (
-            <rect id={item.zoneLabel + item.slotNumber}
-                x={index * 30}
-                y="30"
-                stroke="black"
-                width="30"
-                height="30"
-                className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
-                // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
-                strokeWidth="2"
-                onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
-            />
-        ));
+                const rowTwoSlice = clickedZoneData.slice(34, 71);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'C': {
+                const rowOneSlice = clickedZoneData.slice(0, 37);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
 
-        const rowThreeSlice = clickedZoneData.slice(56, 89);
-        const rowThreeElements = rowThreeSlice.map((item, index) => (
-            <rect id={item.zoneLabel + item.slotNumber}
-            x={index * 30}
-            y="150"
-            stroke="black"
-            width="30"
-            height="30"
-            className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
-            // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
-            strokeWidth="2"
-            onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
-            />
-        ));
-        return (
-            <>
-                {rowOneElements}
-                {rowTwoElements}
-                {rowThreeElements}
-            </>
-        );
+                const rowTwoSlice = clickedZoneData.slice(37, 75);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'D': {
+                const rowOneSlice = clickedZoneData.slice(0, 39);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(39, 85);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'E':{
+                const rowOneSlice = clickedZoneData.slice(0, 46);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(46, 95);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'F': {
+                const rowOneSlice = clickedZoneData.slice(0, 49);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(49, 101);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'G': {
+                const rowOneSlice = clickedZoneData.slice(0, 53);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(53, 109);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'H': {
+                const rowOneSlice = clickedZoneData.slice(0, 57);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(57, 118);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'I': {
+                const rowOneSlice = clickedZoneData.slice(0, 62);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(62, 129);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'J': {
+                const rowOneSlice = clickedZoneData.slice(0, 69);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(69, 144);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'K': {
+                const rowOneSlice = clickedZoneData.slice(0, 78);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(78, 165);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'L': {
+                const rowOneSlice = clickedZoneData.slice(0, 92);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(92, 193);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'M': {
+                const rowOneSlice = clickedZoneData.slice(0, 104);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const rowTwoSlice = clickedZoneData.slice(104, 213);
+                const rowTwoElements = rowTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={index * 30}
+                        y="90"
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                        {rowTwoElements}
+                    </>
+                );
+            }
+            case 'N': {
+                const rowOneSlice = clickedZoneData.slice(0, 111);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                    </>
+                );
+            }
+            case 'O': {
+                const rowOneSlice = clickedZoneData.slice(0, 134);
+                const rowOneElements = rowOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x={`${index * 30}`} 
+                        y="0" 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {rowOneElements}
+                    </>
+                );
+            }
+            case 'T': {
+                const colOneSlice = clickedZoneData.slice(0, 25);
+                const colOneElements = colOneSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x="120" 
+                        y={`${index * 30}`} 
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const colTwoSlice = clickedZoneData.slice(25, 50);
+                const colTwoElements = colTwoSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x="90"
+                        y={720 - (index * 30)}
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        // fill={item.occupancyStatus === 'AVAILABLE' ? 'green' : 'red'}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+
+                const colThreeSlice = clickedZoneData.slice(50, 75);
+                const colThreeElements = colThreeSlice.map((item, index) => (
+                    <rect id={item.zoneLabel + item.slotNumber}
+                        x="30"
+                        y={index * 30}
+                        stroke="black"
+                        width="30"
+                        height="30"
+                        className={this.generateClassName(item.slotNumber, item.occupancyStatus)}
+                        strokeWidth="2"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                    />
+                ));
+                return (
+                    <>
+                        {colOneElements}
+                        {colTwoElements}
+                        {colThreeElements}
+                    </>
+                );
+            }
+
+
+        }
+    }
+
+    getWidth = () => {
+        const { zoneLabel } = this.state;
+        switch(zoneLabel) {
+            case 'A':
+                return 1000;
+            case 'B':
+            case 'C':
+                return 1200;
+            case 'D':
+                return 1350;
+            case 'E':
+                return 1500;
+            case 'F':
+                return 1600;
+            case 'G':
+                return 1700;
+            case 'H':
+                return 1800;
+            case 'I':
+                return 2050;
+            case 'J':
+                return 2300;
+            case 'K':
+                return 2660;
+            case 'L':
+                return 3100;
+            case 'M':
+                return 3300;
+            case 'N':
+                return 3500;
+            case 'O':
+                return 4100;
+            case 'T':
+                return 200;
+        }
+    }
+
+    getHeight = () => {
+        const { zoneLabel } = this.state;
+        switch(zoneLabel) {
+            case 'T':
+                return 900;
+            default: 
+                return 200;
+        }
+    }
+
+    getViewBox = () => {
+        const { zoneLabel } = this.state;
+        switch(zoneLabel) {
+            case 'A':
+                return "0 0 1000 300"
+            case 'B':
+            case 'C':
+                return "0 0 1200 300"
+            case 'D':
+                return "0 0 1350 300"
+            case 'E':
+                return "0 0 1500 300"
+            case 'F':
+                return "0 0 1600 300"
+            case 'G':
+                return "0 0 1700 300"
+            case 'H':
+                return "0 0 1800 300"
+            case 'I':
+                return "0 0 2050 300"
+            case 'J':
+                return "0 0 2100 300"
+            case 'K':
+                return "0 0 2400 300"
+            case 'L':
+                return "0 0 3000 300"
+            case 'M':
+                return "0 0 3250 300"
+            case 'N':
+                return "0 0 3400 200"
+            case 'O':
+                return "0 0 3600 200"
+            case 'T':
+                return "0 0 300 900"
+        }
     }
 
     render = () => {
-        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal } = this.state;
+        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, currentUser } = this.state;
 
         return (
             <div>
                 <SingleSlotOverviewModal
+                    currentUser={currentUser}
                     selectedSlot={selectedSlot[0]}
                     shouldDisplaySlotModal={shouldDisplaySlotModal}
                     closeSlotModal={this.closeSlotModal}
@@ -244,12 +1478,12 @@ class GridSvg extends React.Component {
                     showReleaseModal={this.showReleaseModal}
                     setFirstSelectedSlot={this.setFirstSelectedSlot}
                 />
-                 <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="lg">
+                 <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="xl">
                     <Modal.Header closeButton>
                         <Modal.Title>New Vehicle Registration</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <CarRegistrationForm 
+                        <CarRegistrationForm
                             closeForm={this.closeRegisterModal}
                             selectedSlot={selectedSlot}
                             callZoneSummaryService={this.props.callZoneSummaryService}
@@ -274,13 +1508,14 @@ class GridSvg extends React.Component {
                 </Modal>
 
                 <Container>
-                    <h3>ZONE A</h3>
                 </Container>
-                <svg viewBox="0 0 1000 1000" className="zoneSvg">
-                    {this.renderGridSvg()}
-                    {this.renderNumberSvg()}
-                    {/* <text x="480" y="10" className="heavy" fontSize="2em">ZONE A</text> */}
-                </svg>
+                <div className="svgrow_container">
+
+                    <svg className="zoneSvg" width={this.getWidth()} height={this.getHeight()}>
+                        {this.renderGridSvg()}
+                        {this.renderNumberSvg()}
+                    </svg>
+                </div>
             </div>
         )
     }

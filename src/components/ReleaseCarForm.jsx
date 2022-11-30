@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Row, Col, Container, Button } from 'react-bootstrap';
 import UserService from '../services/user.service';
+import '../styles/releasecarform.css';
 
 class ReleaseCarForm extends React.Component {
     constructor(props) {
@@ -36,15 +37,43 @@ class ReleaseCarForm extends React.Component {
         this.setState({
             isVehicleReleaseStarted: true
         });
-        const { selectedSlot: {zoneLabel, slotNumber}, releasePayload } = this.state;
+        const { selectedSlot: {zoneLabel, slotNumber}, releasePayload: {
+            firstName,
+            lastName,
+            idType,
+            idNumber,
+            contactNumber,
+            emailAddress,
+            nationality,
+            releaseDocument
+        } } = this.state;
+
+        const releasePayload = {
+            firstName,
+            lastName,
+            idType,
+            idNumber,
+            contactNumber,
+            emailAddress,
+            nationality
+        };
+
         UserService.releaseVehicle(zoneLabel, slotNumber, releasePayload)
             .then((response) => {
-                this.setState({
-                    isVehicleReleaseDone: true
-                });
-                this.props.closeForm();
-                this.props.closeGridSvg();
-                this.props.callZoneSummaryService();
+                const { id: vehicleId } = response.data;
+                UserService.uploadReleaseDocument(vehicleId, releaseDocument)
+                    .then((response) => {
+                        this.setState({
+                            isVehicleReleaseDone: true
+                        });        
+                        this.props.closeForm();
+                        this.props.closeGridSvg();
+                        this.props.callZoneSummaryService();
+                        
+                    })
+                    .catch((error) => {
+                        window.alert("document upload failed");
+                    });
             })
             .catch((error) =>{
                 window.alert("Release failed");
@@ -121,6 +150,17 @@ class ReleaseCarForm extends React.Component {
         });
     }
 
+    changeReleaseDocument = (event) => {
+        const fileUpload = event.target.files[0];
+        const { releasePayload } = this.state;
+        this.setState({
+            releasePayload: {
+                ...releasePayload,
+                releaseDocument: fileUpload
+            }
+        });
+    }
+
     render = () => {
         const { releasePayload: {
             firstName, lastName, emailAddress, idNumber, idType, contactNumber, nationality
@@ -131,28 +171,28 @@ class ReleaseCarForm extends React.Component {
                 <Form onSubmit={this.hitRelease}>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>First Name *</Form.Label>
+                            <Form.Label className="required_form_label">First Name *</Form.Label>
                             <Form.Control type="text" required={true} value={firstName} onChange={this.changeFirstName}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Last Name *</Form.Label>
+                            <Form.Label className="required_form_label">Last Name *</Form.Label>
                             <Form.Control type="text" required={true} value={lastName} onChange={this.changeLastName}/>
                         </Form.Group>
                         
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Contact Number *</Form.Label>
+                            <Form.Label className="required_form_label">Contact Number *</Form.Label>
                             <Form.Control type="text" required={true} value={contactNumber} onChange={this.changeContactNumber}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Email Address *</Form.Label>
+                            <Form.Label className="required_form_label">Email Address *</Form.Label>
                             <Form.Control type="email" required={true} value={emailAddress} onChange={this.changeEmailAddress}/>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>    
-                            <Form.Label>ID Type *</Form.Label>
+                            <Form.Label className="required_form_label">ID Type *</Form.Label>
                             <Form.Select required={true} value={idType} onChange={this.changeIdType}>
                                 <option value="Passport">Passport</option>
                                 <option value="Emirates ID">Emirates ID</option>
@@ -161,17 +201,23 @@ class ReleaseCarForm extends React.Component {
                             </Form.Select>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Nationality *</Form.Label>
+                            <Form.Label className="required_form_label">Nationality *</Form.Label>
                             <Form.Control type="text" required={true} value={nationality} onChange={this.changeNationality}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>ID Number</Form.Label>
+                            <Form.Label className="required_form_label">ID Number *</Form.Label>
                             <Form.Control type="text" required={true} value={idNumber} onChange={this.changeIdNumber} />
+                        </Form.Group>
+                    </Row>
+                    <Row classname="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label className="required_form_label">Release Document *</Form.Label>
+                            <Form.Control type="file" required onChange={this.changeReleaseDocument} />
                         </Form.Group>
                     </Row>
                    
                     <div id="button_container">
-                            <Button type="submit">Release</Button>
+                            <Button type="submit" variant="secondary">Release</Button>
                     </div>
                 </Form>
             </Container>

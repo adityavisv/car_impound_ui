@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
+import { Button, Col, Modal, Row, Form } from 'react-bootstrap';
+import { Parser } from 'json2csv';
 import LoadingOverlay from 'react-loading-overlay';
 import UserService from '../services/user.service';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -8,10 +9,18 @@ import '../styles/searchform.css';
 import LoginRedirectModal from './LoginRedirectModal';
 import CarRegistrationForm from './CarRegistrationForm';
 import ResultsTable from './ResultsTable';
+import { makeModelData } from '../newcardb';
+import { getAllModelsByMake } from '../helpers/generalhelpers';
 
 export default class SearchForm extends React.Component {
+
     constructor(props) {
         super(props);
+
+        const allMakes = makeModelData.map((value) => (
+            value.brand
+        ));
+
         var slots = []
         for (var i = 1; i <= 88; i++) {
             slots.push(`A${i}`);
@@ -19,12 +28,14 @@ export default class SearchForm extends React.Component {
         this.state = {
             searchInit: false,
             shouldShowRedirectLoginModal: false,
+            makesDropdownValues: [... new Set(allMakes)],
+            modelsDropdownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
             searchDone: false,
             data: [],
             chassisNumber: '',
             caseNumber: '',
-            make: '',
-            model: '',
+            make: 'Alfa Romeo',
+            model: '4C',
             color: '',
             type: '',
             slot: '',
@@ -39,6 +50,9 @@ export default class SearchForm extends React.Component {
             isWanted: '',
             ownerNationality: '',
             emirate: '',
+            releaseDate: '',
+            estimatedReleaseDate: '',
+            remarksKeyword: '',
 
             showResultModal: false,
             selectedResult: {},
@@ -75,8 +89,11 @@ export default class SearchForm extends React.Component {
     }
 
     changeMake = (event) => {
+        const make = event.target.value;
+        const modelsByMake = getAllModelsByMake(make);
         this.setState({
-            make: event.target.value
+            make,
+            modelsDropdownValues: [... new Set(modelsByMake)]
         });
     }
 
@@ -164,7 +181,35 @@ export default class SearchForm extends React.Component {
         });
     }
 
-    c
+    changeIsWanted = (event) => {
+        this.setState({
+            isWanted: event.target.value
+        });
+    }
+
+    changeOwnerFirstname = (event) => {
+        this.setState({
+            ownerFirstname: event.target.value
+        });
+    }
+
+    changeOwnerLastname = (event) => {
+        this.setState({
+            ownerLastname: event.target.value
+        });
+    }
+
+    changeEstimatedReleaseDate = (event) => {
+        this.setState({
+            estimatedReleaseDate: event.target.value
+        });
+    }
+
+    changeremarksKeyword = (event) => {
+        this.setState({
+            remarksKeyword: event.target.value
+        });
+    }
 
     closeResultModal = () => {
         this.setState({
@@ -195,11 +240,14 @@ export default class SearchForm extends React.Component {
             emirate,
             category,
             code,
+            estimatedReleaseDate,
             releaseDate,
             releaseFirstname,
             releaseLastname,
             ownerNationality,
+            remarksKeyword,
         } = this.state;
+
         if (make !== '')
             params.make = make;
         if (model !== '')
@@ -240,6 +288,10 @@ export default class SearchForm extends React.Component {
             params.releaseLastname = releaseLastname;
         if (ownerNationality !== '')
             params.ownerNationality = ownerNationality;
+        if (estimatedReleaseDate !== '')
+            params.estimatedReleaseDate = estimatedReleaseDate;
+        if (remarksKeyword !== '')
+            params.remarksKeyword = remarksKeyword;
 
         UserService.searchVehicles(params)
             .then((response) => {
@@ -300,6 +352,40 @@ export default class SearchForm extends React.Component {
         })
     }
 
+    downloadResultsCSV = () => {
+        const { results } = this.state;
+        const fields = ["id","make","model","type","vehicleStatus","registrationDateTime","estimatedReleaseDate","caseNumber","chassisNumber","color","parkingSlot","isWanted","numberPlate","owner","department","emirate","category","code","releaseIdentity"];
+        const opts = { fields };
+
+        try {
+            const parser = new Parser(opts);
+            const csv = parser.parse(results);
+
+            // convert raw csv string to byte array
+            let utf8encode = new TextEncoder();
+            const bytes = utf8encode.encode(csv);
+
+            // push the byte array into a singleton array
+            const bytearr = [];
+            bytearr.push(bytes);
+
+            // pass singleton array to create blob
+            const blob = new Blob(bytearr, {type: 'application/csv'});
+
+            // create an achor tag and trigger it to downlad
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'search-results.csv';
+            a.click();
+        }
+        catch (err) {
+            console.log(err);
+        }
+
+
+    }
+
     render = () => {
         const {
             results,  
@@ -323,11 +409,15 @@ export default class SearchForm extends React.Component {
             emirate,
             category,
             code,
+            estimatedReleaseDate,
             releaseDate,
             releaseFirstname,
             releaseLastname,
             ownerNationality,
-            shouldShowRedirectLoginModal
+            shouldShowRedirectLoginModal,
+            makesDropdownValues,
+            modelsDropdownValues,
+            remarksKeyword,
         } = this.state;
         return (
             <LoadingOverlay
@@ -338,13 +428,14 @@ export default class SearchForm extends React.Component {
                 <div>
                     <div className="search_form">
                         <Form onSubmit={this.hitSearch}>
-                            <Row className="mb-3">
-                                <Form.Group as={Col}>
-                                    <Form.Text><h5>Search By:</h5></Form.Text>
-                                </Form.Group>
-                                <Form.Group as={Col}>
-                                    <Button type="submit" variant="secondary">Search</Button>
-                                </Form.Group>
+                            <Row id="searchform_topbar" className="mb-3">
+                                <Col>
+                                <Form.Text className="search_form_text">Search By:</Form.Text>
+                                </Col>
+                                    
+                                <Col id="search_btn_col">
+                                    <Button type="submit" id="search_btn" variant="secondary">Search</Button>
+                                </Col>
                             </Row>
                                 
                             <Row className="mb-3">
@@ -360,13 +451,25 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Make</Form.Label>
-                                    <Form.Control type="text"  size="sm" value={make} onChange={this.changeMake}/>
+                                    <Form.Select size="sm" value={make} onChange={this.changeMake}>
+                                        {
+                                            Array.from(makesDropdownValues).map((item) => (
+                                                <option value={item}>{item}</option>
+                                            ))
+                                        }
+                                    </Form.Select>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Model</Form.Label>
-                                    <Form.Control type="text" size="sm" value={model} onChange={this.changeModel} />
+                                    <Form.Select size="sm" value={model} onChange={this.changeModel}>
+                                        {
+                                            Array.from(modelsDropdownValues).map((item) => (
+                                                <option value={item}>{item}</option>
+                                            ))
+                                        }
+                                    </Form.Select>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
@@ -465,6 +568,13 @@ export default class SearchForm extends React.Component {
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
+                                    <Form.Label>Estimated Release Date</Form.Label>
+                                    <Form.Control type="date" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} />
+                                </Form.Group>
+                            </Row>
+                            
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
                                     <Form.Label>Release Date</Form.Label>
                                     <Form.Control type="date" value={releaseDate} onChange={this.changeReleaseDate} />
                                 </Form.Group>
@@ -481,12 +591,25 @@ export default class SearchForm extends React.Component {
                                     <Form.Control type="text" value={releaseLastname} onChange={this.changeReleaseLastname} />
                                 </Form.Group>
                             </Row>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Keywords in remarks</Form.Label>
+                                    <Form.Control type="text" value={remarksKeyword} onChange={this.changeremarksKeyword} />
+                                </Form.Group>
+                            </Row>
                         </Form>
                     </div>
                     <div className="results_div">
                         { showResults ? 
                             <>
-                            Found results: {results.length}
+                            <Row className="result_header">
+                                <Col xs={10}>
+                                    <Form.Text className="result_header_text">Found results: {results.length} </Form.Text>
+                                </Col>
+                               
+                                <Col id="button_col"><Button variant="secondary" onClick={this.downloadResultsCSV}>Export to CSV</Button></Col>
+                            </Row>
+                            
                             <ResultsTable results={results} handleRowClick={this.handleRowClick} /> </>: null}
                     </div>
                 </div>

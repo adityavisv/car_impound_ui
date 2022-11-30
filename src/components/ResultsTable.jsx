@@ -33,7 +33,7 @@ class ResultsTable extends React.Component {
                     <th>Registration Time</th>
                     <th>Department</th>
                     <th>Case Number</th>
-                    <th>Mulkia Number</th>
+                    <th>Chassis Number</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,7 +52,7 @@ class ResultsTable extends React.Component {
                                 <td><div className="plaintext">{element.mulkiaNumber}</div></td>
                             </tr>
                         ))
-                    }
+                    } 
                 </tbody>
             </table>
         )

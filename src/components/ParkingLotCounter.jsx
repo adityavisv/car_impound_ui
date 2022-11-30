@@ -1,23 +1,9 @@
 import React from 'react';
-import { Alert, CloseButton, ProgressBar, Table } from 'react-bootstrap';
+import { Alert, CloseButton, Modal, ProgressBar, Table } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
 import GridSvg from './GridSVG/GridSvg';
-import GridSVGB from './GridSVG/GridSVGB';
-import GridSVGC from './GridSVG/GridSVGC';
-import '../styles/parkinglotcounter.css';
 import InfoOverlay from './InfoOverlay';
-import GridSVGD from './GridSVG/GridSVGD';
-import GridSVGE from './GridSVG/GridSVGE';
-import GridSVGF from './GridSVG/GridSVGF';
-import GridSVGG from './GridSVG/GridSVGG';
-import GridSVGH from './GridSVG/GridSVGH';
-import GridSVGI from './GridSVG/GridSVGI';
-import GridSVGJ from './GridSVG/GridSVGJ';
-import GridSVGK from './GridSVG/GridSVGK';
-import GridSVGL from './GridSVG/GridSVGL';
-import GridSVGM from './GridSVG/GridSVGM';
-import GridSVGN from './GridSVG/GridSVGN';
-import GridSVGO from './GridSVG/GridSVGO';
+import '../styles/parkinglotcounter.css';
 import UserService from '../services/user.service';
 
 class ParkingLotCounter extends React.Component {
@@ -26,6 +12,9 @@ class ParkingLotCounter extends React.Component {
         this.state = {
             clickedZone: '',
             clickedZoneData: [],
+            showGridSvg: false,
+            parkingZoneSummaries: this.props.parkingZoneSummaries,
+            currentUser: this.props.currentUser,
             isSelectedZoneDataReady: false,
             selectedZoneRequestInit: false,
             selectedZoneRequestFin: false,
@@ -33,6 +22,12 @@ class ParkingLotCounter extends React.Component {
         }
     }
 
+    componentDidUpdate = (prevProps, prevState) => {
+        if (prevProps.currentUser !== this.props.currentUser)
+            this.setState({currentUser: this.props.currentUser});
+        if (prevProps.parkingZoneSummaries !== this.props.parkingZoneSummaries)
+            this.setState({parkingZoneSummaries: this.props.parkingZoneSummaries});
+    }
 
 
     progressBar = (element) => {
@@ -47,12 +42,12 @@ class ParkingLotCounter extends React.Component {
         );
     }
 
-    handleGridSvgClose = (close) => {
+    handleGridSvgClose = () => {
         this.setState({
             clickedZone: '',
             clickedZoneData: [],
+            showGridSvg: false,
         });
-        close();
     }
 
     handleRowClick = (event) => {
@@ -69,7 +64,8 @@ class ParkingLotCounter extends React.Component {
                     clickedZoneData: response.data.parkingSpots,
                     selectedZoneRequestInit: false,
                     selectedZoneRequestFin: true,
-                    selectedZoneRequestFail: false
+                    selectedZoneRequestFail: false,
+                    showGridSvg: true
                 });
             })
             .catch((error) => {
@@ -84,81 +80,40 @@ class ParkingLotCounter extends React.Component {
     }
 
     svgToRender = (close) => {
-        const { clickedZone, clickedZoneData } = this.state;
-        switch (clickedZone) {
-            case 'A':
+        const { clickedZone, clickedZoneData, currentUser } = this.state;
+       
                 return (
                     <GridSvg
+                        currentUser={currentUser}
                         clickedZoneData={clickedZoneData}
                         callZoneSummaryService={this.props.callZoneSummaryService}
                         closeGridSvg={() => this.handleGridSvgClose(close)}
                         callLogout={this.props.callLogout}
+                        zoneLabel={clickedZone}
                     />
                 );
-            case 'B':
-                return (
-                    <GridSVGB />
-                );
-            case 'C':
-                return (
-                    <GridSVGC />
-                );
-            case 'D':
-                return (
-                    <GridSVGD />
-                );
-            case 'E':
-                return (
-                    <GridSVGE />
-                );
-            case 'F':
-                return (
-                    <GridSVGF />
-                );
-            case 'G':
-                return (
-                    <GridSVGG />
-                );
-            case 'H':
-                return (
-                    <GridSVGH />
-                );
-            case 'I':
-                return (
-                    <GridSVGI />
-                );
-            case 'J':
-                return (
-                    <GridSVGJ />
-                );
-            case 'K':
-                return (
-                    <GridSVGK />
-                );
-            case 'L':
-                return (
-                    <GridSVGL />
-                );
-            case 'M':
-                return (
-                    <GridSVGM />
-                );
-            case 'N':
-                return (
-                    <GridSVGN />
-                );
-            case 'O':
-                return (
-                    <GridSVGO />
-                );
-        }
+        
     }
 
     render = () => {
-        const { parkingZoneSummaries } = this.props;
-        const { selectedZoneRequestInit, selectedZoneRequestFail } = this.state;
+        const { parkingZoneSummaries, selectedZoneRequestInit, selectedZoneRequestFail, showGridSvg, clickedZone } = this.state;
 
         return (
+            <LoadingOverlay
+                active={selectedZoneRequestInit}
+                spinner
+
+                text={`Fetching Zone - ${clickedZone} data`}
+                
+            >
+                <Modal show={showGridSvg} onHide={this.handleGridSvgClose} size="xl">
+                    <Modal.Header closeButton>
+                        <h3>Zone - {clickedZone}</h3>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.svgToRender(close)}
+                    </Modal.Body>
+                </Modal>
             <div className="table_container">
                 <Table responsive hover size="sm" variant="dark">
                     <thead>
@@ -172,34 +127,18 @@ class ParkingLotCounter extends React.Component {
                     <tbody>
                         {
                             Array.from(parkingZoneSummaries).map((element, index) => (
-                                <InfoOverlay
-                                    render={({ close, labelId, descriptionId }) => (
-                                        <LoadingOverlay
-                                            active={selectedZoneRequestInit}
-                                            spinner
-                                            text='Loading...'
-                                        >
-                                            <div className="canvas">
-                                                {selectedZoneRequestFail ? <Alert variant="danger">Failed fetching selected zone data. Something went wrong!</Alert> : null}
-                                                <CloseButton onClick={() => this.handleGridSvgClose(close)} id="close_btn" />
-                                                {this.svgToRender(close)}
-                                            </div>
-                                        </LoadingOverlay>
-                                    )}
-                                >
-
                                     <tr id={element.zoneLabel} key={element.zoneLabel} onClick={this.handleRowClick} className="regular_tr">
                                         <td className="plaintext">{element.zoneLabel}</td>
                                         <td className="plaintext">{element.availableCount}</td>
                                         <td className="plaintext">{element.occupiedCount}</td>
                                         <td><div className="progress_bar">{this.progressBar(element)}</div></td>
                                     </tr>
-                                </InfoOverlay>
                             ))
                         }
                     </tbody>
                 </Table>
             </div>
+                </LoadingOverlay>
         )
     }
 }

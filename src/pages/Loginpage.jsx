@@ -28,16 +28,19 @@ class Loginpage extends React.Component {
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.isLoggedIn !== this.props.isLoggedIn
-            || prevProps.message !== this.props.message
-            || prevProps.statusCode !== this.props.statusCode) {
-                const { isLoggedIn, message, statusCode } = this.props;
+        if (prevProps.isLoggedIn !== this.props.isLoggedIn) {
             this.setState({
-                isLoggedIn,
-                message,
-                statusCode,
-                shouldShowNetworkErrAlert: message === 'Network Error',
-                shouldShowInvalidLoginAlert: statusCode === 400
+                isLoggedIn: this.props.isLoggedIn
+            });
+        }
+        if (prevProps.message !== this.props.message) {
+            this.setState({
+                message: this.props.message
+            });
+        }
+        if (prevProps.statusCode !== this.props.statusCode) {
+            this.setState({
+                statusCode: this.props.statusCode
             });
         }
     }

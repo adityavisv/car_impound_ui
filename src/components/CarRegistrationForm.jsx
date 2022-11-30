@@ -6,6 +6,7 @@ import UserService from '../services/user.service';
 import LoginRedirectModal from './LoginRedirectModal';
 import 'bootstrap/dist/css/bootstrap.css';
 import { makeModelData } from '../newcardb';
+import { getAllModelsByMake } from '../helpers/generalhelpers';
 import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 
 class CarRegistrationForm extends React.Component {
@@ -34,15 +35,10 @@ class CarRegistrationForm extends React.Component {
         const allMakes = makeModelData.map((value) => (
             value.brand
         ));
-        const allModels = makeModelData.map((value) => (
-            value.model
-        ));
-
-
 
         const { 
                 make = 'Alfa Romeo',
-                model = '124 Spider',
+                model = '4C',
                 type = 'Car',
                 registrationDateTime = new Date(),
                 estimatedReleaseDate = '',
@@ -53,7 +49,7 @@ class CarRegistrationForm extends React.Component {
                 images = [],
                 isWanted = false,
                 numberPlate = '', 
-                department = 'CID',
+                department = '',
                 category = '',
                 emirate = 'ABU_DHABI',
                 code = '',
@@ -87,7 +83,7 @@ class CarRegistrationForm extends React.Component {
         this.state = {
             selectedSlot,
             makesDropDownValues: [... new Set(allMakes)],
-            modelsDropDownValues: [... new Set(allModels)],
+            modelsDropDownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
             shouldShowRedirectLoginModal: false,
             readOnly,
             isVehicleAssignStarted: false,
@@ -150,12 +146,15 @@ class CarRegistrationForm extends React.Component {
 
     changeMake = (event) => {
         const { newVehiclePayload } = this.state;
+        const make = event.target.value;
+        const getNewModelsByMake = getAllModelsByMake(make);
         this.setState({
             newVehiclePayload: {
                 ...newVehiclePayload,
-                make: event.target.value
-            }
-        })
+                make,
+            },
+            modelsDropDownValues: [... new Set(getNewModelsByMake)]
+        });
     }
 
     changeModel = (event) => {
@@ -429,6 +428,7 @@ class CarRegistrationForm extends React.Component {
         });
     }
 
+
     submitVehicle = (event) => {
         event.preventDefault();
         this.setState({
@@ -612,6 +612,17 @@ class CarRegistrationForm extends React.Component {
                 contactNumber,
                 nationality
             },
+            releaseIdentity: {
+                firstName: releaseFirstName,
+                lastName: releaseLastName,
+                emailAddress: releaseEmailAddress,
+                idType: releaseIdType,
+                idNumber: releaseIdNumber,
+                contactNumber: releaseContactNumber,
+                nationality: releaseNationality,
+                releaseDate,
+                releaseTime
+            }
         }, selectedSlot } = this.state;
         return (
             <LoadingOverlay active={this.shouldShowLoadingScreen()} spinner text='Saving vehicle...'>
@@ -625,7 +636,7 @@ class CarRegistrationForm extends React.Component {
                        <Form.Group as={Col}>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Make *</Form.Label>
-                                <Form.Select value={make} onChange={this.changeMake} disabled>
+                                <Form.Select value={make} readOnly disabled>
                                     {Array.from(makesDropDownValues).map((value) => (
                                         <option value={value}>{value}</option>
                                     ))}
@@ -633,7 +644,7 @@ class CarRegistrationForm extends React.Component {
                            </Row>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Model *</Form.Label>
-                                <Form.Select value={model} required={true} disabled={readOnly} onChange={this.changeModel} disabled>
+                                <Form.Select value={model} required={true} disabled={readOnly} readOnly disabled>
                                     {Array.from(modelsDropDownValues).map((value) => (
                                         <option value={value}>{value}</option>
                                     ))}
@@ -641,16 +652,17 @@ class CarRegistrationForm extends React.Component {
                            </Row>
                            <Row className="mb-3">
                                <Form.Label className="required_form_label">Vehicle Type *</Form.Label>
-                           <Form.Select value={type} required={true} disabled onChange={this.changeType}>
-                                <option value="Bike">Bike</option>
-                                <option vlaue="Truck">Truck</option>
-                                <option value="Car">Car</option>
+                           <Form.Select value={type} required={true} disabled readOnly={true}>
+                                <option value="BIKE">Bike</option>
+                                <option vlaue="TRUCK">Truck</option>
+                                <option value="CAR">Car</option>
                             </Form.Select>
                             </Row>
                            <Row className="mb-3">
                                 <Form.Label className="required_form_label">Colour *</Form.Label>
-                                <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
+                                <Form.Control type="text"  required={true} value={color} disabled={readOnly} readOnly={true}/>
                            </Row>
+                           
                        </Form.Group>
                       
                         <Form.Group as={Col}>
@@ -665,44 +677,103 @@ class CarRegistrationForm extends React.Component {
                                             />
                                         </Carousel.Item>
                                     ))}
-                                </Carousel> : <></>}
+                                </Carousel> : <><h3>No Images Available</h3></>}
                         </Form.Group>
                     </Row> : 
-                    <Row className="mb-3">
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Make *</Form.Label>
-                            <Form.Select value={make} onChange={this.changeMake}>
-                                    {Array.from(makesDropDownValues).map((value) => (
-                                        <option value={value}>{value}</option>
-                                    ))}
-                            </Form.Select>
-                            {/* <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/> */}
-                        </Form.Group>
+                    <>
+                        <Row className="mb-3">
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Make *</Form.Label>
+                                {
+                                    make === "OTHER" ? <Form.Control type="text" value={make} onChange={this.changeMake} />
+                                    : <Form.Select value={make} onChange={this.changeMake}>
+                                        <option value="OTHER">Other</option>
+                                        {
+                                            Array.from(makesDropDownValues).map((value) => (
+                                                <option value={value}>{value}</option>
+                                            ))
+                                        }
+                                    </Form.Select>
+                                }
+                                {/* <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/> */}
+                            </Form.Group>
 
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Model *</Form.Label>
-                            <Form.Select value={model} required={true} disabled={readOnly} onChange={this.changeModel}>
-                                {Array.from(modelsDropDownValues).map((value) => (
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Model *</Form.Label>
+                                {
+                                    make === "OTHER" ? <Form.Control type="text" value={model} onChange={this.changeModel} />
+                                    : <Form.Select value={model} onChange={this.changeModel}>
+                                        <option value="OTHER">Other</option>
+                                        {
+                                            Array.from(modelsDropDownValues).map((value) => (
+                                                <option value={value}>{value}</option>
+                                            ))
+                                        }
+                                    </Form.Select>
+                                }
+                                <Form.Select value={model} required={true} disabled={readOnly} onChange={this.changeModel}>
+                                    <option value="OTHER">Other</option>
+                                    {Array.from(modelsDropDownValues).map((value) => (
                                     <option value={value}>{value}</option>
-                                ))}
-                            </Form.Select>
-                            {/* <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/> */}
-                        </Form.Group> 
+                                    ))}
+                                </Form.Select>
+                                {/* <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/> */}
+                            </Form.Group> 
 
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Type *</Form.Label>
-                            <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
-                                <option value="BIKE">Bike</option>
-                                <option vlaue="TRUCK">Truck</option>
-                                <option value="CAR">Car</option>
-                            </Form.Select>
-                        </Form.Group>
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Type *</Form.Label>
+                                <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
+                                    <option value="BIKE">Bike</option>
+                                    <option vlaue="TRUCK">Truck</option>
+                                    <option value="CAR">Car</option>
+                                </Form.Select>
+                            </Form.Group>
 
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Colour *</Form.Label>
-                            <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
-                        </Form.Group>
-                                    </Row> }
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Colour *</Form.Label>
+                                <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
+                            </Form.Group>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Emirate *</Form.Label>
+                                <Form.Select required disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
+                                    <option value="ABU_DHABI">Abu Dhabi</option>
+                                    <option value="AJMAN">Ajman</option>
+                                    <option value="DUBAI">Dubai</option>
+                                    <option value="FUJAIRAH">Fujairah</option>
+                                    <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
+                                    <option value="SHARJAH">Sharjah</option>
+                                    <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Category *</Form.Label>
+                                <Form.Select required disabled={readOnly} onChange={this.changeCategory} value={category}>
+                                    <option value=''>Select a category</option>
+                                    {
+                                        this.populateCategoryDropdown()
+                                    }
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Code *</Form.Label>
+                                <Form.Select required disabled={readOnly} onChange={this.changeCode} value={code}>
+                                    <option value=''>Select Code</option>
+                                    {this.populateCodeDropdown()}
+                                </Form.Select>
+                            </Form.Group>
+                            <Form.Group as={Col}>
+                                <Form.Label className="required_form_label">Car No. Plate *</Form.Label>
+                                <Form.Control type="text" required={true} value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
+                            </Form.Group>
+                    
+                        </Row>
+                    </>
+                        
+                    }
                     
                     <Row className="mb-3">
                         <Form.Text className="form_text">Registration</Form.Text>
@@ -711,19 +782,10 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Department *</Form.Label>
-                            <Form.Select required={true} onChange={this.changeDepartment} value={department} disabled={readOnly}>
-                                <option value="CID">CID</option>
-                                <option value="DRUGS">Drugs</option>
-                                <option value="ALCOHOL">Alcohol</option>
-                                <option value="TRAFFIC">Traffic</option>
-                                <option value="ACCIDENT_AND_OTHER">Accident and other</option>
-                            </Form.Select>
+                            <Form.Control type="text" value={department} onChange={this.changeDepartmant} disabled={readOnly} />
                         </Form.Group>
 
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Car No. Plate *</Form.Label>
-                            <Form.Control type="text" required={true} value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
-                        </Form.Group>
+                        
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Chassis Number *</Form.Label>
                             <Form.Control type="text"  required={true} value={chassisNumber} onChange={this.changeChassisNumber} disabled={readOnly} />
@@ -764,39 +826,7 @@ class CarRegistrationForm extends React.Component {
                             <Form.Control type="text" disabled value={parkingSlot} disabled />
                         </Form.Group>
                     </Row>
-                    <Row className="mb-3">
-                        <Form.Group as={Col}>
-                        <Form.Label className="required_form_label">Emirate *</Form.Label>
-                        <Form.Select required disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
-                            <option value="ABU_DHABI">Abu Dhabi</option>
-                            <option value="AJMAN">Ajman</option>
-                            <option value="DUBAI">Dubai</option>
-                            <option value="FUJAIRAH">Fujairah</option>
-                            <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
-                            <option value="SHARJAH">Sharjah</option>
-                            <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
-                        </Form.Select>
-                        </Form.Group>
-
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Category *</Form.Label>
-                            <Form.Select required disabled={readOnly} onChange={this.changeCategory} value={category}>
-                                <option value=''>Select a category</option>
-                                {
-                                    this.populateCategoryDropdown()
-                                }
-                            </Form.Select>
-                        </Form.Group>
-
-                        <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Code *</Form.Label>
-                            <Form.Select required disabled={readOnly} onChange={this.changeCode} value={code}>
-                                <option value=''>Select Code</option>
-                                {this.populateCodeDropdown()}
-                            </Form.Select>
-                        </Form.Group>
-                        
-                    </Row>
+                    
                     {! readOnly ? 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
@@ -924,7 +954,7 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label>Contact No.</Form.Label>
-                            <Form.Control type="text" value={releaseContactNum} disabled />
+                            <Form.Control type="text" value={releaseContactNumber} disabled />
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Email Address</Form.Label>
@@ -935,7 +965,7 @@ class CarRegistrationForm extends React.Component {
                    
 
                     <div id="button_container">
-                        {readOnly ? <></> : <Button type="submit" variant="primary">Register</Button>}
+                        {!readOnly ?  <Button type="submit" variant="primary">Register</Button> : <></>}
                     </div>
                 </Form>
 

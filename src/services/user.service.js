@@ -1,8 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://Adityas-MacBook-Pro.local:8080/api/v1/zone';
-const VEHICLE_API_URL = 'http://Adityas-MacBook-Pro.local:8080/api/v1/vehicle';
+const API_URL = '"http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/v1/zone';
+const VEHICLE_API_URL = '"http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/v1/vehicle';
 
 class UserService {
     getZone(zone) {
@@ -70,6 +70,14 @@ class UserService {
         });
     }
 
+    retrieveReleaseQueue() {
+        return axios({
+            method: 'get',
+            url: VEHICLE_API_URL + '/releasequeue',
+            headers: authHeader()
+        });
+    }
+
     releaseVehicle(zone, slotNumber, releasePayload) {
         return axios({
             method: 'put',
@@ -83,6 +91,23 @@ class UserService {
                 ...releasePayload
             }
         });
+    }
+
+    uploadReleaseDocument(vehicleId, file) {
+        var imageParam = new FormData();
+        imageParam.append("file", file);
+
+        return axios.post(
+            VEHICLE_API_URL + '/releasedocument',
+            imageParam, {
+                headers: {...authHeader(),
+                    'Content-Type': 'multipart/form-data'
+                },
+                params: {
+                    vehicleId
+                }
+            }
+        );
     }
 
     assignImageToVehicle(vehicleId, files) {
@@ -102,6 +127,19 @@ class UserService {
                 }
             }
         );
+    }
+
+    finalRelease(vehicleId) {
+        return axios({
+            method: 'put',
+            url: VEHICLE_API_URL + '/finalrelease',
+            params: {
+                vehicleId
+            },
+            headers: {
+                ...authHeader()
+            }
+        })
     }
 }
 

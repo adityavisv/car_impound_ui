@@ -19,6 +19,7 @@ class NewSignUpPage extends React.Component {
             username: '',
             password: '',
             passwordRep: '',
+            role: 'admin',
             showFailureAlert: false,
             showPasswordMismatchAlert: false,
             showSuccessAlert: false,
@@ -29,11 +30,14 @@ class NewSignUpPage extends React.Component {
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.isLoggedIn !== this.props.isLoggedIn ||
-            prevProps.user !== this.props.user) {
+        if (prevProps.isLoggedIn !== this.props.isLoggedIn) {
             this.setState({
-                user: this.props.user,
                 isLoggedIn: this.props.isLoggedIn
+            });
+        }
+        if (prevProps.user !== this.props.user) {
+            this.setState({
+                user: this.props.user
             });
         }
     }
@@ -88,12 +92,18 @@ class NewSignUpPage extends React.Component {
         });
     }
 
+    changeRole = (event) => {
+        this.setState({
+            role: event.target.value
+        });
+    }
+
     hitSignUp = (event) => {
         event.preventDefault();
-        const { username, password, passwordRep } = this.state;
+        const { username, password, passwordRep, role } = this.state;
         const email = `${username}@foobar.com`;
         if (password === passwordRep) {
-            AuthService.register(username, email, password)
+            AuthService.register(username, email, password, role)
                 .then((response) => {
                     this.hideSignUpFail();
                     this.showSignUpSuccess();
@@ -137,7 +147,7 @@ class NewSignUpPage extends React.Component {
     }
 
     render = () => {
-        const { showFailureAlert, showSuccessAlert, showPasswordMismatchAlert, username, password, passwordRep, shouldShowSignoutConfirm, isLoggedIn, user, hasClickedOkInsufficientPriv } = this.state;
+        const { showFailureAlert, showSuccessAlert, showPasswordMismatchAlert, username, password, passwordRep, shouldShowSignoutConfirm, role, isLoggedIn, user, hasClickedOkInsufficientPriv } = this.state;
         if (! isLoggedIn ) {
             return <Navigate to="/login" replace />
         }
@@ -181,6 +191,14 @@ class NewSignUpPage extends React.Component {
                                         onChange={this.changePasswordRep} 
                                         value={passwordRep}/>
                                     <Form.Check type="checkbox" label="Show password"/>
+                                </Row>
+                                <Row className="mb-3">
+                                    <Form.Label className="login_field_label">Role (*)</Form.Label>
+                                    <Form.Select value={role} onChange={this.changeRole}>
+                                        <option value="admin">ADMIN</option>
+                                        <option value="exit_operator">EXIT OPERATOR</option>
+                                        <option value="user">USER</option>
+                                    </Form.Select>
                                 </Row>
                                
                                     <div id="button_container_signup">

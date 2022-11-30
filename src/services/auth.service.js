@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = "http://Adityas-MacBook-Pro.local:8080/api/auth/";
+const API_URL = "http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/auth/";
 
 class AuthService {
     login(username, password) {
@@ -23,7 +23,7 @@ class AuthService {
         localStorage.removeItem("user");
     }
 
-    register(username, email, password) {
+    register(username, email, password, role) {
         return axios({
             method: 'post',
             url: API_URL + "signup",
@@ -32,7 +32,7 @@ class AuthService {
                 username,
                 email,
                 password,
-                role: ["user"]
+                role: [role]
             }
         });
     }

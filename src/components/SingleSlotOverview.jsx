@@ -7,18 +7,40 @@ class SingleSlotOverviewModal extends React.Component {
         super(props);
     }
 
+    shouldShowButton = (ocStatus) => {
+        const { currentUser,
+            showRegisterModal,
+            showReleaseModal,
+            setFirstSelectedSlot,
+            selectedSlot: {zoneLabel}
+        } = this.props;
+        if (currentUser.roles.includes("ROLE_EXIT_OPERATOR"))
+            return <></>
+        else {
+            if (ocStatus === "AVAILABLE") {
+                return  <>
+                    <Button variant="primary" onClick={showRegisterModal}>Assign</Button>
+                    {zoneLabel !== 'T' ? <Button variant="primary" onClick={setFirstSelectedSlot}>Assign to Multiple Slots</Button> : <></>}
+                </>
+            }
+            else {
+                return <><Button variant="primary" onClick={showReleaseModal}>Release</Button></>;
+
+            }
+        }
+    }
+
     render = () => {
         const { 
             closeSlotModal,
             shouldDisplaySlotModal,
             selectedSlot,
-            showRegisterModal,
-            showReleaseModal,
-            setFirstSelectedSlot
         } = this.props;
 
+        
+
         return (
-            <Modal show={shouldDisplaySlotModal} onHide={closeSlotModal}>
+            <Modal show={shouldDisplaySlotModal} onHide={closeSlotModal} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Slot Status - <span className={selectedSlot.occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
                                     {selectedSlot.occupancyStatus}</span> </Modal.Title>
@@ -68,11 +90,7 @@ class SingleSlotOverviewModal extends React.Component {
                         </Container>
                     </Modal.Body>
                     <Modal.Footer>
-                        {selectedSlot.occupancyStatus === "AVAILABLE" ? 
-                            <>
-                                <Button variant="primary" onClick={showRegisterModal}>Assign</Button>
-                                <Button variant="primary" onClick={setFirstSelectedSlot}>Assign to Multiple Slots</Button>
-                            </> : <Button variant="primary" onClick={showReleaseModal}>Release</Button>}
+                        {this.shouldShowButton(selectedSlot.occupancyStatus)}
                         
                     </Modal.Footer>
                 </Modal>
