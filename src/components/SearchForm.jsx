@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Button, Col, Modal, Row, Form } from 'react-bootstrap';
-import { Parser } from 'json2csv';
+import { parkingSlotNumberMap } from '../parkingSlotMap';
 import LoadingOverlay from 'react-loading-overlay';
 import UserService from '../services/user.service';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -10,7 +10,7 @@ import LoginRedirectModal from './LoginRedirectModal';
 import CarRegistrationForm from './CarRegistrationForm';
 import ResultsTable from './ResultsTable';
 import { makeModelData } from '../newcardb';
-import { getAllModelsByMake } from '../helpers/generalhelpers';
+import { convertResultsToCsv, getAllModelsByMake, getSlotsByZone } from '../helpers/generalhelpers';
 
 export default class SearchForm extends React.Component {
 
@@ -21,23 +21,22 @@ export default class SearchForm extends React.Component {
             value.brand
         ));
 
-        var slots = []
-        for (var i = 1; i <= 88; i++) {
-            slots.push(`A${i}`);
-        }
+        
         this.state = {
             searchInit: false,
             shouldShowRedirectLoginModal: false,
             makesDropdownValues: [... new Set(allMakes)],
             modelsDropdownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
+            slotNumberDropdownValues: [],
             searchDone: false,
             data: [],
             chassisNumber: '',
             caseNumber: '',
-            make: 'Alfa Romeo',
-            model: '4C',
+            make: '',
+            model: '',
             color: '',
             type: '',
+            zoneLabel: '',
             slot: '',
             startDate: '',
             endDate: '',
@@ -58,7 +57,6 @@ export default class SearchForm extends React.Component {
             selectedResult: {},
             showResults: false,
             results: [],
-            slots
         }
     }
 
@@ -106,6 +104,17 @@ export default class SearchForm extends React.Component {
     changeColor = (event) => {
         this.setState({
             color: event.target.value
+        });
+    }
+
+    changeZoneLabel = (event) => {
+        const zoneLabel = event.target.value;
+        var slotNumberDropdownValues = [];
+        if (zoneLabel !== '')
+            slotNumberDropdownValues = getSlotsByZone(zoneLabel);
+        this.setState({
+            zoneLabel,
+            slotNumberDropdownValues
         });
     }
 
@@ -227,7 +236,8 @@ export default class SearchForm extends React.Component {
             make, 
             model, 
             color, 
-            slot, 
+            slot,
+            zoneLabel,
             numberPlate,
             startDate,
             endDate,
@@ -256,6 +266,8 @@ export default class SearchForm extends React.Component {
             params.color = color;
         if (slot !== '')
             params.slot = slot;
+        if (zoneLabel !== '')
+            params.zoneLabel = zoneLabel;
         if (numberPlate !== '')
             params.numberPlate = numberPlate;
         if (startDate !== '')
@@ -354,12 +366,8 @@ export default class SearchForm extends React.Component {
 
     downloadResultsCSV = () => {
         const { results } = this.state;
-        const fields = ["id","make","model","type","vehicleStatus","registrationDateTime","estimatedReleaseDate","caseNumber","chassisNumber","color","parkingSlot","isWanted","numberPlate","owner","department","emirate","category","code","releaseIdentity"];
-        const opts = { fields };
-
-        try {
-            const parser = new Parser(opts);
-            const csv = parser.parse(results);
+        
+            const csv = convertResultsToCsv(results);
 
             // convert raw csv string to byte array
             let utf8encode = new TextEncoder();
@@ -378,12 +386,6 @@ export default class SearchForm extends React.Component {
             a.href = url;
             a.download = 'search-results.csv';
             a.click();
-        }
-        catch (err) {
-            console.log(err);
-        }
-
-
     }
 
     render = () => {
@@ -392,8 +394,8 @@ export default class SearchForm extends React.Component {
             showResults, 
             make, 
             model, 
-            color, 
-            slots, 
+            color,
+            zoneLabel,
             slot, 
             numberPlate, 
             showResultModal, 
@@ -417,6 +419,7 @@ export default class SearchForm extends React.Component {
             shouldShowRedirectLoginModal,
             makesDropdownValues,
             modelsDropdownValues,
+            slotNumberDropdownValues,
             remarksKeyword,
         } = this.state;
         return (
@@ -452,6 +455,7 @@ export default class SearchForm extends React.Component {
                                 <Form.Group as={Col}>
                                     <Form.Label>Make</Form.Label>
                                     <Form.Select size="sm" value={make} onChange={this.changeMake}>
+                                        <option value=''>Select an option</option>
                                         {
                                             Array.from(makesDropdownValues).map((item) => (
                                                 <option value={item}>{item}</option>
@@ -464,6 +468,7 @@ export default class SearchForm extends React.Component {
                                 <Form.Group as={Col}>
                                     <Form.Label>Model</Form.Label>
                                     <Form.Select size="sm" value={model} onChange={this.changeModel}>
+                                        <option value=''>Select an option</option>
                                         {
                                             Array.from(modelsDropdownValues).map((item) => (
                                                 <option value={item}>{item}</option>
@@ -555,11 +560,24 @@ export default class SearchForm extends React.Component {
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
+                                <Form.Label>Zone Label</Form.Label>
+                                <Form.Select value={zoneLabel} size="sm" onChange={this.changeZoneLabel}>
+                                    <option value=''>Select an option</option>
+                                    {
+                                        Array.from(parkingSlotNumberMap).map((element, index) => (
+                                            <option value={element.zoneLabel}>{element.zoneLabel}</option>
+                                        ))
+                                    }
+                                </Form.Select>
+                                </Form.Group>
+                            </Row>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
                                     <Form.Label>Slot Number</Form.Label>
                                     <Form.Select value={slot} size="sm" onChange={this.changeSlot}>
                                         <option value=''>Select an option</option>
                                         {
-                                            Array.from(slots).map((element, index) => (
+                                            Array.from(slotNumberDropdownValues).map((element, index) => (
                                             <option value={element}>{element}</option>
                                             ))
                                         }
@@ -575,7 +593,7 @@ export default class SearchForm extends React.Component {
                             
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Release Date</Form.Label>
+                                    <Form.Label>Actual Release Date</Form.Label>
                                     <Form.Control type="date" value={releaseDate} onChange={this.changeReleaseDate} />
                                 </Form.Group>
                             </Row>
@@ -607,10 +625,12 @@ export default class SearchForm extends React.Component {
                                     <Form.Text className="result_header_text">Found results: {results.length} </Form.Text>
                                 </Col>
                                
-                                <Col id="button_col"><Button variant="secondary" onClick={this.downloadResultsCSV}>Export to CSV</Button></Col>
+                                <Col id="button_col"><Button variant="secondary" disabled={results.length === 0} onClick={this.downloadResultsCSV}>Export to CSV</Button></Col>
                             </Row>
-                            
-                            <ResultsTable results={results} handleRowClick={this.handleRowClick} /> </>: null}
+                            <div className="table_overflow">
+                                <ResultsTable results={results} handleRowClick={this.handleRowClick} />
+                            </div>
+                            </>: null}
                     </div>
                 </div>
             
@@ -620,7 +640,7 @@ export default class SearchForm extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     {selectedResult !== null && selectedResult.owner !== undefined ?
-                        <CarRegistrationForm vehicle={selectedResult} /> : <> </>
+                        <CarRegistrationForm vehicle={selectedResult} callLogout={this.props.callLogout}/> : <> </>
                     }
                 </Modal.Body>
             </Modal>

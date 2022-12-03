@@ -30,7 +30,7 @@ class InsufficientPrivModal extends React.Component {
                     User does not have the sufficient privileges to register a new user. Press 'OK' to proceed. 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={onHide}>OK</Button>
+                    <Button variant="secondary" onClick={onHide}>OK</Button>
                 </Modal.Footer>
             </Modal>
         );

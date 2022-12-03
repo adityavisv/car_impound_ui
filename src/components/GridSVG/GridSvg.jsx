@@ -555,7 +555,7 @@ class GridSvg extends React.Component {
                         </text>
                 ));
 
-                const colThreeSlice = clickedZoneData.slice(50, 75);
+                const colThreeSlice = clickedZoneData.slice(50, 76);
                 const colThreeNumbers = colThreeSlice.map((item, index) => (
                     <text
                         x="38"
@@ -1354,7 +1354,7 @@ class GridSvg extends React.Component {
                     />
                 ));
 
-                const colThreeSlice = clickedZoneData.slice(50, 75);
+                const colThreeSlice = clickedZoneData.slice(50, 76);
                 const colThreeElements = colThreeSlice.map((item, index) => (
                     <rect id={item.zoneLabel + item.slotNumber}
                         x="30"
@@ -1502,7 +1502,8 @@ class GridSvg extends React.Component {
                             closeForm={this.closeReleaseModal}
                             selectedSlot={selectedSlot[0]} 
                             callZoneSummaryService={this.props.callZoneSummaryService} 
-                            closeGridSvg={this.props.closeGridSvg} 
+                            closeGridSvg={this.props.closeGridSvg}
+                            callLogout={this.props.callLogout}
                         />
                     </Modal.Body>
                 </Modal>

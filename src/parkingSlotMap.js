@@ -1,0 +1,49 @@
+export const parkingSlotNumberMap = [{
+    zoneLabel: 'A',
+    count: 88
+}, {
+    zoneLabel: 'B',
+    count: 71
+}, {
+    zoneLabel: 'C',
+    count: 75
+}, {
+    zoneLabel: 'D',
+    count: 85
+}, {
+    zoneLabel: 'E',
+    count: 95
+}, {
+    zoneLabel: 'F',
+    count: 101
+}, {
+    zoneLabel: 'G',
+    count: 109
+}, {
+    zoneLabel: 'H',
+    count: 118
+}, {
+    zoneLabel: 'I',
+    count: 129
+}, {
+    zoneLabel: 'J',
+    count: 144
+}, {
+    zoneLabel: 'K',
+    count: 165
+}, {
+    zoneLabel: 'L',
+    count: 193
+}, {
+    zoneLabel: 'M',
+    count: 213
+}, {
+    zoneLabel: 'N',
+    count: 111
+}, {
+    zoneLabel: 'O',
+    count: 134
+}, {
+    zoneLabel: 'T',
+    count: 76
+}];

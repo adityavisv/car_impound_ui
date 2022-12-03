@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
 import ReleaseQueueComponent from '../components/ReleaseQueueComponent';
 import { Navigate } from 'react-router-dom';
+import LoadingOverlay from 'react-loading-overlay';
 
 class ReleaseQueuePage extends React.Component {
     constructor(props) {
@@ -68,10 +69,13 @@ class ReleaseQueuePage extends React.Component {
             return <Navigate replace to="/login" />
         }
         return (
-            <>
+            <LoadingOverlay active={releaseQueueReqInit}
+                spinner
+                text='Loading...'
+            >
                 <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} />
                 <ReleaseQueueComponent releaseQueue={releaseQueue} callLogout={this.callLogout} callReleaseQueueService={this.callFetchReleaseQueueService}/>
-            </>
+            </LoadingOverlay>
         )
     }
 }

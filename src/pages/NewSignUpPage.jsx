@@ -152,7 +152,7 @@ class NewSignUpPage extends React.Component {
             return <Navigate to="/login" replace />
         }
         else {
-            if (user.roles.includes("ROLE_ADMIN")) {
+            if (user.roles.includes("ROLE_SUPERUSER")) {
                 return (
                     <div> 
                         <NavbarComponent currentUser={user} callLogout={this.callLogout} />

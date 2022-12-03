@@ -1,0 +1,17 @@
+.queue_container {
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 1%;
+}
+
+.upcoming_release_header_text {
+    text-align: center;
+    font-size: 1.5em;
+    text-decoration: underline
+}
+
+.upcoming_release_padded {
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 1%;
+}

@@ -12,7 +12,7 @@ class LoginRedirectModal extends React.Component {
                         Your session has expired, redirecting to login screen. Press 'OK' to proceed.
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={hideRedirectLoginModal}>OK</Button>
+                        <Button variant="secondary" onClick={hideRedirectLoginModal}>OK</Button>
                     </Modal.Footer>
                 </Modal>
         )

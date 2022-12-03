@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Row, Col, Container, Button } from 'react-bootstrap';
 import UserService from '../services/user.service';
+import LoginRedirectModal from './LoginRedirectModal';
 import '../styles/releasecarform.css';
 
 class ReleaseCarForm extends React.Component {
@@ -10,6 +11,7 @@ class ReleaseCarForm extends React.Component {
             selectedSlot: this.props.selectedSlot,
             isVehicleReleaseStarted: false,
             isVehicleReleaseDone: false,
+            shouldShowLoginRedirectModal: false,
             releasePayload: {
                 firstName: '',
                 lastName: '',
@@ -67,16 +69,35 @@ class ReleaseCarForm extends React.Component {
                             isVehicleReleaseDone: true
                         });        
                         this.props.closeForm();
-                        this.props.closeGridSvg();
-                        this.props.callZoneSummaryService();
+                        if (this.props.closeGridSvg !== undefined && this.props.callZoneSummaryService !== undefined) {
+                            this.props.closeGridSvg();
+                            this.props.callZoneSummaryService();
+                        }
+                        if (this.props.callUpcomgingReleasesService !== undefined && this.props.closeResultModal !== undefined) {
+                            this.props.closeResultModal();
+                            this.props.callUpcomgingReleasesService();
+                        }
+                        
                         
                     })
                     .catch((error) => {
-                        window.alert("document upload failed");
+                        if (error.response !== undefined && error.response.status !== undefined) {
+                            if (error.response.status === 401)
+                                this.setState({
+                                    shouldShowRedirectLoginModal: true
+                                });
+                        }
+                        
                     });
             })
             .catch((error) =>{
-                window.alert("Release failed");
+                if (error.response !== undefined && error.response.status !== undefined) {
+                    if (error.response.status === 401) {
+                        this.setState({
+                            shouldShowRedirectLoginModal: true
+                        });
+                    }
+                }
             });
     }
 
@@ -161,9 +182,16 @@ class ReleaseCarForm extends React.Component {
         });
     }
 
+    hideRedirectLoginModal = () => {
+        this.setState({
+            shouldShowRedirectLoginModal: false
+        });
+        this.props.callLogout();
+    }
+
     render = () => {
-        const { releasePayload: {
-            firstName, lastName, emailAddress, idNumber, idType, contactNumber, nationality
+        const { shouldShowRedirectLoginModal, releasePayload: {
+            firstName, lastName, emailAddress, idNumber, idType, contactNumber, nationality,
         }} = this.state;
 
         return (
@@ -209,7 +237,7 @@ class ReleaseCarForm extends React.Component {
                             <Form.Control type="text" required={true} value={idNumber} onChange={this.changeIdNumber} />
                         </Form.Group>
                     </Row>
-                    <Row classname="mb-3">
+                    <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Release Document *</Form.Label>
                             <Form.Control type="file" required onChange={this.changeReleaseDocument} />
@@ -217,9 +245,13 @@ class ReleaseCarForm extends React.Component {
                     </Row>
                    
                     <div id="button_container">
-                            <Button type="submit" variant="secondary">Release</Button>
+                            <Button type="submit" variant="secondary">Approve Release</Button>
                     </div>
                 </Form>
+                <LoginRedirectModal
+                    shouldShowRedirectLoginModal={shouldShowRedirectLoginModal}
+                    hideRedirectLoginModal={this.hideRedirectLoginModal}
+                />
             </Container>
         );
     }

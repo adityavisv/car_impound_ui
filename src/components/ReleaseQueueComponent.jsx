@@ -76,12 +76,12 @@ class ReleaseQueueComponent extends React.Component {
       }
 
     downloadReleaseDoc = () => {
-        const { selectedVehicle: {releaseDocument} } = this.state;
-        const bytes = this.b64toBlob(releaseDocument, "application/pdf");
+        const { selectedVehicle: {releaseDocument: { base64EncodedBlob, contentType}} } = this.state;
+        const bytes = this.b64toBlob(base64EncodedBlob, contentType);
         let url = window.URL.createObjectURL(bytes);
         let a = document.createElement('a');
         a.href = url;
-        a.download = 'RELEASEDOCUMENT.pdf';
+        a.download = `RELEASEDOCUMENT.${contentType.split('/')[1]}`;
         a.click();
     }
 
@@ -150,13 +150,13 @@ class ReleaseQueueComponent extends React.Component {
                     </div>
                     <div className="modal_images">
                         {selectedVehicle.images !== null && selectedVehicle.images !== undefined && selectedVehicle.images.length > 0 ?
-                        <Carousel>
+                        <Carousel variant="dark">
                         {Array.from(selectedVehicle.images).map((image) => (
                             <Carousel.Item>
                                 <img
-                                    src={"data:image/png;base64," + image}
-                                    width="200"
-                                    height="200"
+                                    src={`data:${image.contentType};;base64,` + image.base64EncodedBlob}
+                                    width="300"
+                                    height="300"
                                 />
                             </Carousel.Item>
                         ))}
@@ -169,7 +169,7 @@ class ReleaseQueueComponent extends React.Component {
                 <Modal.Footer>
                     <div id="button_footer_container">
                                 
-                        <Button onClick={this.doFinalRelease} variant="secondary">Approve Release</Button>    
+                        <Button onClick={this.doFinalRelease} variant="secondary">Approve Exit</Button>    
                     </div>
                 </Modal.Footer>
             </Modal>
@@ -204,7 +204,7 @@ class ReleaseQueueComponent extends React.Component {
                         }
                     </tbody>
                 </Table>
-            </div> : <h3>No vehicles currently in release queue.</h3>}
+            </div> : <h3>No vehicles currently in exit queue.</h3>}
             <LoginRedirectModal
                 shouldShowRedirectLoginModal={shouldShowRedirectLoginModal}
                 hideRedirectLoginModal={this.hideRedirectLoginModal}

@@ -86,7 +86,7 @@ class ParkingLotViewPage extends React.Component {
                                 <Alert variant="danger">There was an error retrieving data. Please retry.</Alert>
                             </Modal.Body>
                             <Modal.Footer>
-                                <Button variant="primary" onClick={this.hideRetryModal}>Retry</Button>
+                                <Button variant="secondary" onClick={this.hideRetryModal}>Retry</Button>
                             </Modal.Footer>
                         
                     </Modal>

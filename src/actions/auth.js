@@ -61,7 +61,7 @@ export const login = (username, password) => (dispatch) => {
                     error.response.data.message) ||
                 error.message ||
                 error.toString();
-            const statusCode = error.response.status;
+            const statusCode = error.response !== undefined ? error.response.status : 0;
 
             dispatch({
                 type: LOGIN_FAIL,

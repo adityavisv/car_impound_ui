@@ -31,7 +31,7 @@ class SignOutConfirmModal extends React.Component {
                     You will be signed out of your current session. Press 'OK' to proceed.
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={onHide}>OK</Button>
+                    <Button variant="secondary" onClick={onHide}>OK</Button>
                 </Modal.Footer>
             </Modal>
         )

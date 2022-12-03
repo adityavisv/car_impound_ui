@@ -19,12 +19,12 @@ class SingleSlotOverviewModal extends React.Component {
         else {
             if (ocStatus === "AVAILABLE") {
                 return  <>
-                    <Button variant="primary" onClick={showRegisterModal}>Assign</Button>
-                    {zoneLabel !== 'T' ? <Button variant="primary" onClick={setFirstSelectedSlot}>Assign to Multiple Slots</Button> : <></>}
+                    <Button variant="secondary" onClick={showRegisterModal}>Assign</Button>
+                    {zoneLabel !== 'T' ? <Button variant="secondary" onClick={setFirstSelectedSlot}>Assign to Multiple Slots</Button> : <></>}
                 </>
             }
             else {
-                return <><Button variant="primary" onClick={showReleaseModal}>Release</Button></>;
+                return <><Button variant="secondary" onClick={showReleaseModal}>Release</Button></>;
 
             }
         }
@@ -77,7 +77,7 @@ class SingleSlotOverviewModal extends React.Component {
                                    {Array.from(selectedSlot.occupiedVehicle.images).map((image, index) => (
                                        <Carousel.Item>
                                            <img
-                                               src={"data:image/png;base64," + image}
+                                               src={`data:${image.contentType};base64,` + image.base64EncodedBlob}
                                                width="200"
                                                height="200"
                                                />
