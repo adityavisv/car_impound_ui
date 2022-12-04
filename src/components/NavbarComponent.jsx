@@ -20,10 +20,12 @@ class NavbarComponent extends React.Component {
                                     <FontAwesomeIcon icon={faParking} fixedWidth />
                                     <span className="nav_text"> Parking View </span>
                                 </Nav.Link>
+                                { roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
                                 <Nav.Link href="/search" className="nav_link">
                                     <FontAwesomeIcon icon={faSearch} fixedWidth />
                                     <span className="nav_text"> Search </span>
-                                </Nav.Link>
+                                </Nav.Link> : <></>}
+
                                 
                                 {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") ?
@@ -32,10 +34,12 @@ class NavbarComponent extends React.Component {
                                         <span className="nav_text"> Upcoming Releases</span>
                                     </Nav.Link> : <></>
                                 }
+                                {
+                                    roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
                                 <Nav.Link href="/relqueue" className="nav_link">
                                     <FontAwesomeIcon icon={faUnlock} fixedWidth />
                                     <span className="nav_text"> Exit Queue</span>
-                                </Nav.Link>
+                                </Nav.Link> : <></> }
                                 
                                 <Nav.Link href="/layoutref" className="nav_link">
                                     <FontAwesomeIcon icon={faFileImage} fixedWidth />
