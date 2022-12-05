@@ -1,8 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = '"http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/v1/zone';
-const VEHICLE_API_URL = '"http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/v1/vehicle';
+const API_URL = 'http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/v1/zone';
+const VEHICLE_API_URL = 'http://localhost:8080/impoundsrv-0.0.1-SNAPSHOT/api/v1/vehicle';
 
 class UserService {
     getZone(zone) {
