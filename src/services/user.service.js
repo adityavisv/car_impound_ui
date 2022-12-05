@@ -141,6 +141,16 @@ class UserService {
             }
         })
     }
+
+    getUpcomingReleases() {
+        return axios({
+            method: 'get',
+            url: API_URL + '/upcomingreleases',
+            headers: {
+                ...authHeader()
+            },
+        })
+    }
 }
 
 export default new UserService();
