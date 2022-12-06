@@ -3,6 +3,8 @@ import { Form, Modal, Table, Button } from 'react-bootstrap';
 import '../styles/upcomingreleases.css';
 import CarRegistrationForm from './CarRegistrationForm';
 import ReleaseCarForm from './ReleaseCarForm';
+import { getEmirateDisplay } from '../helpers/generalhelpers';
+
 class UpcomingReleaseComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -71,9 +73,9 @@ class UpcomingReleaseComponent extends React.Component {
         const { upcomingReleases, selectedVehicle, showVehicleProfile, showReleaseModal, selectedSlot } = this.state;
         return (
             <div className="upcoming_release_padded">
-                <Modal show={showVehicleProfile} onHide={this.closeResultModal} animation={false} size="xl">
+                <Modal show={showVehicleProfile} onHide={this.closeResultModal} animation={false} size="xl" centered>
                     <Modal.Header closeButton>
-                        Vehicle Profile
+                        <Modal.Title className="ms-auto">Registration Information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {selectedVehicle !== {} && selectedVehicle.owner !== undefined ?
@@ -103,39 +105,36 @@ class UpcomingReleaseComponent extends React.Component {
                 </Modal>
 
                 <div className="upcoming_release_header_text">
-                    <Form.Text className="upcoming_release_header_text">SCHEDULED RELEASES</Form.Text>
+                    <Form.Text className="upcoming_release_header_text">UPCOMING RELEASES</Form.Text>
                 </div>
                 <div>
-                    <Table hover variant="dark">
-                        <thead>
+                    <Table hover variant="dark" bordered>
+                        <thead className="table-light">
                             <tr>
-                            
-                                <th>Vehicle Make</th>
-                                <th>Vehicle Model</th>
-                                <th>Vehicle Color</th>
-                                <th>Vehicle Type</th>
+                                <th>Parking Slot Number</th>
                                 <th>Emirate</th>
                                 <th>Category</th>
                                 <th>Code</th>
                                 <th>Number Plate</th>
-                                <th>Registration Date/Time</th>
-                                <th>Estimated Release Date</th>
+                                <th>Make</th>
+                                <th>Model</th>
+                                <th>Colour</th>
+                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody>
                         {
                             Array.from(upcomingReleases).map((item) =>(
                                 <tr id={item.id} onClick={this.handleRowClick} key={item.id}>
-                                    <th>{item.make}</th>
-                                    <th>{item.model}</th>
-                                    <th>{item.color}</th>
-                                    <th>{item.type}</th>
-                                    <th>{item.emirate}</th>
-                                    <th>{item.category}</th>
-                                    <th>{item.code}</th>
-                                    <th>{item.numberPlate}</th>
-                                    <th>{(new Date(item.registrationDateTime)).toLocaleString("en-IN")}</th>
-                                    <th>{(new Date(item.estimatedReleaseDate)).toLocaleDateString("en-IN")}</th>
+                                    <td>{item.parkingSlot}</td>
+                                    <td>{getEmirateDisplay(item.emirate)}</td>
+                                    <td>{item.category}</td>
+                                    <td>{item.code}</td>
+                                    <td>{item.numberPlate}</td>
+                                    <td>{item.make}</td>
+                                    <td>{item.model}</td>
+                                    <td>{item.color}</td>
+                                    <td>{item.type}</td>
                                 </tr>  
                             ))
                         }

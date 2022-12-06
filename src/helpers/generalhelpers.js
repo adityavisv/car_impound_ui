@@ -73,3 +73,33 @@ export const getSlotsByZone = (zoneLabel) => {
         return Array.from(Array(zoneObj[0].count).keys());
     }
 }
+
+export const getVehicleStatusDisplay = (status) => {
+    switch (status) {
+        case 'APPROVED_FOR_RELEASE':
+            return "Approved for release"
+        case 'RELEASED':
+            return "Released"
+        case 'REGISTERED':
+            return "Registered"
+    }
+}
+
+export const getEmirateDisplay = (emirate) => {
+    switch (emirate) {
+        case "ABU_DHABI":
+            return "Abu Dhabi"
+        case "DUBAI":
+            return "Dubai"
+        case "FUJAIRAH":
+            return "Fujairah"
+        case "AJMAN":
+            return "Ajman"
+        case "RAS_AL_KHAYMAH":
+            return "Ras Al Khaymah"
+        case "UMM_AL_QUWAIN":
+            return "Umm Al Quwain"
+        case "SHARJAH":
+            return "Sharjah"
+    }
+}

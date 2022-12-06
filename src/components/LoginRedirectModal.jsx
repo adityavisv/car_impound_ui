@@ -4,9 +4,9 @@ class LoginRedirectModal extends React.Component {
     render = () => {
         const { shouldShowRedirectLoginModal, hideRedirectLoginModal } = this.props;
         return (
-            <Modal show={shouldShowRedirectLoginModal} onHide={hideRedirectLoginModal}>
+            <Modal show={shouldShowRedirectLoginModal} onHide={hideRedirectLoginModal} centered>
                     <Modal.Header>
-                        <Modal.Title>Session Expired</Modal.Title>
+                        <Modal.Title className="ms-auto">Session Expired</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         Your session has expired, redirecting to login screen. Press 'OK' to proceed.

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Carousel, Modal, Table, Button } from 'react-bootstrap';
+import { Carousel, Modal, Table, Button, Form } from 'react-bootstrap';
 import LoginRedirectModal from './LoginRedirectModal';
 import UserService from '../services/user.service';
+import { getEmirateDisplay } from '../helpers/generalhelpers';
 import '../styles/releasequeue.css';
 
 class ReleaseQueueComponent extends React.Component {
@@ -116,9 +117,9 @@ class ReleaseQueueComponent extends React.Component {
         const { releaseQueue, shouldShowFinalReleaseModal,  selectedVehicle, shouldShowRedirectLoginModal } = this.state;
         return (
             <>
-            <Modal show={shouldShowFinalReleaseModal} onHide={this.hideFinalReleaseModal} size="lg">
+            <Modal show={shouldShowFinalReleaseModal} onHide={this.hideFinalReleaseModal} size="lg" centered>
                 <Modal.Header closeButton>
-                    <h3>Vehicle Release Exit</h3>
+                    <Modal.Title className="ms-auto">Vehicle Release Exit</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="modal_table">
@@ -173,18 +174,25 @@ class ReleaseQueueComponent extends React.Component {
                     </div>
                 </Modal.Footer>
             </Modal>
+            <div className="upcoming_release_header_text">
+                    <Form.Text className="upcoming_release_header_text">EXIT QUEUE</Form.Text>
+                </div>
             {
 
                 releaseQueue.length > 0 ?
             <div className="queue_container">
                 <Table hover variant="dark">
-                    <thead>
+                    <thead className="table-light">
                         <tr>
+                            <th>Parking Slot Number</th>
+                            <th>Emirate</th>
+                            <th>Category</th>
+                            <th>Code</th>
                             <th>Number Plate</th>
-                            <th>Vehicle Make</th>
-                            <th>Vehicle Model</th>
-                            <th>Vehicle Color</th>
-                            <th>Vehicle Type</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Colour</th>
+                            <th>Type</th>
                             <th>Release Approval Date/Time</th>
                         </tr>
                     </thead>
@@ -192,6 +200,10 @@ class ReleaseQueueComponent extends React.Component {
                         {
                             Array.from(releaseQueue).map((item) =>(
                               <tr id={item.id} onClick={this.handleRowClick} key={item.id}>
+                                  <td>{item.parkingSlot}</td>
+                                  <td>{getEmirateDisplay(item.emirate)}</td>
+                                  <td>{item.category}</td>
+                                  <td>{item.code}</td>
                                   <td>{item.numberPlate}</td>
                                   <td>{item.make}</td>
                                   <td>{item.model}</td>

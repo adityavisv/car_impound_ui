@@ -12,6 +12,11 @@
     border: 1px solid #111111;
 }
 
+.modal_title {
+    color: yellow;
+    text-align: center;
+}
+
 svg.zoneSvg {
     margin-top: 5%;
     margin-left: 1%;

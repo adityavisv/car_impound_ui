@@ -23,9 +23,9 @@ class SignOutConfirmModal extends React.Component {
     render = () => {
         const { show, onHide } = this.state;
         return (
-            <Modal show={show} onHide={onHide}>
+            <Modal show={show} onHide={onHide} centered>
                 <Modal.Header>
-                    <Modal.Title>Sign Out</Modal.Title>
+                    <Modal.Title className="ms-auto">Sign Out</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     You will be signed out of your current session. Press 'OK' to proceed.

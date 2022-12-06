@@ -22,9 +22,9 @@ class InsufficientPrivModal extends React.Component {
     render = () => {
         const { onHide } = this.state;
         return (
-            <Modal onHide={onHide} show={true}>
+            <Modal onHide={onHide} show={true} centered>
                 <Modal.Header>
-                    <Modal.Title>Insufficient Privilege</Modal.Title>
+                    <Modal.Title className="ms-auto">Insufficient Privilege</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     User does not have the sufficient privileges to register a new user. Press 'OK' to proceed. 

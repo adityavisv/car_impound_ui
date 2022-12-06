@@ -77,9 +77,9 @@ class ParkingLotViewPage extends React.Component {
                 text='Loading...'
             >
                 <div>
-                    <Modal show={zoneSummaryReqFail} onHide={this.hideRetryModal}>
+                    <Modal show={zoneSummaryReqFail} onHide={this.hideRetryModal} centered>
                         <Modal.Header closeButton>
-                            <Modal.Title>
+                            <Modal.Title className="ms-auto">
                                Error
                             </Modal.Title></Modal.Header>
                             <Modal.Body>

@@ -11,6 +11,7 @@ import CarRegistrationForm from './CarRegistrationForm';
 import ResultsTable from './ResultsTable';
 import { makeModelData } from '../newcardb';
 import { convertResultsToCsv, getAllModelsByMake, getSlotsByZone } from '../helpers/generalhelpers';
+import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 
 export default class SearchForm extends React.Component {
 
@@ -57,6 +58,7 @@ export default class SearchForm extends React.Component {
             selectedResult: {},
             showResults: false,
             results: [],
+            status: ''
         }
     }
 
@@ -190,6 +192,12 @@ export default class SearchForm extends React.Component {
         });
     }
 
+    changeStatus = (event) => {
+        this.setState({
+            status: event.target.value
+        });
+    }
+
     changeIsWanted = (event) => {
         this.setState({
             isWanted: event.target.value
@@ -256,6 +264,7 @@ export default class SearchForm extends React.Component {
             releaseLastname,
             ownerNationality,
             remarksKeyword,
+            status
         } = this.state;
 
         if (make !== '')
@@ -304,6 +313,8 @@ export default class SearchForm extends React.Component {
             params.estimatedReleaseDate = estimatedReleaseDate;
         if (remarksKeyword !== '')
             params.remarksKeyword = remarksKeyword;
+        if (status !== '')
+            params.status = status;
 
         UserService.searchVehicles(params)
             .then((response) => {
@@ -388,6 +399,96 @@ export default class SearchForm extends React.Component {
             a.click();
     }
 
+    populateCategoryDropdown = () => {
+        const { emirate } = this.state;
+        const emirateMapData = EMIRATES_CATEGORY_CODE_MAP.filter((element) => (
+            element.emirate === emirate
+        ));
+        if (emirateMapData !== undefined && emirateMapData.length > 0) {
+            const options = Array.from(emirateMapData[0].categories).map((item) => (
+                <option value={item.display}>{item.display}</option>
+            ));
+            return (
+                <>
+                    {options}
+                </>
+            );
+        }
+        return null;
+       
+    }
+
+    populateCodeDropdown = () => {
+        const { emirate, category} = this.state;
+        const emirateMapData = EMIRATES_CATEGORY_CODE_MAP.filter((element) => (
+            element.emirate === emirate
+        ));
+        if (emirateMapData.length > 0) {
+            const categoryObject = emirateMapData[0].categories.filter((element) => (element.value === category));
+            if (categoryObject.length > 0) {
+                const codeOptions = Array.from(categoryObject[0].codes).map((item) => (
+                    <option value={item.display}>{item.display}</option>
+                ));
+                return (
+                    <>
+                        {codeOptions}
+                    </>
+                );
+            }
+            else {
+                return (
+                    <>
+                    </>
+                );
+            }
+            
+        }
+    }
+
+    clearSearchForm = () => {
+        const allMakes = makeModelData.map((value) => (
+            value.brand
+        ));
+
+        this.setState({
+            searchInit: false,
+            shouldShowRedirectLoginModal: false,
+            makesDropdownValues: [... new Set(allMakes)],
+            modelsDropdownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
+            slotNumberDropdownValues: [],
+            searchDone: false,
+            data: [],
+            chassisNumber: '',
+            caseNumber: '',
+            make: '',
+            model: '',
+            color: '',
+            type: '',
+            zoneLabel: '',
+            slot: '',
+            startDate: '',
+            endDate: '',
+            numberPlate: '',
+            ownerFirstname : '',
+            ownerLastname: '',
+            category: '',
+            emirate: '',
+            code: '',
+            isWanted: '',
+            ownerNationality: '',
+            emirate: '',
+            releaseDate: '',
+            estimatedReleaseDate: '',
+            remarksKeyword: '',
+
+            showResultModal: false,
+            selectedResult: {},
+            showResults: false,
+            results: [],
+            status: ''
+        })
+    }
+
     render = () => {
         const {
             results,  
@@ -421,7 +522,9 @@ export default class SearchForm extends React.Component {
             modelsDropdownValues,
             slotNumberDropdownValues,
             remarksKeyword,
+            status
         } = this.state;
+
         return (
             <LoadingOverlay
                 active={this.loadingOverlayController()}
@@ -433,7 +536,7 @@ export default class SearchForm extends React.Component {
                         <Form onSubmit={this.hitSearch}>
                             <Row id="searchform_topbar" className="mb-3">
                                 <Col>
-                                <Form.Text className="search_form_text">Search By:</Form.Text>
+                                    <Button onClick={this.clearSearchForm} id="search_btn" variant="secondary">Clear</Button>
                                 </Col>
                                     
                                 <Col id="search_btn_col">
@@ -480,11 +583,22 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Vehicle Type</Form.Label>
-                                    <Form.Select value={type} onChange={this.changeType}>
+                                    <Form.Select size="sm" value={type} onChange={this.changeType}>
                                         <option value=''>Select an option</option>
                                         <option value="CAR">Car</option>
                                         <option value="TRUCK">Truck</option>
                                         <option value="MOTORCYCLE">Motorcycle</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Row>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Status</Form.Label>
+                                    <Form.Select size="sm" value={status} onChange={this.changeStatus}>
+                                        <option value=''>Select an option</option>
+                                        <option value='REGISTERED'>Registered</option>
+                                        <option value='APPROVED_FOR_RELEASE'>Approved for release</option>
+                                        <option value='RELEASED'>Released</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Row>
@@ -515,19 +629,34 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Emirate</Form.Label>
-                                    <Form.Control type="text" size="sm" value={emirate} onChange={this.changeEmirate} />
+                                    <Form.Select size="sm" value={emirate} onChange={this.changeEmirate}>
+                                        <option value=''>Select an option</option>
+                                        <option value="ABU_DHABI">Abu Dhabi</option>
+                                        <option value="AJMAN">Ajman</option>
+                                        <option value="DUBAI">Dubai</option>
+                                        <option value="FUJAIRAH">Fujairah</option>
+                                        <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
+                                        <option value="SHARJAH">Sharjah</option>
+                                        <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
+                                    </Form.Select>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Category</Form.Label>
-                                    <Form.Control type="text" size="sm" value={category} onChange={this.changeCategory} />
+                                    <Form.Select size="sm" value={category} onChange={this.changeCategory}>
+                                        <option value=''>Select an option</option>
+                                        {this.populateCategoryDropdown()}
+                                    </Form.Select>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Code</Form.Label>
-                                    <Form.Control type="text" size="sm" value={code} onChange={this.changeCode} />
+                                    <Form.Select size="sm" value={code} onChange={this.changeCode}>
+                                        <option value=''>Select an option</option>
+                                        {this.populateCodeDropdown()}
+                                    </Form.Select>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
@@ -543,19 +672,19 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Owner First Name</Form.Label>
-                                    <Form.Control type="text" value={ownerFirstname} onChange={this.changeOwnerFirstname} />
+                                    <Form.Control size="sm" type="text" value={ownerFirstname} onChange={this.changeOwnerFirstname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Owner Last Name</Form.Label>
-                                    <Form.Control type="text" value={ownerLastname} onChange={this.changeOwnerLastname} />
+                                    <Form.Control size="sm" type="text" value={ownerLastname} onChange={this.changeOwnerLastname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Owner Nationality</Form.Label>
-                                    <Form.Control type="text" value={ownerNationality} onChange={this.changeOwnerNationality} />
+                                    <Form.Control size="sm" type="text" value={ownerNationality} onChange={this.changeOwnerNationality} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
@@ -587,32 +716,32 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Estimated Release Date</Form.Label>
-                                    <Form.Control type="date" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} />
+                                    <Form.Control type="date" size="sm" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} />
                                 </Form.Group>
                             </Row>
                             
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Actual Release Date</Form.Label>
-                                    <Form.Control type="date" value={releaseDate} onChange={this.changeReleaseDate} />
+                                    <Form.Control type="date" size="sm" value={releaseDate} onChange={this.changeReleaseDate} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Release Personnel First Name</Form.Label>
-                                    <Form.Control type="text" value={releaseFirstname} onChange={this.changeReleaseFirstname} />
+                                    <Form.Control type="text" size="sm" value={releaseFirstname} onChange={this.changeReleaseFirstname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Release Personnel Last Name</Form.Label>
-                                    <Form.Control type="text" value={releaseLastname} onChange={this.changeReleaseLastname} />
+                                    <Form.Control type="text" size="sm" value={releaseLastname} onChange={this.changeReleaseLastname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Keywords in remarks</Form.Label>
-                                    <Form.Control type="text" value={remarksKeyword} onChange={this.changeremarksKeyword} />
+                                    <Form.Control type="text" size="sm" value={remarksKeyword} onChange={this.changeremarksKeyword} />
                                 </Form.Group>
                             </Row>
                         </Form>
@@ -634,9 +763,9 @@ export default class SearchForm extends React.Component {
                     </div>
                 </div>
             
-            <Modal show={showResultModal} onHide={this.closeResultModal} animation={false} size="xl">
+            <Modal show={showResultModal} onHide={this.closeResultModal} animation={false} size="xl" centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Search Result</Modal.Title>
+                    <Modal.Title className="ms-auto">Registration Information</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {selectedResult !== null && selectedResult.owner !== undefined ?

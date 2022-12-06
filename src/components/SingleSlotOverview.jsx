@@ -42,7 +42,7 @@ class SingleSlotOverviewModal extends React.Component {
         return (
             <Modal show={shouldDisplaySlotModal} onHide={closeSlotModal} centered>
                     <Modal.Header closeButton>
-                        <Modal.Title>Slot Status - <span className={selectedSlot.occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
+                        <Modal.Title className="ms-auto">Slot Status - <span className={selectedSlot.occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
                                     {selectedSlot.occupancyStatus}</span> </Modal.Title>
                     </Modal.Header>
 

@@ -106,9 +106,9 @@ class ParkingLotCounter extends React.Component {
                 text={`Fetching Zone - ${clickedZone} data`}
                 
             >
-                <Modal show={showGridSvg} onHide={this.handleGridSvgClose} size="xl">
+                <Modal show={showGridSvg} onHide={this.handleGridSvgClose} size="xl" centered>
                     <Modal.Header closeButton>
-                        <h3>Zone - {clickedZone}</h3>
+                        <Modal.Title className="ms-auto">Zone - {clickedZone}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {this.svgToRender(close)}

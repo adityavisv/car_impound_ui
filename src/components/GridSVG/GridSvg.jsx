@@ -1478,9 +1478,9 @@ class GridSvg extends React.Component {
                     showReleaseModal={this.showReleaseModal}
                     setFirstSelectedSlot={this.setFirstSelectedSlot}
                 />
-                 <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="xl">
+                 <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="xl" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title>New Vehicle Registration</Modal.Title>
+                        <Modal.Title className="ms-auto">New Vehicle Registration</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <CarRegistrationForm
@@ -1493,9 +1493,9 @@ class GridSvg extends React.Component {
                     </Modal.Body>
                 </Modal>
 
-                <Modal show={shouldShowReleaseModal} onHide={this.closeReleaseModal} size="lg">
+                <Modal show={shouldShowReleaseModal} onHide={this.closeReleaseModal} size="lg" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title>Vehicle Release</Modal.Title>
+                        <Modal.Title className="ms-auto">Vehicle Release</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <ReleaseCarForm 

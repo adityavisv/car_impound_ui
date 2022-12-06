@@ -12,6 +12,20 @@
     /* text-align: center; */
 }
 
+td {
+    white-space: nowrap;
+    padding: 15px 0;
+}
+
+tr {
+    white-space: nowrap;
+    padding: 15px 0;
+}
+
+th {
+    white-space: nowrap;
+}
+
 .table_overflow {
     width: 100%;
     overflow-x: scroll;
