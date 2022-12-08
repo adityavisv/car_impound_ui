@@ -184,7 +184,7 @@ class ReleaseQueueComponent extends React.Component {
                 <Table hover variant="dark">
                     <thead className="table-light">
                         <tr>
-                            <th>Parking Slot Number</th>
+                            
                             <th>Emirate</th>
                             <th>Category</th>
                             <th>Code</th>
@@ -200,7 +200,7 @@ class ReleaseQueueComponent extends React.Component {
                         {
                             Array.from(releaseQueue).map((item) =>(
                               <tr id={item.id} onClick={this.handleRowClick} key={item.id}>
-                                  <td>{item.parkingSlot}</td>
+                                 
                                   <td>{getEmirateDisplay(item.emirate)}</td>
                                   <td>{item.category}</td>
                                   <td>{item.code}</td>

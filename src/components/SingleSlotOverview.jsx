@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Row, Container, Button, Carousel } from 'react-bootstrap';
+import { Modal, Table, Button, Carousel } from 'react-bootstrap';
 import '../styles/singleslotoverview.css';
 
 class SingleSlotOverviewModal extends React.Component {
@@ -37,60 +37,83 @@ class SingleSlotOverviewModal extends React.Component {
             selectedSlot,
         } = this.props;
 
+        var selectedSlotVar = {
+            ...selectedSlot
+        }
+        if (selectedSlot.occupiedVehicle === null)
+            selectedSlotVar.occupiedVehicle = {};
+        const { 
+            zoneLabel,
+            slotNumber,
+            occupancyStatus,
+            occupiedVehicle: {
+                make = '',
+                model = '',
+                numberPlate = '',
+                images = ''
+            } = {}
+
+        } = selectedSlotVar;
         
 
         return (
-            <Modal show={shouldDisplaySlotModal} onHide={closeSlotModal} centered>
+            <Modal show={shouldDisplaySlotModal} onHide={closeSlotModal} centered size="lg">
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">Slot Status - <span className={selectedSlot.occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
-                                    {selectedSlot.occupancyStatus}</span> </Modal.Title>
+                        <Modal.Title className="ms-auto">Slot Status - <span className={occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
+                                    {occupancyStatus}</span> </Modal.Title>
                     </Modal.Header>
 
                     <Modal.Body>
-                        <Container>
-                            <div className="text_info">
-                               
-                                <Row>
-                                    Zone Label : {selectedSlot.zoneLabel}
-                                </Row>
-                                <Row>
-                                    Slot Number: {selectedSlot.slotNumber}
-                                </Row>
-                                {selectedSlot.occupancyStatus === 'OCCUPIED' ?
-                                    <>
-                                        <Row>
-                                            Make: {selectedSlot.occupiedVehicle.make}
-                                        </Row>
-                                        <Row>
-                                            Model: {selectedSlot.occupiedVehicle.model}
-                                        </Row>
-                                        <Row>
-                                            Number Plate: {selectedSlot.occupiedVehicle.numberPlate}
-                                        </Row> 
-                                        
-                                        
-                                    </> : <></>}
-                            </div>
-                            <div className="image_box">
-                                {selectedSlot.occupancyStatus === 'OCCUPIED' && selectedSlot.occupiedVehicle.images !== undefined ?
-                                   <Carousel>
-                                   {Array.from(selectedSlot.occupiedVehicle.images).map((image, index) => (
-                                       <Carousel.Item>
-                                           <img
-                                               src={`data:${image.contentType};base64,` + image.base64EncodedBlob}
-                                               width="200"
-                                               height="200"
-                                               />
-                                       </Carousel.Item>
-                                   ))}
-                               </Carousel> :
-                                    <></>}
-                            </div>
-                           
-                        </Container>
+                    <div className="modal_table">
+                        <Table striped bordered>
+                            <tbody>
+                                <tr>
+                                    <td>Zone Label</td>
+                                    <td>{zoneLabel}</td>
+                                </tr>
+                                <tr>
+                                    <td>Slot Number</td>
+                                    <td>{slotNumber}</td>
+                                </tr>
+                                { occupancyStatus === 'OCCUPIED' ? 
+                                <>
+                                    <tr>
+                                        <td>Make</td>
+                                        <td>{make}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Model</td>
+                                        <td>{model}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Number Plate</td>
+                                        <td>{numberPlate}</td>
+                                    </tr>
+                                </> : null}
+                            </tbody>
+                            
+                        </Table>
+                    </div>
+                    {occupancyStatus === 'OCCUPIED' ?
+                    <div className="modal_images">
+                        {images !== null && images !== undefined && images.length > 0 ?
+                        <Carousel variant="dark">
+                        {Array.from(images).map((image) => (
+                            <Carousel.Item>
+                                <img
+                                    src={`data:${image.contentType};;base64,` + image.base64EncodedBlob}
+                                    width="300"
+                                    height="300"
+                                />
+                            </Carousel.Item>
+                        ))}
+                        </Carousel>
+                        : <><h3 className="no_img_text">No images found</h3></>}
+                        
+                    </div> : <></>}
                     </Modal.Body>
                     <Modal.Footer>
-                        {this.shouldShowButton(selectedSlot.occupancyStatus)}
+                        {this.shouldShowButton(occupancyStatus)}
                         
                     </Modal.Footer>
                 </Modal>

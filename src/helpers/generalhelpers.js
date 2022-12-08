@@ -14,11 +14,23 @@ export const getAllModelsByMake = (make) => {
     return onlyModelArray;
 }
 
+
+export const getDateTimeString = (dateValue) => {
+    if (dateValue !== '' && dateValue !== null)
+        return (new Date(dateValue)).toLocaleString('en-IN')
+}
+
+export const getDateString = (dateValue) => {
+    if (dateValue !== '' && dateValue !== null)
+        return (new Date(dateValue)).toLocaleDateString('en-IN')
+    return '';
+}
+
 export const convertResultsToCsv = (resultsArray) => {
-    const headerArray = ['make', 'model', 'type', 'vehicleStatus', 'registrationDateTime', 'estimatedReleaseDate', 'caseNumber', 'chassisNumber', 'color',
-        'parkingSlot', 'isWanted', 'numberPlate', 'ownerIdType', 'ownerFirstName', 'ownerLastName', 'ownerEmailAddress', 'ownerIdNumber', 'ownerContactNumber',
-        'ownerNationality', 'department', 'emirate', 'category', 'code', 'releaseIdentityFirstName', 'releaseIdentityLastName',
-        'releaseIdentityIdType', 'releaseIdentityIdNumber', 'releaseIdentityContactNumber', 'releaseIdentityEmailAddress', 'releaseIdentityNationality', 'releaseDateTime'
+    const headerArray = ['Parking Slot', 'Registration Date/Time', 'Status', 'Make', 'Model', 'Colour', 'Vehicle Type', 'Emirate', 'Category', 'Code', 'Number Plate',
+        'Chassis Number', 'Department', 'Is Wanted?', 'Case Number', 'Owner First Name', 'Owner Last Name', 'Owner Nationality', 'Owner Contact Number', 'Owner Email ID',
+        'Owner ID Type', 'Owner ID Number', 'Release Identity First Name', 'Release Identity Last Name', 'Release Identity Nationality', 'Release Identity Contact Number',
+        'Release Identity Email ID', 'Release Identity ID Type', 'Release Identity ID Number', 'Estimated Release Date', 'Release Date/Time'
     ];
     var csvStr = headerArray.join(',');
     for (let resultObj of resultsArray) {
@@ -61,11 +73,12 @@ export const convertResultsToCsv = (resultsArray) => {
                 releaseDateTime = ''
             } = {}
         } = resultObj;
-        const entryLine = `\r\n"${make}", "${model}", "${type}", "${vehicleStatus}", "${registrationDateTime}", "${estimatedReleaseDate}", "${caseNumber}", "${chassisNumber}", "${color}","${parkingSlot}", "${isWanted}", "${numberPlate}", "${ownerIdType}", "${ownerFirstName}", "${ownerLastName}", "${ownerEmailAddress}", "${ownerIdNumber}", "${ownerContactNumber}","${ownerNationality}", "${department}", "${emirate}", "${category}", "${code}", "${releaseIdentityFirstName}", "${releaseIdentityLastName}", "${releaseIdentityIdType}","${releaseIdentityIdNumber}", "${releaseIdentityContactNumber}", "${releaseIdentityEmailAddress}", "${releaseIdentityNationality}", "${releaseDateTime}"`;
+        const entryLine = `\r\n${parkingSlot}, ${registrationDateTime}, ${vehicleStatus}, ${make}, ${model}, ${color}, ${type}, ${emirate}, ${category}, ${code}, ${numberPlate}, ${chassisNumber}, ${department}, ${isWanted ? 'Yes' : 'No'}, ${caseNumber}, ${ownerFirstName}, ${ownerLastName}, ${ownerNationality}, ${ownerContactNumber}, ${ownerEmailAddress}, ${ownerIdType}, ${ownerIdNumber}, ${releaseIdentityFirstName}, ${releaseIdentityLastName}, ${releaseIdentityNationality}, ${releaseIdentityContactNumber}, ${releaseIdentityEmailAddress}, ${releaseIdentityIdType}, ${releaseIdentityIdNumber}, ${getDateString(estimatedReleaseDate)}, ${releaseDateTime}`;
         csvStr += entryLine;
     }
     return csvStr;
 }
+
 
 export const getSlotsByZone = (zoneLabel) => {
     const zoneObj = parkingSlotNumberMap.filter((zone) => (zone.zoneLabel === zoneLabel));
