@@ -15,7 +15,7 @@ import Loginpage from "./pages/Loginpage";
 import ZoneLayoutReferencePage from './pages/ZoneLayoutReferencePage';
 import NotFoundPage from './pages/NotFoundPage';
 import { logout } from "./actions/auth";
-import ReleaseQueuePage from "./pages/ReleaseQueuePage";
+import ExitQueuePage from "./pages/ExitQueuePage";
 import UpcomingReleasePage from "./pages/UpcomingReleasePage";
 
 class App extends React.Component {
@@ -88,7 +88,7 @@ class App extends React.Component {
               element={<SearchPage />}
             />
             <Route path="/upcomingrelease" element={<UpcomingReleasePage />} />
-            <Route path="/relqueue" element={<ReleaseQueuePage />} />
+            <Route path="/exitqueue" element={<ExitQueuePage />} />
             <Route path="/layoutref" element={<ZoneLayoutReferencePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

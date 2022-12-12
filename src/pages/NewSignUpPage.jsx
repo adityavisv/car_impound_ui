@@ -153,6 +153,11 @@ class NewSignUpPage extends React.Component {
         }
         else {
             if (user.roles.includes("ROLE_SUPERUSER")) {
+                if (showSuccessAlert) {
+                    return (
+                        <Navigate to="/" replace />
+                    );
+                }
                 return (
                     <div> 
                         <NavbarComponent currentUser={user} callLogout={this.callLogout} />
@@ -190,14 +195,13 @@ class NewSignUpPage extends React.Component {
                                         required={true} className="form_control" 
                                         onChange={this.changePasswordRep} 
                                         value={passwordRep}/>
-                                    <Form.Check type="checkbox" label="Show password"/>
                                 </Row>
                                 <Row className="mb-3">
                                     <Form.Label className="login_field_label">Role (*)</Form.Label>
                                     <Form.Select value={role} onChange={this.changeRole}>
                                         <option value="admin">ADMIN</option>
                                         <option value="exit_operator">EXIT OPERATOR</option>
-                                        <option value="user">USER</option>
+                                        <option value="superuser">SUPERUSER</option>
                                     </Form.Select>
                                 </Row>
                                

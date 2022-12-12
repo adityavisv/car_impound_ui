@@ -26,6 +26,8 @@ export default class SearchForm extends React.Component {
         this.state = {
             searchInit: false,
             shouldShowRedirectLoginModal: false,
+            isMakeOther: false,
+            isModelOther: false,
             makesDropdownValues: [... new Set(allMakes)],
             modelsDropdownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
             slotNumberDropdownValues: [],
@@ -90,17 +92,37 @@ export default class SearchForm extends React.Component {
 
     changeMake = (event) => {
         const make = event.target.value;
-        const modelsByMake = getAllModelsByMake(make);
-        this.setState({
-            make,
-            modelsDropdownValues: [... new Set(modelsByMake)]
-        });
+        const { isMakeOther } = this.state;
+        if (isMakeOther) {
+            this.setState({
+                make
+            });
+        }
+        else {
+            const modelsByMake = getAllModelsByMake(make);
+            this.setState({
+                make,
+                isMakeOther: make === 'OTHER',
+                isModelOther: model === 'OTHER',
+                modelsDropdownValues: [... new Set(modelsByMake)]
+            });
+        }
     }
 
     changeModel = (event) => {
-        this.setState({
-            model: event.target.value
-        });
+        const { isModelOther } = this.state;
+        const { value: model } = event.target;
+        if (isModelOther) {
+            this.setState({
+                model
+            });
+        }
+        else {
+            this.setState({
+                model,
+                isModelOther: model === 'OTHER'
+            });
+        }
     }
 
     changeColor = (event) => {
@@ -493,6 +515,8 @@ export default class SearchForm extends React.Component {
         const {
             results,  
             showResults, 
+            isMakeOther,
+            isModelOther,
             make, 
             model, 
             color,
@@ -557,27 +581,38 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Make</Form.Label>
-                                    <Form.Select size="sm" value={make} onChange={this.changeMake}>
-                                        <option value=''>Select an option</option>
-                                        {
-                                            Array.from(makesDropdownValues).map((item) => (
-                                                <option value={item}>{item}</option>
-                                            ))
-                                        }
-                                    </Form.Select>
+                                    {
+
+                                        isMakeOther ? <Form.Control type="text" size="sm" onChange={this.changeMake} value={make} /> :
+                                        <Form.Select size="sm" value={make} onChange={this.changeMake}>
+                                            <option value=''>Select an option</option>
+                                            <option value='OTHER'>Other</option>
+                                            {
+                                                Array.from(makesDropdownValues).map((item) => (
+                                                    <option value={item}>{item}</option>
+                                                ))
+                                            }
+                                        </Form.Select>
+                                    }
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Model</Form.Label>
-                                    <Form.Select size="sm" value={model} onChange={this.changeModel}>
-                                        <option value=''>Select an option</option>
-                                        {
-                                            Array.from(modelsDropdownValues).map((item) => (
-                                                <option value={item}>{item}</option>
-                                            ))
-                                        }
-                                    </Form.Select>
+                                    {
+                                        isModelOther ? <Form.Control type="text" size="sm" onChange={this.changeModel} value={model} /> :
+                                        
+                                    
+                                        <Form.Select size="sm" value={model} onChange={this.changeModel}>
+                                            <option value='OTHER'>Other</option>
+                                            <option value=''>Select an option</option>
+                                            {
+                                                Array.from(modelsDropdownValues).map((item) => (
+                                                    <option value={item}>{item}</option>
+                                                ))
+                                            }
+                                        </Form.Select>
+                                    }
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">

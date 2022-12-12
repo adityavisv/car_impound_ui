@@ -36,7 +36,7 @@ class NavbarComponent extends React.Component {
                                 }
                                 {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
-                                <Nav.Link href="/relqueue" className="nav_link">
+                                <Nav.Link href="/exitqueue" className="nav_link">
                                     <FontAwesomeIcon icon={faUnlock} fixedWidth />
                                     <span className="nav_text"> Exit Queue</span>
                                 </Nav.Link> : <></> }

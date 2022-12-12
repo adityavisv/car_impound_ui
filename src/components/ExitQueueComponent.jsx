@@ -5,7 +5,7 @@ import UserService from '../services/user.service';
 import { getEmirateDisplay } from '../helpers/generalhelpers';
 import '../styles/releasequeue.css';
 
-class ReleaseQueueComponent extends React.Component {
+class ExitQueueComponent extends React.Component {
     constructor(props) {
         super(props);
         const { releaseQueue = [], releaseQueueReqInit, releaseQueueReqFail } = this.props;
@@ -175,7 +175,7 @@ class ReleaseQueueComponent extends React.Component {
                 </Modal.Footer>
             </Modal>
             <div className="upcoming_release_header_text">
-                    <Form.Text className="upcoming_release_header_text">EXIT QUEUE</Form.Text>
+                    <Form.Text className="upcoming_release_header_text">Approved For Release</Form.Text>
                 </div>
             {
 
@@ -226,4 +226,4 @@ class ReleaseQueueComponent extends React.Component {
     }
 }
 
-export default ReleaseQueueComponent;
+export default ExitQueueComponent;

@@ -763,7 +763,7 @@ class CarRegistrationForm extends React.Component {
                         </Row>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Emirate *</Form.Label>
+                                <Form.Label >Emirate</Form.Label>
                                 <Form.Select required disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
                                     <option value="ABU_DHABI">Abu Dhabi</option>
                                     <option value="AJMAN">Ajman</option>
@@ -776,8 +776,8 @@ class CarRegistrationForm extends React.Component {
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Category *</Form.Label>
-                                <Form.Select required disabled={readOnly} onChange={this.changeCategory} value={category}>
+                                <Form.Label>Category</Form.Label>
+                                <Form.Select disabled={readOnly} onChange={this.changeCategory} value={category}>
                                     <option value=''>Select a category</option>
                                     {
                                         this.populateCategoryDropdown()
@@ -786,23 +786,21 @@ class CarRegistrationForm extends React.Component {
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Code *</Form.Label>
-                                <Form.Select required disabled={readOnly} onChange={this.changeCode} value={code}>
+                                <Form.Label >Code</Form.Label>
+                                <Form.Select disabled={readOnly} onChange={this.changeCode} value={code}>
                                     <option value=''>Select Code</option>
                                     {this.populateCodeDropdown()}
                                 </Form.Select>
                             </Form.Group>
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Car No. Plate *</Form.Label>
-                                <Form.Control type="text" required={true} value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
+                                <Form.Label>Car No. Plate</Form.Label>
+                                <Form.Control type="text" value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
+                            </Form.Group>
+                            <Form.Group as={Col}>
+                                <Form.Label>Chassis Number </Form.Label>
+                                <Form.Control type="text" value={chassisNumber} onChange={this.changeChassisNumber} disabled={readOnly} />
                             </Form.Group>
                     
-                        </Row>
-                        <Row className="mb-3">
-                            <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Chassis Number *</Form.Label>
-                                <Form.Control type="text"  required={true} value={chassisNumber} onChange={this.changeChassisNumber} disabled={readOnly} />
-                            </Form.Group>
                         </Row>
                     </>
                         

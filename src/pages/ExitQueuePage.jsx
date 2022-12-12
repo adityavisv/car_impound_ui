@@ -3,11 +3,11 @@ import { fetchReleaseQueue } from "../actions/releasequeuefetch";
 import NavbarComponent from '../components/NavbarComponent';
 import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
-import ReleaseQueueComponent from '../components/ReleaseQueueComponent';
+import ExitQueueComponent from '../components/ExitQueueComponent';
 import { Navigate } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
 
-class ReleaseQueuePage extends React.Component {
+class ExitQueuePage extends React.Component {
     constructor(props) {
         super(props);
         const {
@@ -74,7 +74,7 @@ class ReleaseQueuePage extends React.Component {
                 text='Loading...'
             >
                 <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} />
-                <ReleaseQueueComponent releaseQueue={releaseQueue} callLogout={this.callLogout} callReleaseQueueService={this.callFetchReleaseQueueService}/>
+                <ExitQueueComponent releaseQueue={releaseQueue} callLogout={this.callLogout} callReleaseQueueService={this.callFetchReleaseQueueService}/>
             </LoadingOverlay>
         )
     }
@@ -96,4 +96,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(ReleaseQueuePage);
+export default connect(mapStateToProps)(ExitQueuePage);
