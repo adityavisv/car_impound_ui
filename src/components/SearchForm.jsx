@@ -103,7 +103,7 @@ export default class SearchForm extends React.Component {
             this.setState({
                 make,
                 isMakeOther: make === 'OTHER',
-                isModelOther: model === 'OTHER',
+                isModelOther: make === 'OTHER',
                 modelsDropdownValues: [... new Set(modelsByMake)]
             });
         }
@@ -493,6 +493,8 @@ export default class SearchForm extends React.Component {
             numberPlate: '',
             ownerFirstname : '',
             ownerLastname: '',
+            releaseFirstname: '',
+            releaseLastname: '',
             category: '',
             emirate: '',
             code: '',

@@ -1,4 +1,6 @@
-From node:18
+From node:14
+
+RUN npm install -g serve
 
 WORKDIR /app
 
@@ -7,5 +9,5 @@ RUN npm install
 
 COPY . .
 RUN npm run build
-
-CMD ["npm", "start"]
+EXPOSE 3000
+CMD ["serve", "-s", "build"]
