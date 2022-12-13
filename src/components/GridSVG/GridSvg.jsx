@@ -128,8 +128,13 @@ class GridSvg extends React.Component {
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
                         x={`${(index * 30) + 7.5}`}
-                        y="15" fontSize="15" className="box_text">
+                        y="15" 
+                        fontSize="15" 
+                        className="box_text"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        >
                             {item.slotNumber}
+                            
                     </text>
                         
                 ));
@@ -140,6 +145,7 @@ class GridSvg extends React.Component {
                     <text
                         x={`${(index * 30) + 6.5}`}
                         y="45"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         fontSize="15" className="box_text">
                             {item.slotNumber}
                         </text>
@@ -150,6 +156,7 @@ class GridSvg extends React.Component {
                     <text
                         x={`${(index * 30) + 6.5}`}
                         y="170"
+                        onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         fontSize="15" className="box_text">
                             {item.slotNumber}
                         </text>
@@ -167,6 +174,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 34);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -178,6 +186,7 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(34,71);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 6.5}`}
                         y="105"
                         fontSize="15" className="box_text">
@@ -196,6 +205,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 37);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -207,6 +217,7 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(37,75);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 6.5}`}
                         y="105"
                         fontSize="15" className="box_text">
@@ -225,6 +236,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 39);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -236,6 +248,7 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(39,85);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 6.5}`}
                         y="105"
                         fontSize="15" className="box_text">
@@ -253,6 +266,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 46);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -264,6 +278,7 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(46,95);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 6.5}`}
                         y="105"
                         fontSize="15" className="box_text">
@@ -281,6 +296,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 49);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -292,7 +308,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(49,101);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -309,6 +326,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 53);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -320,7 +338,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(53,109);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -337,6 +356,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 57);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -348,7 +368,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(57,118);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -365,6 +386,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 62);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -376,7 +398,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(62,129);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -393,6 +416,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 69);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -404,7 +428,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(69,144);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -421,6 +446,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 78);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -432,7 +458,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(78,165);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -449,6 +476,7 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 92);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x={`${(index * 30) + 7.5}`}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -460,7 +488,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(92,193);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -477,7 +506,8 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 104);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 7.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
                     </text>
@@ -488,7 +518,8 @@ class GridSvg extends React.Component {
                 const rowTwoSlice = clickedZoneData.slice(104, 213);
                 const rowTwoNumbers = rowTwoSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 6.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="105"
                         fontSize="15" className="box_text">
                             {item.slotNumber}
@@ -505,7 +536,8 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 111);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 7.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
                     </text>
@@ -521,7 +553,8 @@ class GridSvg extends React.Component {
                 const rowOneSlice = clickedZoneData.slice(0, 134);
                 const rowOneNumbers = rowOneSlice.map((item, index) => (
                     <text
-                        x={`${(index * 30) + 7.5}`}
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
+                        x={item.slotNumber < 100 ? ((index * 30) + 6.5) : ((index * 30) + 3)}
                         y="15" fontSize="15" className="box_text">
                             {item.slotNumber}
                     </text>
@@ -537,6 +570,7 @@ class GridSvg extends React.Component {
                 const colOneSlice = clickedZoneData.slice(0, 25);
                 const colOneNumbers = colOneSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x="130"
                         y={`${(index * 30) + 15}`}
                         fontSize="15"
@@ -547,6 +581,7 @@ class GridSvg extends React.Component {
                 const colTwoSlice = clickedZoneData.slice(25, 50);
                 const colTwoNumbers = colTwoSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x="98"
                         y={750 -((index * 30) + 15)}
                         fontSize="15"
@@ -558,6 +593,7 @@ class GridSvg extends React.Component {
                 const colThreeSlice = clickedZoneData.slice(50, 76);
                 const colThreeNumbers = colThreeSlice.map((item, index) => (
                     <text
+                    onClick={() => this.showSlotModal(item.zoneLabel, item.slotNumber, item.occupancyStatus)}
                         x="38"
                         y={`${(index * 30) + 15}`}
                         fontSize="15"

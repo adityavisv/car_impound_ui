@@ -1,1 +1,1 @@
-export const SERVICE_URL = 'SERVICE_URL_REPL';
+export const SERVICE_URL = 'http://Adityas-MacBook-Pro.local:8080';

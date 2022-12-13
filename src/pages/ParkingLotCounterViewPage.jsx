@@ -6,16 +6,18 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { retrieveZoneSummary } from '../actions/zonesummary';
+import { fetchUpcomingReleases } from '../actions/upcomingrelease';
 import { logout } from '../actions/auth';
 import { Alert, Modal, Button } from 'react-bootstrap';
 
 class ParkingLotViewPage extends React.Component {
     constructor(props) {
         super(props);
-        const { isLoggedIn, user, parkingZoneSummaries, zoneSummaryReqInit, zoneSummaryReqFail } = this.props;
+        const { upcomingReleases, isLoggedIn, user, parkingZoneSummaries, zoneSummaryReqInit, zoneSummaryReqFail } = this.props;
         this.state = {
             isLoggedIn,
             currentUser: user,
+            upcomingReleases,
             parkingZoneSummaries,
             zoneSummaryReqInit,
             zoneSummaryReqFail
@@ -24,6 +26,7 @@ class ParkingLotViewPage extends React.Component {
 
     componentDidMount = () => {
         this.callZoneSummaryService();
+        this.callUpcomgingReleasesService();
     }
 
     callLogout = () => {
@@ -52,6 +55,14 @@ class ParkingLotViewPage extends React.Component {
             if (this.props.statusCode === 401)
                 this.callLogout();
         }
+        if (prevProps.upcomingReleases !== this.props.upcomingReleases) {
+            this.setState({upcomingReleases: this.props.upcomingReleases});
+        }
+    }
+
+    callUpcomgingReleasesService = () => {
+        const { dispatch } = this.props;
+        dispatch(fetchUpcomingReleases());
     }
 
     callZoneSummaryService = () => {
@@ -65,7 +76,7 @@ class ParkingLotViewPage extends React.Component {
     }
 
     render = () => {
-        const { currentUser, parkingZoneSummaries, isLoggedIn, zoneSummaryReqInit, zoneSummaryReqFail } = this.state;
+        const { currentUser, parkingZoneSummaries, isLoggedIn, zoneSummaryReqInit, zoneSummaryReqFail, upcomingReleases } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -90,7 +101,7 @@ class ParkingLotViewPage extends React.Component {
                             </Modal.Footer>
                         
                     </Modal>
-                    <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} />
+                    <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} highlight={upcomingReleases.length > 0}/>
                     <div>
                         <ParkingLotCounter
                             currentUser={currentUser}
@@ -108,6 +119,7 @@ class ParkingLotViewPage extends React.Component {
 
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
+    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { parkingZoneSummaries, statusCode, zoneSummaryReqInit, zoneSummaryReqFail } = state.zonesummary;
     const { message } = state.message;
     return {
@@ -117,6 +129,10 @@ function mapStateToProps(state) {
         zoneSummaryReqInit,
         zoneSummaryReqFail,
         statusCode,
+        upcomingReleases,
+        upcomingReleasesReqInit,
+        upcomingReleasesReqFail,
+        upcomingReleasesStatusCode,
         message
     }
 }

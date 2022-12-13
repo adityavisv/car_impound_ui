@@ -5,3 +5,7 @@
 .clickable_text:hover {
     cursor: pointer;
 }
+
+.active_custom {
+    color: yellow;
+}

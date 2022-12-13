@@ -7,7 +7,6 @@ import "../translations/i18n";
 import { login, logout } from '../actions/auth';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import SignOutConfirmModal from '../components/GridSVG/SignOutConfirmModal';
 
 class Loginpage extends React.Component {
 

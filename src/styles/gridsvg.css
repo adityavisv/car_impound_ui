@@ -17,6 +17,10 @@
     text-align: center;
 }
 
+svg text:hover {
+    cursor: pointer;
+}
+
 svg.zoneSvg {
     margin-top: 5%;
     margin-left: 1%;

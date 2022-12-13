@@ -85,7 +85,7 @@ class UpcomingReleasePage extends React.Component {
                         spinner
                         text='Loading....'
                     >
-                        <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} />
+                        <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={upcomingReleases.length > 0}/>
                         <UpcomingReleaseComponent
                             upcomingReleases={upcomingReleases}
                             callUpcomgingReleasesService={this.callUpcomgingReleasesService}

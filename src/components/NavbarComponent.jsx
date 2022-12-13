@@ -6,8 +6,39 @@ import '../styles/navbarcomponent.css';
 // import 'bootstrap/dist/css/bootstrap.css';
 
 class NavbarComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        const { 
+            currentUser: {
+                username,
+                roles
+            },
+            highlight
+        } = this.props;
+        this.state = {
+            username,
+            roles,
+            highlight
+        };
+    }
+
+    componentDidUpdate = (prevProps, prevState) => {
+        if (this.props.currentUser !== prevProps.currentUser) {
+            const {username, roles} = this.props.currentUser;
+            this.setState({
+                username,
+                roles
+            });
+        }
+        if (this.props.highlight !== prevProps.highlight) {
+            this.setState({
+                highlight: this.props.highlight
+            });
+        }
+    }
+
     render = () => {
-        const { currentUser: {username, roles} } = this.props;
+        const { username, roles, highlight } = this.state;
         return (
             <div>
                 <Navbar bg="dark" variant="dark" expand="lg fixed=">
@@ -31,7 +62,7 @@ class NavbarComponent extends React.Component {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") ?
                                     <Nav.Link href="/upcomingrelease" className="nav_link">
                                         <FontAwesomeIcon icon={faClock} fixedWidth />
-                                        <span className="nav_text"> Upcoming Releases</span>
+                                        <span className={highlight ? "nav_text active_custom" : "nav_text"}> Upcoming Releases</span>
                                     </Nav.Link> : <></>
                                 }
                                 {

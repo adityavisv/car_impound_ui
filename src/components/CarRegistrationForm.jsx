@@ -813,7 +813,7 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Department *</Form.Label>
-                            <Form.Control type="text" value={department} onChange={this.changeDepartment} disabled={readOnly} />
+                            <Form.Control type="text" value={department} required onChange={this.changeDepartment} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Registration Date *</Form.Label>

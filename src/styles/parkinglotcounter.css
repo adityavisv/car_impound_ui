@@ -20,6 +20,14 @@ table {
     border-collapse: collapse;
 }
 
+tr>td {
+    vertical-align: middle;
+}
+
+tr>th {
+    vertical-align: middle;
+}
+
 .progress_bar {
     padding-left: 10%;
     padding-right: 10%;

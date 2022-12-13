@@ -7,18 +7,24 @@ import { connect } from 'react-redux';
 import AuthService from '../services/auth.service';
 import { Alert } from 'react-bootstrap';
 import { Link, Navigate } from 'react-router-dom';
-import SignOutConfirmModal from '../components/GridSVG/SignOutConfirmModal';
 import { logout } from '../actions/auth';
+import { fetchUpcomingReleases } from '../actions/upcomingrelease';
 import InsufficientPrivModal from '../components/InsufficientPrivModal';
 
 class NewSignUpPage extends React.Component {
     constructor(props) {
         super(props);
-        const { user, isLoggedIn } = this.props;
+        const { user, isLoggedIn, upcomingReleases,
+        upcomingReleasesReqInit, upcomingReleasesReqFail,
+    upcomingReleasesStatusCode } = this.props;
         this.state = {
             username: '',
             password: '',
             passwordRep: '',
+            upcomingReleases,
+            upcomingReleasesReqInit,
+            upcomingReleasesReqFail,
+            upcomingReleasesStatusCode,
             role: 'admin',
             showFailureAlert: false,
             showPasswordMismatchAlert: false,
@@ -27,6 +33,10 @@ class NewSignUpPage extends React.Component {
             user,
             hasClickedOkInsufficientPriv: false
         };
+    }
+
+    componentDidMount = () => {
+        this.callUpcomgingReleasesService();
     }
 
     componentDidUpdate = (prevProps, prevState) => {
@@ -40,6 +50,31 @@ class NewSignUpPage extends React.Component {
                 user: this.props.user
             });
         }
+        if (prevProps.upcomingReleases !== this.props.upcomingReleases) {
+            this.setState({
+                upcomingReleases: this.props.upcomingReleases
+            });
+        }
+        if (prevProps.upcomingReleasesReqInit !== this.props.upcomingReleasesReqInit) {
+            this.setState({
+                upcomingReleasesReqInit: this.props.upcomingReleasesReqInit
+            });
+        }
+        if (prevProps.upcomingReleasesReqFail !== this.props.upcomingReleasesReqFail) {
+            this.setState({
+                upcomingReleasesReqFail: this.props.upcomingReleasesReqFail
+            });
+        }
+        if (prevProps.upcomingReleasesStatusCode !== this.props.upcomingReleasesStatusCode) {
+            this.setState({
+                upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode
+            });
+        }
+    }
+
+    callUpcomgingReleasesService = () => {
+        const { dispatch } = this.props;
+        dispatch(fetchUpcomingReleases());
     }
 
     showSignUpFail = () => {
@@ -147,7 +182,7 @@ class NewSignUpPage extends React.Component {
     }
 
     render = () => {
-        const { showFailureAlert, showSuccessAlert, showPasswordMismatchAlert, username, password, passwordRep, shouldShowSignoutConfirm, role, isLoggedIn, user, hasClickedOkInsufficientPriv } = this.state;
+        const { showFailureAlert, showSuccessAlert, showPasswordMismatchAlert, username, password, passwordRep, shouldShowSignoutConfirm, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases } = this.state;
         if (! isLoggedIn ) {
             return <Navigate to="/login" replace />
         }
@@ -160,7 +195,7 @@ class NewSignUpPage extends React.Component {
                 }
                 return (
                     <div> 
-                        <NavbarComponent currentUser={user} callLogout={this.callLogout} />
+                        <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={upcomingReleases.length > 0} />
                         <div className="form_box">
                             <Alert variant="danger" show={showFailureAlert}>A user with this username already exists! Please pick a different username.</Alert>
                             <Alert variant="success" show={showSuccessAlert}>Account created</Alert>
@@ -226,10 +261,15 @@ class NewSignUpPage extends React.Component {
 function mapStateToProps(state) {
     const { isLoggedIn, user } = state.auth;
     const { message } = state.message;
+    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         isLoggedIn,
         user,
-        message
+        message,
+        upcomingReleases,
+        upcomingReleasesReqInit,
+        upcomingReleasesReqFail,
+        upcomingReleasesStatusCode
     };
 }
 
