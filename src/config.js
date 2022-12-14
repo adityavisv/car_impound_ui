@@ -1,1 +1,1 @@
-export const SERVICE_URL = 'http://Adityas-MacBook-Pro.local:8080';
+export const SERVICE_URL = 'http://DESKTOP-F74FO8M:8080/impoundsrv-0.0.1-SNAPSHOT';

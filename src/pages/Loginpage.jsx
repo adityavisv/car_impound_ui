@@ -12,7 +12,7 @@ class Loginpage extends React.Component {
 
     constructor(props) {
         super(props);
-        const { isLoggedIn, message, statusCode } = this.props;
+        const { isLoggedIn, message, statusCode, loginFail } = this.props;
         this.state = {
             username: '',
             password: '',
@@ -21,7 +21,7 @@ class Loginpage extends React.Component {
             isPasswordVisible: false,
             message,
             shouldShowNetworkErrAlert: false,
-            shouldShowInvalidLoginAlert: false,
+            shouldShowInvalidLoginAlert: loginFail,
             statusCode
         };
     }
@@ -40,6 +40,11 @@ class Loginpage extends React.Component {
         if (prevProps.statusCode !== this.props.statusCode) {
             this.setState({
                 statusCode: this.props.statusCode
+            });
+        }
+        if (prevProps.loginFail !== this.props.loginFail) {
+            this.setState({
+                shouldShowInvalidLoginAlert: this.props.loginFail
             });
         }
     }
@@ -88,7 +93,6 @@ class Loginpage extends React.Component {
                         <Alert.Heading>
                             Sign-in failed!
                         </Alert.Heading>
-                        Invalid username or password.
                     </Alert> : <></>}
                     {
                         shouldShowNetworkErrAlert ? <Alert variant="danger" dismissible>
@@ -143,12 +147,13 @@ class Loginpage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { isLoggedIn } = state.auth;
+    const { isLoggedIn, loginFail } = state.auth;
     const { message, statusCode } = state.message;
     return {
         isLoggedIn,
         message,
-        statusCode
+        statusCode,
+        loginFail
     };
 }
 
