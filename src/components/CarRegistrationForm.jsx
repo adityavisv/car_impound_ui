@@ -37,8 +37,8 @@ class CarRegistrationForm extends React.Component {
         ));
 
         const { 
-                make = 'Alfa Romeo',
-                model = '4C',
+                make = '',
+                model = '',
                 type = 'CAR',
                 registrationDateTime = new Date(),
                 estimatedReleaseDate = '',
@@ -155,7 +155,8 @@ class CarRegistrationForm extends React.Component {
             this.setState({
                 newVehiclePayload: {
                     ...newVehiclePayload,
-                    make
+                    make,
+                    model: ''
                 }
             });
         }
@@ -165,6 +166,7 @@ class CarRegistrationForm extends React.Component {
                 newVehiclePayload: {
                     ...newVehiclePayload,
                     make,
+                    model: ''
                     
                 },
                 isMakeOther: make === 'OTHER',
@@ -720,6 +722,7 @@ class CarRegistrationForm extends React.Component {
                                 {
                                     isMakeOther ? <Form.Control type="text" value={make} onChange={this.changeMake} />
                                     : <Form.Select value={make} onChange={this.changeMake}>
+                                        <option value=''>Select an option</option>
                                         <option value="OTHER">Other</option>
                                         {
                                             Array.from(makesDropDownValues).map((value) => (
@@ -736,6 +739,7 @@ class CarRegistrationForm extends React.Component {
                                 {
                                     isModelOther ? <Form.Control type="text" value={model} onChange={this.changeModel} />
                                     : <Form.Select value={model} onChange={this.changeModel}>
+                                        <option value=''>Select an option</option>
                                         <option value="OTHER">Other</option>
                                         {
                                             Array.from(modelsDropDownValues).map((value) => (
@@ -750,9 +754,14 @@ class CarRegistrationForm extends React.Component {
                             <Form.Group as={Col}>
                                 <Form.Label className="required_form_label">Type *</Form.Label>
                                 <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
-                                    <option value="MOTORCYCLE">Motorcycle</option>
-                                    <option vlaue="TRUCK">Truck</option>
-                                    <option value="CAR">Car</option>
+                                    <option value=''>Select an option</option>
+                                    {
+                                        parkingSlot.startsWith('T') ? <option value='TRUCK'>Truck</option>
+                                        : <>
+                                            <option value='CAR'>Car</option>
+                                            <option value='MOTORCYCLE'>Motorcycle</option>
+                                        </>
+                                    }
                                 </Form.Select>
                             </Form.Group>
 

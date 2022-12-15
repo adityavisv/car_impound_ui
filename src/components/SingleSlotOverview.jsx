@@ -49,6 +49,7 @@ class SingleSlotOverviewModal extends React.Component {
             occupiedVehicle: {
                 make = '',
                 model = '',
+                type = '',
                 numberPlate = '',
                 images = ''
             } = {}
@@ -65,7 +66,7 @@ class SingleSlotOverviewModal extends React.Component {
 
                     <Modal.Body>
                     <div className="modal_table">
-                        <Table striped bordered>
+                        <Table  variant="dark">
                             <tbody>
                                 <tr>
                                     <td>Zone Label</td>
@@ -88,6 +89,10 @@ class SingleSlotOverviewModal extends React.Component {
                                     <tr>
                                         <td>Number Plate</td>
                                         <td>{numberPlate}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vehicle Type</td>
+                                        <td>{type}</td>
                                     </tr>
                                 </> : null}
                             </tbody>
