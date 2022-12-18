@@ -9,12 +9,13 @@ import { connect } from 'react-redux';
 class ZoneLayoutReferencePage extends React.Component {
     constructor(props) {
         super(props);
-        const { user, isLoggedIn, message, upcomingReleases, upcomingReleasesReqFail, upcomingReleasesReqInit, upcomingReleasesStatusCode } =  this.props;
+        const { user, isLoggedIn, message, upcomingReleases, missedReleases, upcomingReleasesReqFail, upcomingReleasesReqInit, upcomingReleasesStatusCode } =  this.props;
         this.state = {
             user,
             isLoggedIn,
             message,
             upcomingReleases,
+            missedReleases,
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
             upcomingReleasesStatusCode
@@ -46,6 +47,11 @@ class ZoneLayoutReferencePage extends React.Component {
                 upcomingReleases: this.props.upcomingReleases
             });
         }
+        if (prevProps.missedReleases !== this.props.missedReleases) {
+            this.setState({
+                missedReleases: this.props.missedReleases
+            });
+        }
         if (prevProps.upcomingReleasesReqFail !== this.props.upcomingReleasesReqFail) {
             this.setState({
                 upcomingReleasesReqFail: this.props.upcomingReleasesReqFail
@@ -72,6 +78,16 @@ class ZoneLayoutReferencePage extends React.Component {
         this.props.dispatch(logout());
     }
 
+    getHighlightColor = () => {
+        const { upcomingReleases, missedReleases } = this.state;
+        if (missedReleases.length > 0) {
+            return 'RED';
+        } 
+        else if (upcomingReleases.length > 0)
+            return 'YELLOW';
+        return null;
+    }
+
     render = () => {
         const { user, isLoggedIn, upcomingReleases } =  this.state;
         if ( ! isLoggedIn ) {
@@ -81,7 +97,7 @@ class ZoneLayoutReferencePage extends React.Component {
         }
         return (
             <div>
-                <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={upcomingReleases.length > 0} />
+                <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} />
                 <ZoneLayoutReference />
             </div>
         );
@@ -92,12 +108,13 @@ class ZoneLayoutReferencePage extends React.Component {
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { message } = state.message;
-    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
+    const { missedReleases,upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         user,
         isLoggedIn,
         message,
         upcomingReleases,
+        missedReleases,
         upcomingReleasesReqInit,
         upcomingReleasesReqFail,
         upcomingReleasesStatusCode,

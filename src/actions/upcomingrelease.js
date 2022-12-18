@@ -14,10 +14,17 @@ export const fetchUpcomingReleases = () => (dispatch) => {
     UserService.getUpcomingReleases()
         .then(
             (response) => {
+                const {
+                    data: {
+                        upcomingReleases,
+                        missedReleases
+                    }
+                } = response;
                 dispatch({
                     type: UPCOMING_RELEASES_FETCH_SUCCESS,
                     payload: {
-                        upcomingReleases: response.data.vehicles,
+                        upcomingReleases,
+                        missedReleases,
                         statusCode: response.statusCode
                     }
                 });

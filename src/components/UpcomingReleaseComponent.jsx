@@ -8,8 +8,9 @@ import { getEmirateDisplay } from '../helpers/generalhelpers';
 class UpcomingReleaseComponent extends React.Component {
     constructor(props) {
         super(props);
-        const { upcomingReleases, currentUser } = this.props;
+        const { upcomingReleases, missedReleases, currentUser } = this.props;
         this.state = {
+            missedReleases,
             upcomingReleases,
             currentUser,
             showVehicleProfile: false,
@@ -28,6 +29,11 @@ class UpcomingReleaseComponent extends React.Component {
        if (this.props.currentUser !== prevProps.currentUser) {
            this.setState({
                currentUser: this.props.currentUser
+           });
+       }
+       if (this.props.missedReleases !== prevProps.missedReleases) {
+           this.setState({
+               missedReleases: this.props.missedReleases
            });
        }
       
@@ -70,7 +76,7 @@ class UpcomingReleaseComponent extends React.Component {
     }
 
     render = () => {
-        const { upcomingReleases, selectedVehicle, showVehicleProfile, showReleaseModal, selectedSlot } = this.state;
+        const { upcomingReleases, missedReleases, selectedVehicle, showVehicleProfile, showReleaseModal, selectedSlot } = this.state;
         return (
             <div className="upcoming_release_padded">
                 <Modal show={showVehicleProfile} onHide={this.closeResultModal} animation={false} size="xl" centered>
@@ -125,6 +131,21 @@ class UpcomingReleaseComponent extends React.Component {
                         <tbody>
                         {
                             Array.from(upcomingReleases).map((item) =>(
+                                <tr id={item.id} onClick={this.handleRowClick} key={item.id}>
+                                    <td>{item.parkingSlot}</td>
+                                    <td>{getEmirateDisplay(item.emirate)}</td>
+                                    <td>{item.category}</td>
+                                    <td>{item.code}</td>
+                                    <td>{item.numberPlate}</td>
+                                    <td>{item.make}</td>
+                                    <td>{item.model}</td>
+                                    <td>{item.color}</td>
+                                    <td>{item.type}</td>
+                                </tr>  
+                            ))
+                        }
+                        {
+                             Array.from(missedReleases).map((item) =>(
                                 <tr id={item.id} onClick={this.handleRowClick} key={item.id}>
                                     <td>{item.parkingSlot}</td>
                                     <td>{getEmirateDisplay(item.emirate)}</td>

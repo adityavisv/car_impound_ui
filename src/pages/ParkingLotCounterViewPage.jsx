@@ -13,10 +13,11 @@ import { Alert, Modal, Button } from 'react-bootstrap';
 class ParkingLotViewPage extends React.Component {
     constructor(props) {
         super(props);
-        const { upcomingReleases, isLoggedIn, user, parkingZoneSummaries, zoneSummaryReqInit, zoneSummaryReqFail } = this.props;
+        const { missedReleases, upcomingReleases, isLoggedIn, user, parkingZoneSummaries, zoneSummaryReqInit, zoneSummaryReqFail } = this.props;
         this.state = {
             isLoggedIn,
             currentUser: user,
+            missedReleases,
             upcomingReleases,
             parkingZoneSummaries,
             zoneSummaryReqInit,
@@ -58,6 +59,9 @@ class ParkingLotViewPage extends React.Component {
         if (prevProps.upcomingReleases !== this.props.upcomingReleases) {
             this.setState({upcomingReleases: this.props.upcomingReleases});
         }
+        if (prevProps.missedReleases !== this.props.missedReleases) {
+            this.setState({missedReleases: this.props.missedReleases});
+        }
     }
 
     callUpcomgingReleasesService = () => {
@@ -75,8 +79,18 @@ class ParkingLotViewPage extends React.Component {
         this.callZoneSummaryService();
     }
 
+    getHighlightColor = () => {
+        const { upcomingReleases, missedReleases } = this.state;
+        if (missedReleases.length > 0) {
+            return 'RED';
+        } 
+        else if (upcomingReleases.length > 0)
+            return 'YELLOW';
+        return null;
+    }
+
     render = () => {
-        const { currentUser, parkingZoneSummaries, isLoggedIn, zoneSummaryReqInit, zoneSummaryReqFail, upcomingReleases } = this.state;
+        const { currentUser, parkingZoneSummaries, isLoggedIn, zoneSummaryReqInit, zoneSummaryReqFail } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -101,7 +115,7 @@ class ParkingLotViewPage extends React.Component {
                             </Modal.Footer>
                         
                     </Modal>
-                    <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} highlight={upcomingReleases.length > 0}/>
+                    <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} highlight={this.getHighlightColor()}/>
                     <div>
                         <ParkingLotCounter
                             currentUser={currentUser}
@@ -119,7 +133,7 @@ class ParkingLotViewPage extends React.Component {
 
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
-    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
+    const { missedReleases, upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { parkingZoneSummaries, statusCode, zoneSummaryReqInit, zoneSummaryReqFail } = state.zonesummary;
     const { message } = state.message;
     return {
@@ -129,6 +143,7 @@ function mapStateToProps(state) {
         zoneSummaryReqInit,
         zoneSummaryReqFail,
         statusCode,
+        missedReleases,
         upcomingReleases,
         upcomingReleasesReqInit,
         upcomingReleasesReqFail,

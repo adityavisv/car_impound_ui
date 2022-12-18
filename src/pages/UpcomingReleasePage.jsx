@@ -12,12 +12,13 @@ class UpcomingReleasePage extends React.Component {
     constructor(props) {
         super(props);
         const {
-            isLoggedIn, user, upcomingReleases, upcomingReleasesReqFail, upcomingReleasesReqInit
+            isLoggedIn, user, upcomingReleases, missedReleases, upcomingReleasesReqFail, upcomingReleasesReqInit
         } = this.props;
         this.state = {
             isLoggedIn,
             currentUser: user,
             upcomingReleases,
+            missedReleases,
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
             hasClickedOkInsufficientPriv: false
@@ -44,7 +45,11 @@ class UpcomingReleasePage extends React.Component {
                 upcomingReleases: this.props.upcomingReleases
             });
         }
-       
+        if (prevProps.missedReleases !== this.props.missedReleases) {
+            this.setState({
+                missedReleases: this.props.missedReleases
+            });
+        }
         if (prevProps.upcomingReleasesReqInit !== this.props.upcomingReleasesReqInit) {
             this.setState({
                 upcomingReleasesReqInit: this.props.upcomingReleasesReqInit
@@ -72,8 +77,18 @@ class UpcomingReleasePage extends React.Component {
         });
     }
 
+    getHighlightColor = () => {
+        const { upcomingReleases, missedReleases } = this.state;
+        if (missedReleases.length > 0) {
+            return 'RED';
+        } 
+        else if (upcomingReleases.length > 0)
+            return 'YELLOW';
+        return null;
+    }
+
     render = () => {
-        const { currentUser, isLoggedIn, upcomingReleases, upcomingReleasesReqInit, hasClickedOkInsufficientPriv } = this.state;
+        const { currentUser, isLoggedIn, missedReleases, upcomingReleases, upcomingReleasesReqInit, hasClickedOkInsufficientPriv } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -85,9 +100,10 @@ class UpcomingReleasePage extends React.Component {
                         spinner
                         text='Loading....'
                     >
-                        <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={upcomingReleases.length > 0}/>
+                        <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()}/>
                         <UpcomingReleaseComponent
                             upcomingReleases={upcomingReleases}
+                            missedReleases={missedReleases}
                             callUpcomgingReleasesService={this.callUpcomgingReleasesService}
                             callLogout={this.callLogout}
                         />
@@ -104,13 +120,14 @@ class UpcomingReleasePage extends React.Component {
 
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
-    const { upcomingReleases, statusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
+    const { upcomingReleases, missedReleases, statusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { message } = state.message;
     return {
         user,
         isLoggedIn,
         message,
         upcomingReleases,
+        missedReleases,
         statusCode,
         upcomingReleasesReqInit,
         upcomingReleasesReqFail

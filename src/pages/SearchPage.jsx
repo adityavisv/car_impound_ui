@@ -15,6 +15,7 @@ class SearchPage extends React.Component {
             isLoggedIn: this.props.isLoggedIn,
             currentUser: this.props.user,
             upcomingReleases: this.props.upcomingReleases,
+            missedReleases: this.props.missedReleases,
             upcomingReleasesReqInit: this.props.upcomingReleasesReqInit,
             upcomingReleasesReqFail: this.props.upcomingReleasesReqFail,
             upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode
@@ -38,6 +39,11 @@ class SearchPage extends React.Component {
                 upcomingReleases: this.props.upcomingReleases
             });
         }
+        if (prevProps.missedReleases !== this.props.missedReleases) {
+            this.setState({
+                missedReleases: this.props.missedReleases
+            });
+        }
         if (prevProps.upcomingReleasesReqInit !== this.props.upcomingReleasesReqInit) {
             this.setState({
                 upcomingReleasesReqInit: this.props.upcomingReleasesReqInit
@@ -59,14 +65,24 @@ class SearchPage extends React.Component {
         this.props.dispatch(logout());
     }
 
+    getHighlightColor = () => {
+        const { upcomingReleases, missedReleases } = this.state;
+        if (missedReleases.length > 0) {
+            return 'RED';
+        } 
+        else if (upcomingReleases.length > 0)
+            return 'YELLOW';
+        return null;
+    }
+
     render = () => {
-        const { currentUser, isLoggedIn, upcomingReleases } = this.state;
+        const { currentUser, isLoggedIn } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
         return (
             <>
-                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={upcomingReleases.length > 0}/>
+                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()}/>
                 <SearchForm callLogout={this.callLogout} />
             </>
         );
@@ -76,11 +92,12 @@ class SearchPage extends React.Component {
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { message } = state.message;
-    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
+    const { missedReleases, upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         user,
         isLoggedIn,
         message,
+        missedReleases,
         upcomingReleases,
         upcomingReleasesReqFail,
         upcomingReleasesReqInit,

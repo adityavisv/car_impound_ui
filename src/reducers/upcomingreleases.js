@@ -6,6 +6,7 @@ import {
 
 const initialState = {
     upcomingReleases: [],
+    missedReleases: [],
     statusCode: 0,
     upcomingReleasesReqInit: false,
     upcomingReleasesReqFail: false
@@ -25,13 +26,15 @@ export default function(state = initialState, action) {
             };
         case UPCOMING_RELEASES_FETCH_SUCCESS:
             const {
-                upcomingReleases
+                upcomingReleases,
+                missedReleases
             } = payload;
             return {
                 ...state,
                 upcomingReleasesReqFail: false,
                 upcomingReleasesReqInit: false,
-                upcomingReleases
+                upcomingReleases,
+                missedReleases
             };
         case UPCOMING_RELEASES_FETCH_FAIL:
             return {

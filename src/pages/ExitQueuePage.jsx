@@ -17,6 +17,7 @@ class ExitQueuePage extends React.Component {
             releaseQueue, 
             releaseQueueReqFail, 
             releaseQueueReqInit,
+            missedReleases,
             upcomingReleases,
             upcomingReleasesStatusCode,
             upcomingReleasesReqInit,
@@ -28,6 +29,7 @@ class ExitQueuePage extends React.Component {
             releaseQueue,
             releaseQueueReqInit,
             releaseQueueReqFail,
+            missedReleases,
             upcomingReleases,
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
@@ -66,6 +68,11 @@ class ExitQueuePage extends React.Component {
                 releaseQueueReqInit: this.props.releaseQueueReqInit
             });
         }
+        if (prevProps.missedReleases !== this.props.missedReleases) {
+            this.setState({
+                missedReleases: this.props.missedReleases
+            });
+        }
         if (prevProps.upcomingReleases !== this.props.upcomingReleases) {
             this.setState({
                 upcomingReleases: this.props.upcomingReleases
@@ -102,8 +109,18 @@ class ExitQueuePage extends React.Component {
         dispatch(fetchUpcomingReleases());
     }
 
+    getHighlightColor = () => {
+        const { upcomingReleases, missedReleases } = this.state;
+        if (missedReleases.length > 0) {
+            return 'RED';
+        } 
+        else if (upcomingReleases.length > 0)
+            return 'YELLOW';
+        return null;
+    }
+
     render = () => {
-        const { currentUser, isLoggedIn, releaseQueue, releaseQueueReqFail, releaseQueueReqInit, upcomingReleases } = this.state;
+        const { currentUser, isLoggedIn, releaseQueue, releaseQueueReqFail, releaseQueueReqInit } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -112,7 +129,7 @@ class ExitQueuePage extends React.Component {
                 spinner
                 text='Loading...'
             >
-                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={upcomingReleases.length > 0}/>
+                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()}/>
                 <ExitQueueComponent releaseQueue={releaseQueue} callLogout={this.callLogout} callReleaseQueueService={this.callFetchReleaseQueueService}/>
             </LoadingOverlay>
         )
@@ -123,7 +140,7 @@ class ExitQueuePage extends React.Component {
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { message } = state.message;
-    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
+    const { upcomingReleases, missedReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { releaseQueue, statusCode, releaseQueueReqInit, releaseQueueReqFail } = state.releasequeue;
     return {
         user,
@@ -134,6 +151,7 @@ function mapStateToProps(state) {
         releaseQueueReqInit,
         releaseQueueReqFail,
         upcomingReleases,
+        missedReleases,
         upcomingReleasesReqInit,
         upcomingReleasesStatusCode,
         upcomingReleasesReqFail

@@ -14,13 +14,20 @@ import InsufficientPrivModal from '../components/InsufficientPrivModal';
 class NewSignUpPage extends React.Component {
     constructor(props) {
         super(props);
-        const { user, isLoggedIn, upcomingReleases,
-        upcomingReleasesReqInit, upcomingReleasesReqFail,
-    upcomingReleasesStatusCode } = this.props;
+        const { 
+            user, 
+            isLoggedIn,
+            missedReleases,
+            upcomingReleases,
+            upcomingReleasesReqInit, 
+            upcomingReleasesReqFail,
+            upcomingReleasesStatusCode 
+        } = this.props;
         this.state = {
             username: '',
             password: '',
             passwordRep: '',
+            missedReleases,
             upcomingReleases,
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
@@ -49,6 +56,11 @@ class NewSignUpPage extends React.Component {
         if (prevProps.user !== this.props.user) {
             this.setState({
                 user: this.props.user
+            });
+        }
+        if (prevProps.upcomingReleases !== this.props.upcomingReleases) {
+            this.setState({
+                missedReleases: this.props.missedReleases
             });
         }
         if (prevProps.upcomingReleases !== this.props.upcomingReleases) {
@@ -166,6 +178,16 @@ class NewSignUpPage extends React.Component {
         this.props.dispatch(logout());
     }
 
+    getHighlightColor = () => {
+        const { upcomingReleases, missedReleases } = this.state;
+        if (missedReleases.length > 0) {
+            return 'RED';
+        } 
+        else if (upcomingReleases.length > 0)
+            return 'YELLOW';
+        return null;
+    }
+
     render = () => {
         const { showFailureAlert, showSuccessModal, shouldRedirectHome, showPasswordMismatchAlert, username, password, passwordRep, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases } = this.state;
         if (! isLoggedIn ) {
@@ -196,7 +218,7 @@ class NewSignUpPage extends React.Component {
                                 </Button>                            
                             </Modal.Footer>
                         </Modal>
-                        <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={upcomingReleases.length > 0} />
+                        <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} />
                         <div className="form_box">
                             <Alert variant="danger" show={showFailureAlert}>A user with this username already exists! Please pick a different username.</Alert>
                             <Alert variant="danger" show={showPasswordMismatchAlert}>Make sure passwords match!</Alert>
@@ -261,11 +283,12 @@ class NewSignUpPage extends React.Component {
 function mapStateToProps(state) {
     const { isLoggedIn, user } = state.auth;
     const { message } = state.message;
-    const { upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
+    const { missedReleases, upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         isLoggedIn,
         user,
         message,
+        missedReleases,
         upcomingReleases,
         upcomingReleasesReqInit,
         upcomingReleasesReqFail,

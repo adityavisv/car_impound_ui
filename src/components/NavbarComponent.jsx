@@ -62,7 +62,7 @@ class NavbarComponent extends React.Component {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") ?
                                     <Nav.Link href="/upcomingrelease" className="nav_link">
                                         <FontAwesomeIcon icon={faClock} fixedWidth />
-                                        <span className={highlight ? "nav_text active_custom" : "nav_text"}> Upcoming Releases</span>
+                                        <span className={"nav_text " + highlight}> Upcoming Releases</span>
                                     </Nav.Link> : <></>
                                 }
                                 {

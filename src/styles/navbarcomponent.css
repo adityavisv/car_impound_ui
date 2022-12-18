@@ -6,6 +6,10 @@
     cursor: pointer;
 }
 
-.active_custom {
+span.RED {
+    color: red;
+}
+
+span.YELLOW {
     color: yellow;
 }
