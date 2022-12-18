@@ -1,6 +1,8 @@
 import React from 'react';
-import { getVehicleStatusDisplay, getEmirateDisplay, getDateTimeString, getDateString } from '../helpers/generalhelpers';
-import { Table } from 'react-bootstrap';
+import { getVehicleStatusDisplay, getEmirateDisplay, getDateTimeString, getDateString, b64toBlob } from '../helpers/generalhelpers';
+import { Table, Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 
 class ResultsTable extends React.Component {
     constructor(props) {
@@ -18,6 +20,35 @@ class ResultsTable extends React.Component {
         }
     }
 
+    b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+      
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+          const slice = byteCharacters.slice(offset, offset + sliceSize);
+      
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+      
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+      
+        const blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+      }
+
+    downloadSelectedReleaseDoc = (id) => {
+        const { releaseDocument: { base64EncodedBlob, contentType} } = this.props.results.find(vehicle => vehicle.id === id);
+        const bytes = this.b64toBlob(base64EncodedBlob, contentType);
+        let url = window.URL.createObjectURL(bytes);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `RELEASEDOCUMENT.${contentType.split('/')[1]}`;
+        a.click();
+    }
     
 
     getTableRowFromObject = (resultObj, handleRowClick) => {
@@ -62,38 +93,47 @@ class ResultsTable extends React.Component {
             } = {}
         } = resultObj;
         return (
-            <tr id={id} key={id} onClick={handleRowClick} className="clickable">
-                                <td><span className="plaintext">{parkingSlot === null ? '--' : parkingSlot}</span></td>
-                                <td><span className="plaintext">{getDateTimeString(registrationDateTime)}</span></td>
-                                <td><span className="plaintext">{getVehicleStatusDisplay(vehicleStatus)}</span></td>
-                                <td><span className="plaintext">{make}</span></td>
-                                <td><span className="plaintext">{model}</span></td>
-                                <td><span className="plaintext">{color}</span></td>
-                                <td><span className="plaintext">{type}</span></td>
-                                <td><span className="plaintext">{getEmirateDisplay(emirate)}</span></td>
-                                <td><span className="plaintext">{category}</span></td>
-                                <td><span className="plaintext">{code}</span></td>
-                                <td><span className="plaintext">{numberPlate}</span></td>
-                                <td><span className="plaintext">{chassisNumber}</span></td>
-                                <td><span className="plaintext">{department}</span></td>
-                                <td><span className="plaintext">{isWanted ? "Yes" : "No"}</span></td>
-                                <td><span className="plaintext">{caseNumber === '' ? '--' : caseNumber}</span></td>
-                                <td><span className="plaintext">{ownerFirstName === '' ? '--' : ownerFirstName}</span></td>
-                                <td><span className="plaintext">{ownerLastName === '' ? '-- ' : ownerLastName}</span></td>
-                                <td><span className="plaintext">{ownerNationality === '' ? '--' : ownerNationality}</span></td>
-                                <td><span className="plaintext">{ownerContactNumber === '' ? '--' : ownerContactNumber}</span></td>
-                                <td><span className="plaintext">{ownerEmailAddress === '' ? '--' : ownerEmailAddress}</span></td>
-                                <td><span className="plaintext">{ownerIdType === '' ? '--' : ownerIdType}</span></td>
-                                <td><span className="plaintext">{ownerIdNumber === '' ? '--' : ownerIdNumber}</span></td>
-                                <td><span className="plaintext">{releaseIdentityFirstName}</span></td>
-                                <td><span className="plaintext">{releaseIdentityLastName}</span></td>
-                                <td><span className="plaintext">{releaseIdentityNationality}</span></td>
-                                <td><span className="plaintext">{releaseIdentityContactNumber}</span></td>
-                                <td><span className="plaintext">{releaseIdentityEmailAddress}</span></td>
-                                <td><span className="plaintext">{releaseIdentityIdType}</span></td>
-                                <td><span className="plaintext">{releaseIdentityIdNumber}</span></td>
-                                <td><span className="plaintext">{estimatedReleaseDate !== null ? getDateString(estimatedReleaseDate) : '--'}</span></td>
-                                <td><span className="plaintext">{releaseDateTime !== '' ? getDateTimeString(releaseDateTime) : '--'}</span></td>
+            <tr id={id} key={id} className="clickable">
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{parkingSlot === null ? '--' : parkingSlot}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{getDateTimeString(registrationDateTime)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{getVehicleStatusDisplay(vehicleStatus)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{make}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{model}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{color}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{type}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{getEmirateDisplay(emirate)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{category}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{code}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{numberPlate}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{chassisNumber}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{department}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{isWanted ? "Yes" : "No"}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{caseNumber === '' ? '--' : caseNumber}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerFirstName === '' ? '--' : ownerFirstName}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerLastName === '' ? '-- ' : ownerLastName}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerNationality === '' ? '--' : ownerNationality}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerContactNumber === '' ? '--' : ownerContactNumber}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerEmailAddress === '' ? '--' : ownerEmailAddress}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerIdType === '' ? '--' : ownerIdType}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerIdNumber === '' ? '--' : ownerIdNumber}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityFirstName}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityLastName}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityNationality}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityContactNumber}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityEmailAddress}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityIdType}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseIdentityIdNumber}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{estimatedReleaseDate !== null ? getDateString(estimatedReleaseDate) : '--'}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{releaseDateTime !== '' ? getDateTimeString(releaseDateTime) : '--'}</span></td>
+                                <td>
+                                    <span className="plaintext">{
+                                    vehicleStatus === 'REGISTERED' ? '--' : 
+                                    <Button variant="secondary"
+                                        onClick={() => this.downloadSelectedReleaseDoc(id)}>
+                                            <FontAwesomeIcon faIcon={faFileDownload} fixedWidth /> Download
+                                    </Button>}
+                                    </span>
+                                </td>
                             </tr>
         )
     }
@@ -137,7 +177,7 @@ class ResultsTable extends React.Component {
                         <th>Release identity ID Number</th>
                         <th>Estimated Release Date</th>
                         <th>Actual Release Date/Time</th>
-                    
+                        <th>Release Document</th>
                     </tr>
                 </thead>
                 <tbody>

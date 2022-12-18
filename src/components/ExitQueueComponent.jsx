@@ -2,7 +2,7 @@ import React from 'react';
 import { Carousel, Modal, Table, Button, Form } from 'react-bootstrap';
 import LoginRedirectModal from './LoginRedirectModal';
 import UserService from '../services/user.service';
-import { getEmirateDisplay } from '../helpers/generalhelpers';
+import { getEmirateDisplay, b64ToBlob } from '../helpers/generalhelpers';
 import '../styles/releasequeue.css';
 
 class ExitQueueComponent extends React.Component {
@@ -55,26 +55,6 @@ class ExitQueueComponent extends React.Component {
             shouldShowFinalReleaseModal: false
         });
     }
-
-    b64toBlob = (b64Data, contentType='', sliceSize=512) => {
-        const byteCharacters = atob(b64Data);
-        const byteArrays = [];
-      
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-          const slice = byteCharacters.slice(offset, offset + sliceSize);
-      
-          const byteNumbers = new Array(slice.length);
-          for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-          }
-      
-          const byteArray = new Uint8Array(byteNumbers);
-          byteArrays.push(byteArray);
-        }
-      
-        const blob = new Blob(byteArrays, {type: contentType});
-        return blob;
-      }
 
     downloadReleaseDoc = () => {
         const { selectedVehicle: {releaseDocument: { base64EncodedBlob, contentType}} } = this.state;

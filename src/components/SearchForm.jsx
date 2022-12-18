@@ -387,8 +387,8 @@ export default class SearchForm extends React.Component {
         return rows;
     }
 
-    handleRowClick = (event) => {
-        const resultId = event.currentTarget.id;
+    handleRowClick = (id) => {
+        const resultId = id;
         const { results } = this.state;
         const selectedResult = results.find(result => result.id === parseInt(resultId));
         this.setState({
