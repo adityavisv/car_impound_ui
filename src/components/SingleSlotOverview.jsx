@@ -11,6 +11,7 @@ class SingleSlotOverviewModal extends React.Component {
         const { currentUser,
             showRegisterModal,
             showReleaseModal,
+            showUpdateModal,
             setFirstSelectedSlot,
             selectedSlot: {zoneLabel}
         } = this.props;
@@ -24,7 +25,10 @@ class SingleSlotOverviewModal extends React.Component {
                 </>
             }
             else {
-                return <><Button variant="secondary" onClick={showReleaseModal}>Release</Button></>;
+                return <>
+                <Button variant="secondary" onClick={showReleaseModal}>Release</Button>
+                <Button variant="secondary" onClick={showUpdateModal}>Modify</Button>
+                </>;
 
             }
         }

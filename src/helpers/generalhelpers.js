@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
     makeModelData
 } from '../newcardb';
@@ -16,14 +17,17 @@ export const getAllModelsByMake = (make) => {
 
 
 export const getDateTimeString = (dateValue) => {
-    if (dateValue !== '' && dateValue !== null)
-        return (new Date(dateValue)).toLocaleString('en-IN')
+    if (dateValue !== '' && dateValue !== null) {
+        const parsedDate = dayjs(dateValue, 'YYYY-MM-DD HH:mm');
+        return parsedDate.format('DD/MM/YYYY HH:mm');
+    }
 }
 
 export const getDateString = (dateValue) => {
-    if (dateValue !== '' && dateValue !== null)
-        return (new Date(dateValue)).toLocaleDateString('en-IN')
-    return '';
+    if (dateValue !== '' && dateValue !== null) {
+        const parsedDate = dayjs(dateValue, 'YYYY-MM-DD');
+        return parsedDate.format('DD/MM/YYYY');
+    }
 }
 
 export const convertResultsToCsv = (resultsArray) => {
@@ -73,7 +77,7 @@ export const convertResultsToCsv = (resultsArray) => {
                 releaseDateTime = ''
             } = {}
         } = resultObj;
-        const entryLine = `\r\n${parkingSlot !== null ? parkingSlot : ''}, ${registrationDateTime}, ${vehicleStatus}, ${make}, ${model}, ${color}, ${type}, ${emirate}, ${category}, ${code}, ${numberPlate}, ${chassisNumber !== null ? chassisNumber : ''}, ${department}, ${isWanted ? 'Yes' : 'No'}, ${caseNumber !== null ? caseNumber : ''}, ${ownerFirstName !== null ? ownerFirstName : ''}, ${ownerLastName !== null ? ownerLastName : ''}, ${ownerNationality !== null ? ownerNationality : ''}, ${ownerContactNumber !== null ? ownerContactNumber : ''}, ${ownerEmailAddress !== null ? ownerEmailAddress : ''}, ${ownerIdType}, ${ownerIdNumber !== null ? ownerIdNumber : ''}, ${releaseIdentityFirstName !== null ? releaseIdentityFirstName : ''}, ${releaseIdentityLastName !== null ? releaseIdentityLastName : ''}, ${releaseIdentityNationality !== null ? releaseIdentityNationality : ''}, ${releaseIdentityContactNumber !== null ? releaseIdentityContactNumber : ''}, ${releaseIdentityEmailAddress !== null ? releaseIdentityEmailAddress : ''}, ${releaseIdentityIdType !== null ? releaseIdentityIdType : ''}, ${releaseIdentityIdNumber !== null ? releaseIdentityIdNumber : ''}, ${getDateString(estimatedReleaseDate)}, ${releaseDateTime !== null ? releaseDateTime : ''}`;
+        const entryLine = `\r\n${parkingSlot !== null ? parkingSlot : ''}, ${registrationDateTime}, ${vehicleStatus}, ${make}, ${model}, ${color}, ${type}, ${emirate}, ${category}, ${code}, ${numberPlate}, ${chassisNumber !== null ? chassisNumber : ''}, ${department}, ${isWanted ? 'Yes' : 'No'}, ${caseNumber !== null ? caseNumber : ''}, ${ownerFirstName !== null ? ownerFirstName : ''}, ${ownerLastName !== null ? ownerLastName : ''}, ${ownerNationality !== null ? ownerNationality : ''}, ${ownerContactNumber !== null ? ownerContactNumber : ''}, ${ownerEmailAddress !== null ? ownerEmailAddress : ''}, ${ownerIdType}, ${ownerIdNumber !== null ? ownerIdNumber : ''}, ${releaseIdentityFirstName !== null ? releaseIdentityFirstName : ''}, ${releaseIdentityLastName !== null ? releaseIdentityLastName : ''}, ${releaseIdentityNationality !== null ? releaseIdentityNationality : ''}, ${releaseIdentityContactNumber !== null ? releaseIdentityContactNumber : ''}, ${releaseIdentityEmailAddress !== null ? releaseIdentityEmailAddress : ''}, ${releaseIdentityIdType !== null ? releaseIdentityIdType : ''}, ${releaseIdentityIdNumber !== null ? releaseIdentityIdNumber : ''}, ${getDateString(estimatedReleaseDate)}, ${getDateTimeString(releaseDateTime)}`;
         csvStr += entryLine;
     }
     return csvStr;

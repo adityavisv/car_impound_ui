@@ -806,7 +806,7 @@ export default class SearchForm extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     {selectedResult !== null && selectedResult.owner !== undefined ?
-                        <CarRegistrationForm vehicle={selectedResult} callLogout={this.props.callLogout}/> : <> </>
+                        <CarRegistrationForm vehicle={selectedResult} callLogout={this.props.callLogout} updateMode={false}/> : <> </>
                     }
                 </Modal.Body>
             </Modal>

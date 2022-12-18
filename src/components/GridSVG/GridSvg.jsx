@@ -18,6 +18,7 @@ class GridSvg extends React.Component {
             shouldDisplaySlotModal: false,
             shouldShowRegisterModal: false,
             showShowReleaseModal: false,
+            shouldShowUpdateModal: false,
             isMultSlotMode: false
         }
     }
@@ -77,7 +78,9 @@ class GridSvg extends React.Component {
     showRegisterModal = () => {
         this.setState({
             shouldShowRegisterModal: true,
-            shouldDisplaySlotModal: false
+            shouldDisplaySlotModal: false,
+            shouldShowReleaseModal: false,
+            shouldShowUpdateModal: false
         });
     }
 
@@ -85,13 +88,31 @@ class GridSvg extends React.Component {
         this.setState({
             shouldShowRegisterModal: false,
             shouldDisplaySlotModal: false,
-            shouldShowReleaseModal: true
+            shouldShowReleaseModal: true,
+            shouldShowUpdateModal: false
+        });
+    }
+
+    showUpdateModal = () => {
+        this.setState({
+            shouldShowUpdateModal: true,
+            shouldDisplaySlotModal: false,
+            shouldShowReleaseModal: false,
+            shouldShowRegisterModal: false
         });
     }
 
     closeSlotModal = () => {
         this.setState({
             shouldDisplaySlotModal: false,
+            selectedSlot: [{}],
+            isMultSlotMode: false
+        });
+    }
+
+    closeUpdateModal = () => {
+        this.setState({
+            shouldShowUpdateModal: false,
             selectedSlot: [{}],
             isMultSlotMode: false
         });
@@ -1501,7 +1522,7 @@ class GridSvg extends React.Component {
     }
 
     render = () => {
-        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, currentUser } = this.state;
+        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, shouldShowUpdateModal, currentUser } = this.state;
 
         return (
             <div>
@@ -1511,6 +1532,7 @@ class GridSvg extends React.Component {
                     shouldDisplaySlotModal={shouldDisplaySlotModal}
                     closeSlotModal={this.closeSlotModal}
                     showRegisterModal={this.showRegisterModal}
+                    showUpdateModal={this.showUpdateModal}
                     showReleaseModal={this.showReleaseModal}
                     setFirstSelectedSlot={this.setFirstSelectedSlot}
                 />
@@ -1525,6 +1547,24 @@ class GridSvg extends React.Component {
                             callZoneSummaryService={this.props.callZoneSummaryService}
                             closeGridSvg={this.props.closeGridSvg}
                             callLogout={this.props.callLogout}
+                            updateMode={false}
+                        />
+                    </Modal.Body>
+                </Modal>
+
+                <Modal show={shouldShowUpdateModal} onHide={this.closeUpdateModal} size="xl" centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title className="ms-auto">Modify Vehicle Registration</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <CarRegistrationForm
+                            closeForm={this.closeUpdateModal}
+                            selectedSlot={selectedSlot}
+                            callZoneSummaryService={this.props.callZoneSummaryService}
+                            closeGridSvg={this.props.closeGridSvg}
+                            callLogout={this.props.callLogout}
+                            updateMode={true}
+                            vehicle={selectedSlot[0].occupiedVehicle}
                         />
                     </Modal.Body>
                 </Modal>

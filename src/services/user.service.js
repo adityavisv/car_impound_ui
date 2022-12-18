@@ -46,6 +46,20 @@ class UserService {
         });
     }
 
+    updateVehicleDetails(vehicleId, payload) {
+        return axios({
+            method: 'put',
+            url: VEHICLE_API_URL + '/update',
+            params: {
+                vehicleId
+            },
+            data: {
+                ...payload
+            },
+            headers: authHeader()
+        });
+    }
+
     assignCarToSpot(vehicle, spots) {
         var params = new URLSearchParams();
         for (const spot of spots) {

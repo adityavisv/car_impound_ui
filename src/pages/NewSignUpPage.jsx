@@ -2,7 +2,7 @@ import NavbarComponent from '../components/NavbarComponent';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/newsignuppage.css';
-import{ Button, Form, Row }from 'react-bootstrap';
+import{ Button, Form, Modal, Row }from 'react-bootstrap';
 import { connect } from 'react-redux';
 import AuthService from '../services/auth.service';
 import { Alert } from 'react-bootstrap';
@@ -28,7 +28,8 @@ class NewSignUpPage extends React.Component {
             role: 'admin',
             showFailureAlert: false,
             showPasswordMismatchAlert: false,
-            showSuccessAlert: false,
+            showSuccessModal: false,
+            shouldRedirectHome: false,
             isLoggedIn,
             user,
             hasClickedOkInsufficientPriv: false
@@ -101,17 +102,7 @@ class NewSignUpPage extends React.Component {
         });
     }
 
-    showSignUpSuccess = () => {
-        this.setState({
-            showSuccessAlert: true
-        });
-    }
 
-    hideSignupSuccess = () => {
-        this.setState({
-            showSuccessAlert: false
-        });
-    }
 
     changeUsername = (event) => {
         this.setState({ username: event.target.value });
@@ -141,8 +132,7 @@ class NewSignUpPage extends React.Component {
             AuthService.register(username, email, password, role)
                 .then((response) => {
                     this.hideSignUpFail();
-                    this.showSignUpSuccess();
-                    this.showSignoutConfirmation();
+                    this.displaySuccessModal();
                 })
                 .catch((err) => {
                     this.hideSignupSuccess();
@@ -153,22 +143,6 @@ class NewSignUpPage extends React.Component {
         }
     }
 
-    showSignoutConfirmation = () => {
-        this.setState({
-            shouldShowSignoutConfirm: true
-        });
-    }
-
-    hideSignoutConfirmation = () => {
-        this.setState({
-            shouldShowSignoutConfirm: false
-        });
-        this.props.dispatch(logout());
-    }
-
-    onClickSignIn = () => {
-        this.showSignoutConfirmation();
-    }
 
     onClickOkInsufficentPriv = () => {
         this.setState({
@@ -176,29 +150,55 @@ class NewSignUpPage extends React.Component {
         });
     }
 
+    displaySuccessModal = () => {
+        this.setState({
+            showSuccessModal: true
+        });
+    }
+
+    redirectToHome = () => {
+        this.setState({
+            shouldRedirectHome: true
+        });
+    }
     
     callLogout = () => {
         this.props.dispatch(logout());
     }
 
     render = () => {
-        const { showFailureAlert, showSuccessAlert, showPasswordMismatchAlert, username, password, passwordRep, shouldShowSignoutConfirm, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases } = this.state;
+        const { showFailureAlert, showSuccessModal, shouldRedirectHome, showPasswordMismatchAlert, username, password, passwordRep, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases } = this.state;
         if (! isLoggedIn ) {
             return <Navigate to="/login" replace />
         }
         else {
             if (user.roles.includes("ROLE_SUPERUSER")) {
-                if (showSuccessAlert) {
+                if (shouldRedirectHome) {
                     return (
                         <Navigate to="/" replace />
                     );
                 }
                 return (
-                    <div> 
+                    <div>
+                        <Modal centered onHide={this.redirectToHome} show={showSuccessModal}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Sign up confirmation</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                New user has been created.
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={this.redirectToHome}>
+                                    OK
+                                </Button>
+                                <Button variant="secondary" onClick={this.callLogout}>
+                                    Sign Out
+                                </Button>                            
+                            </Modal.Footer>
+                        </Modal>
                         <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={upcomingReleases.length > 0} />
                         <div className="form_box">
                             <Alert variant="danger" show={showFailureAlert}>A user with this username already exists! Please pick a different username.</Alert>
-                            <Alert variant="success" show={showSuccessAlert}>Account created</Alert>
                             <Alert variant="danger" show={showPasswordMismatchAlert}>Make sure passwords match!</Alert>
                             <Form className="actual_form" onSubmit={this.hitSignUp}>
                                 <Row className="mb-3">
@@ -235,8 +235,8 @@ class NewSignUpPage extends React.Component {
                                     <Form.Label className="login_field_label">Role (*)</Form.Label>
                                     <Form.Select value={role} onChange={this.changeRole}>
                                         <option value="admin">ADMIN</option>
-                                        <option value="exit_operator">EXIT OPERATOR</option>
-                                        <option value="superuser">SUPERUSER</option>
+                                        <option value="exit_operator">USER</option>
+                                        <option value="superuser">SUPER ADMIN</option>
                                     </Form.Select>
                                 </Row>
                                

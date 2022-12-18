@@ -12,12 +12,12 @@ import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 class CarRegistrationForm extends React.Component {
     constructor(props) {
         super(props);
-        var { selectedSlot = [], vehicle = {} } = this.props;
+        var { selectedSlot = [], vehicle = {}, updateMode } = this.props;
         
         var parkingSlot = '';
         
-        const readOnly = vehicle && Object.keys(vehicle).length > 0;
-        if (readOnly) {
+        const readOnly = vehicle && Object.keys(vehicle).length > 0 && (! updateMode);
+        if (readOnly || updateMode) {
             if (vehicle.releaseIdentity === null) {
                 vehicle = {...vehicle, releaseIdentity: {}}
             }
@@ -36,7 +36,8 @@ class CarRegistrationForm extends React.Component {
             value.brand
         ));
 
-        const { 
+        const {
+                id: vehicleId = '', 
                 make = '',
                 model = '',
                 type = 'CAR',
@@ -84,28 +85,30 @@ class CarRegistrationForm extends React.Component {
         this.state = {
             selectedSlot,
             makesDropDownValues: [... new Set(allMakes)],
-            modelsDropDownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
+            modelsDropDownValues: [... new Set(getAllModelsByMake(readOnly || updateMode ? make : 'Alfa Romeo'))],
             shouldShowRedirectLoginModal: false,
             readOnly,
+            updateMode,
             isVehicleAssignStarted: false,
             isVehicleAssignDone: false,
             isMakeOther: false,
             isModelOther: false,
             newVehiclePayload: {
+                vehicleId,
                 make,
                 model,
                 type,
                 registrationDateTime,
-                registrationDate: readOnly ? registrationDateTime.split(" ")[0] : '',
-                registrationTime: readOnly ? registrationDateTime.split(" ")[1]: '',
+                registrationDate: readOnly || updateMode ? registrationDateTime.split(" ")[0] : '',
+                registrationTime: readOnly || updateMode ? registrationDateTime.split(" ")[1]: '',
                 caseNumber,
                 chassisNumber,
-                images: readOnly ? images : [],
+                images: readOnly && (!updateMode) ? images : [],
                 color,
-                parkingSlot: readOnly ? parkingSlotPreFill : parkingSlot,
+                parkingSlot: readOnly || updateMode ? parkingSlotPreFill : parkingSlot,
                 isWanted,
                 numberPlate,
-                estimatedReleaseDate: readOnly ? (estimatedReleaseDate !== null ? estimatedReleaseDate.split(" ")[0] : '') : '',
+                estimatedReleaseDate: readOnly || updateMode ? (estimatedReleaseDate !== null ? estimatedReleaseDate.split(" ")[0] : '') : '',
                 category,
                 code,
                 emirate,
@@ -130,7 +133,7 @@ class CarRegistrationForm extends React.Component {
                     releaseDate: releaseDateTime !== null ? releaseDateTime.split(" ")[0] : '',
                     releaseTime: releaseDateTime !== null ? releaseDateTime.split(" ")[1] : ''
                 },
-                department: readOnly ? department : ''
+                department: readOnly || updateMode ? department : ''
             }
         };;
     }
@@ -468,7 +471,8 @@ class CarRegistrationForm extends React.Component {
             isVehicleAssignStarted: true
         });
 
-        const { newVehiclePayload: {
+        const { updateMode, newVehiclePayload: {
+            vehicleId = '',
             make,
             model,
             type,
@@ -512,13 +516,31 @@ class CarRegistrationForm extends React.Component {
             `${item.zoneLabel}${item.slotNumber}`
         ));
 
-        UserService.assignCarToSpot(finalPayload, spotParams)
-            .then((response) => {
-                const { data: {parkingSpots}} = response;
-                const { occupiedVehicle: {id: vehicleId}} = parkingSpots[0];
-                if (images.length > 0) {
-                    UserService.assignImageToVehicle(vehicleId, images)
-                    .then((nestedResponse) => {
+        if (updateMode) {
+            UserService.updateVehicleDetails(vehicleId, finalPayload)
+                .then((response) => {
+                    if (images.length > 0) {
+                        UserService.assignImageToVehicle(vehicleId, images)
+                        .then((nestedResponse) => {
+                            this.setState({
+                                isVehicleAssignDone: true,
+                                isVehicleAssignStarted: false
+                            });
+                            this.props.closeForm();
+                            this.props.closeGridSvg();
+                            this.props.callZoneSummaryService();
+                        })
+                        .catch((nestedError) => {
+                            if (nestedError.response !== undefined && nestedError.response.status === 401) {
+                                this.showRedirectLoginModal();
+                            }
+                            else {
+                                this.props.closeForm();
+                            }
+                        });
+                        
+                    }
+                    else {
                         this.setState({
                             isVehicleAssignDone: true,
                             isVehicleAssignStarted: false
@@ -526,32 +548,56 @@ class CarRegistrationForm extends React.Component {
                         this.props.closeForm();
                         this.props.closeGridSvg();
                         this.props.callZoneSummaryService();
-                    })
-                    .catch((nestedError) => {
-                        if (nestedError.response !== undefined && nestedError.response.status === 401) {
-                            this.showRedirectLoginModal();
-                        }
-                        else {
+                    }
+                })
+                .catch((error) => {
+                    if (error.response !== undefined && error.response.status === 401) {
+                        this.showRedirectLoginModal();
+                    }
+                })
+        }
+        else {
+            UserService.assignCarToSpot(finalPayload, spotParams)
+                .then((response) => {
+                    const { data: {parkingSpots}} = response;
+                    const { occupiedVehicle: {id: vehicleId}} = parkingSpots[0];
+                    if (images.length > 0) {
+                        UserService.assignImageToVehicle(vehicleId, images)
+                        .then((nestedResponse) => {
+                            this.setState({
+                                isVehicleAssignDone: true,
+                                isVehicleAssignStarted: false
+                            });
                             this.props.closeForm();
-                        }
-                    });
-                }
-                else {
-                    this.setState({
-                        isVehicleAssignDone: true,
-                        isVehicleAssignStarted: false
-                    });
-                    this.props.closeForm();
-                    this.props.closeGridSvg();
-                    this.props.callZoneSummaryService();
-                }
+                            this.props.closeGridSvg();
+                            this.props.callZoneSummaryService();
+                        })
+                        .catch((nestedError) => {
+                            if (nestedError.response !== undefined && nestedError.response.status === 401) {
+                                this.showRedirectLoginModal();
+                            }
+                            else {
+                                this.props.closeForm();
+                            }
+                        });
+                    }
+                    else {
+                        this.setState({
+                            isVehicleAssignDone: true,
+                            isVehicleAssignStarted: false
+                        });
+                        this.props.closeForm();
+                        this.props.closeGridSvg();
+                        this.props.callZoneSummaryService();
+                    }
                
             })
             .catch((error) => {
                 if (error.response !== undefined && error.response.status === 401) {
                     this.showRedirectLoginModal();
                 }
-            });   
+            }); 
+        }  
         
     }
 
@@ -618,6 +664,7 @@ class CarRegistrationForm extends React.Component {
             isMakeOther,
             isModelOther,
             readOnly,
+            updateMode,
             makesDropDownValues,
             modelsDropDownValues,
             newVehiclePayload: {
@@ -994,7 +1041,7 @@ class CarRegistrationForm extends React.Component {
                    
 
                     <div id="button_container">
-                        {!readOnly ?  <Button type="submit" variant="secondary">Register</Button> : <></>}
+                        {!readOnly ?  <Button type="submit" variant="secondary">{updateMode ? 'Update' : 'Register'}</Button> : <></>}
                     </div>
                 </Form>
 

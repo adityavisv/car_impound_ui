@@ -1,5 +1,5 @@
 import React from 'react';
-import { getVehicleStatusDisplay, getEmirateDisplay } from '../helpers/generalhelpers';
+import { getVehicleStatusDisplay, getEmirateDisplay, getDateTimeString, getDateString } from '../helpers/generalhelpers';
 import { Table } from 'react-bootstrap';
 
 class ResultsTable extends React.Component {
@@ -64,7 +64,7 @@ class ResultsTable extends React.Component {
         return (
             <tr id={id} key={id} onClick={handleRowClick} className="clickable">
                                 <td><span className="plaintext">{parkingSlot === null ? '--' : parkingSlot}</span></td>
-                                <td><span className="plaintext">{(new Date(registrationDateTime)).toLocaleString('en-IN')}</span></td>
+                                <td><span className="plaintext">{getDateTimeString(registrationDateTime)}</span></td>
                                 <td><span className="plaintext">{getVehicleStatusDisplay(vehicleStatus)}</span></td>
                                 <td><span className="plaintext">{make}</span></td>
                                 <td><span className="plaintext">{model}</span></td>
@@ -92,8 +92,8 @@ class ResultsTable extends React.Component {
                                 <td><span className="plaintext">{releaseIdentityEmailAddress}</span></td>
                                 <td><span className="plaintext">{releaseIdentityIdType}</span></td>
                                 <td><span className="plaintext">{releaseIdentityIdNumber}</span></td>
-                                <td><span className="plaintext">{estimatedReleaseDate !== null ? (new Date(estimatedReleaseDate)).toDateString() : '--'}</span></td>
-                                <td><span className="plaintext">{releaseDateTime !== '' ? (new Date(releaseDateTime)).toLocaleString('en-IN') : '--'}</span></td>
+                                <td><span className="plaintext">{estimatedReleaseDate !== null ? getDateString(estimatedReleaseDate) : '--'}</span></td>
+                                <td><span className="plaintext">{releaseDateTime !== '' ? getDateTimeString(releaseDateTime) : '--'}</span></td>
                             </tr>
         )
     }
@@ -136,7 +136,7 @@ class ResultsTable extends React.Component {
                         <th>Release Identity ID Type</th>
                         <th>Release identity ID Number</th>
                         <th>Estimated Release Date</th>
-                        <th>Release Date/Time</th>
+                        <th>Actual Release Date/Time</th>
                     
                     </tr>
                 </thead>
