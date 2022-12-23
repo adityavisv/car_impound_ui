@@ -9,12 +9,18 @@ const VEHICLE_API_URL = `${SERVICE_URL}/api/v1/vehicle`;
 
 class UserService {
     getZone(zone) {
-        return axios.get(API_URL, {
-            params: {
-                zone: zone
-            },
-            headers: authHeader()
-        });
+        if (zone !== null) {
+            return axios.get(API_URL, {
+                params: {
+                    zone: zone
+                },
+                headers: authHeader()
+            });
+        } else {
+            return axios.get(API_URL, {
+                headers: authHeader()
+            });
+        }
     }
 
     getZoneSummary(zone) {
@@ -167,6 +173,25 @@ class UserService {
                 ...authHeader()
             },
         })
+    }
+
+    reassignParkingSpot(vehicleId, zoneLabel, slotNumbers) {
+        var params = new URLSearchParams();
+        for (const slot of slotNumbers) {
+            params.append("slotNumber", slot);
+        }
+
+        params.append("vehicleId", vehicleId);
+        params.append("zoneLabel", zoneLabel);
+
+        return axios({
+            method: 'put',
+            url: API_URL + '/reassign',
+            params,
+            headers: {
+                ...authHeader()
+            }
+        });
     }
 }
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { Alert, CloseButton, Modal, ProgressBar, Table } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
 import GridSvg from './GridSVG/GridSvg';
-import InfoOverlay from './InfoOverlay';
 import '../styles/parkinglotcounter.css';
 import UserService from '../services/user.service';
 

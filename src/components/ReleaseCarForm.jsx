@@ -11,6 +11,8 @@ class ReleaseCarForm extends React.Component {
             selectedSlot: this.props.selectedSlot,
             isVehicleReleaseStarted: false,
             isVehicleReleaseDone: false,
+            fileSelected: false,
+            isIdTypeOther: false,
             shouldShowLoginRedirectModal: false,
             releasePayload: {
                 firstName: '',
@@ -39,7 +41,7 @@ class ReleaseCarForm extends React.Component {
         this.setState({
             isVehicleReleaseStarted: true
         });
-        const { selectedSlot: {zoneLabel, slotNumber}, releasePayload: {
+        const { selectedSlot: {zoneLabel, slotNumber}, fileSelected, releasePayload: {
             firstName,
             lastName,
             idType,
@@ -47,7 +49,8 @@ class ReleaseCarForm extends React.Component {
             contactNumber,
             emailAddress,
             nationality,
-            releaseDocument
+            releaseDocument,
+            releaseDocumentNumber,
         } } = this.state;
 
         const releasePayload = {
@@ -57,13 +60,15 @@ class ReleaseCarForm extends React.Component {
             idNumber,
             contactNumber,
             emailAddress,
-            nationality
+            nationality,
+            releaseDocumentNumber
         };
 
         UserService.releaseVehicle(zoneLabel, slotNumber, releasePayload)
             .then((response) => {
                 const { id: vehicleId } = response.data;
-                UserService.uploadReleaseDocument(vehicleId, releaseDocument)
+                if (fileSelected) {
+                    UserService.uploadReleaseDocument(vehicleId, releaseDocument)
                     .then((response) => {
                         this.setState({
                             isVehicleReleaseDone: true
@@ -89,6 +94,23 @@ class ReleaseCarForm extends React.Component {
                         }
                         
                     });
+                }
+                else {
+                    this.setState({
+                        isVehicleReleaseDone: true
+                    });        
+                    this.props.closeForm();
+                    if (this.props.closeGridSvg !== undefined && this.props.callZoneSummaryService !== undefined) {
+                        this.props.closeGridSvg();
+                        this.props.callZoneSummaryService();
+                    }
+                    if (this.props.callUpcomgingReleasesService !== undefined && this.props.closeResultModal !== undefined) {
+                        this.props.closeResultModal();
+                        this.props.callUpcomgingReleasesService();
+                    }
+                }
+
+                
             })
             .catch((error) =>{
                 if (error.response !== undefined && error.response.status !== undefined) {
@@ -175,10 +197,28 @@ class ReleaseCarForm extends React.Component {
         const fileUpload = event.target.files[0];
         const { releasePayload } = this.state;
         this.setState({
+            fileSelected: true,
             releasePayload: {
                 ...releasePayload,
                 releaseDocument: fileUpload
             }
+        });
+    }
+
+    changeReleaseDocumentNumber = (event) => {
+        const { releasePayload } = this.state;
+        this.setState({
+            releasePayload: {
+                ...releasePayload,
+                releaseDocumentNumber: event.target.value
+            }
+        });
+    }
+
+    toggleIdTypeInputMode = (event) => {
+        const { isIdTypeOther } = this.state;
+        this.setState({
+            isIdTypeOther: ! isIdTypeOther
         });
     }
 
@@ -190,8 +230,8 @@ class ReleaseCarForm extends React.Component {
     }
 
     render = () => {
-        const { shouldShowRedirectLoginModal, releasePayload: {
-            firstName, lastName, emailAddress, idNumber, idType, contactNumber, nationality,
+        const { shouldShowRedirectLoginModal, isIdTypeOther, releasePayload: {
+            firstName, lastName, emailAddress, idNumber, idType, contactNumber, nationality, releaseDocumentNumber,
         }} = this.state;
 
         return (
@@ -221,12 +261,17 @@ class ReleaseCarForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>    
                             <Form.Label className="required_form_label">ID Type *</Form.Label>
-                            <Form.Select required={true} value={idType} onChange={this.changeIdType}>
-                                <option value="Passport">Passport</option>
-                                <option value="Emirates ID">Emirates ID</option>
-                                <option value="National ID">National ID</option>
-                                <option value="Driving License">Driving License</option>
-                            </Form.Select>
+                            {
+                                isIdTypeOther ? <Form.Control type="text" value={idType} onChange={this.changeIdType} />
+                                :
+                                <Form.Select required={true} value={idType} onChange={this.changeIdType}>
+                                    <option value="Passport">Passport</option>
+                                    <option value="Emirates ID">Emirates ID</option>
+                                    <option value="National ID">National ID</option>
+                                    <option value="Driving License">Driving License</option>
+                                </Form.Select>
+                            }
+                            <Form.Check type="switch" label="Select other ID type" onChange={this.toggleIdTypeInputMode}/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label className="required_form_label">Nationality *</Form.Label>
@@ -239,8 +284,12 @@ class ReleaseCarForm extends React.Component {
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Release Document *</Form.Label>
-                            <Form.Control type="file" required onChange={this.changeReleaseDocument} />
+                            <Form.Label>Release Document Number</Form.Label>
+                            <Form.Control type="text" value={releaseDocumentNumber} onChange={this.changeReleaseDocumentNumber} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Release Document</Form.Label> 
+                            <Form.Control type="file"  onChange={this.changeReleaseDocument} />
                         </Form.Group>
                     </Row>
                    

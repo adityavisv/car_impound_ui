@@ -15,3 +15,8 @@ textarea {
 .required_form_label {
     font-weight: bold;
 }
+
+span.redcolorbox {
+    background-color: red;
+    color: red;
+}

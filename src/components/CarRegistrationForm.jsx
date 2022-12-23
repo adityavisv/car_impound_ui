@@ -6,7 +6,7 @@ import UserService from '../services/user.service';
 import LoginRedirectModal from './LoginRedirectModal';
 import 'bootstrap/dist/css/bootstrap.css';
 import { makeModelData } from '../newcardb';
-import { getAllModelsByMake } from '../helpers/generalhelpers';
+import { getAllModelsByMake, generateFileObjectsFromData } from '../helpers/generalhelpers';
 import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 
 class CarRegistrationForm extends React.Component {
@@ -40,19 +40,19 @@ class CarRegistrationForm extends React.Component {
                 id: vehicleId = '', 
                 make = '',
                 model = '',
-                type = 'CAR',
+                type = '',
                 registrationDateTime = new Date(),
                 estimatedReleaseDate = '',
                 caseNumber = '',
                 chassisNumber = '',
                 color = '',
                 parkingSlot: parkingSlotPreFill = '', 
-                images = [],
+                images,
                 isWanted = false,
                 numberPlate = '', 
                 department = '',
                 category = '',
-                emirate = 'ABU_DHABI',
+                emirate = '',
                 code = '',
                 remarks = '',
                 owner: {
@@ -93,6 +93,11 @@ class CarRegistrationForm extends React.Component {
             isVehicleAssignDone: false,
             isMakeOther: false,
             isModelOther: false,
+            isTypeOther: false,
+            isColorOther: false,
+            isEmirateOther: false,
+            isCategoryOther: false,
+            isCodeOther: false,
             newVehiclePayload: {
                 vehicleId,
                 make,
@@ -104,6 +109,7 @@ class CarRegistrationForm extends React.Component {
                 caseNumber,
                 chassisNumber,
                 images: readOnly && (!updateMode) ? images : [],
+                imagesInput: generateFileObjectsFromData(updateMode ? images : []),
                 color,
                 parkingSlot: readOnly || updateMode ? parkingSlotPreFill : parkingSlot,
                 isWanted,
@@ -154,53 +160,25 @@ class CarRegistrationForm extends React.Component {
     changeMake = (event) => {
         const { newVehiclePayload, isMakeOther } = this.state;
         const make = event.target.value;
-        if (isMakeOther) {
-            this.setState({
-                newVehiclePayload: {
-                    ...newVehiclePayload,
-                    make,
-                    model: ''
-                }
-            });
-        }
-        else {
-            const getNewModelsByMake = getAllModelsByMake(make);
-            this.setState({
-                newVehiclePayload: {
-                    ...newVehiclePayload,
-                    make,
-                    model: ''
-                    
-                },
-                isMakeOther: make === 'OTHER',
-                isModelOther: make === 'OTHER',
-                modelsDropDownValues: [... new Set(getNewModelsByMake)]
-            });
-        }
-       
+        const getNewModelsByMake = getAllModelsByMake(make);
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                make,      
+            },
+            modelsDropDownValues: [... new Set(getNewModelsByMake)]
+        });
     }
 
     changeModel = (event) => {
         const { newVehiclePayload, isModelOther } = this.state;
         const { value: model } = event.target;
-        if (isModelOther) {
-            this.setState({
-                newVehiclePayload: {
-                    ...newVehiclePayload,
-                    model
-                }
-            })
-
-        }
-        else {
-            this.setState({
-                newVehiclePayload: {
-                    ...newVehiclePayload,
-                    model
-                },
-                isModelOther: model === 'OTHER'
-            });
-        }
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                model
+            }
+        });
     }
 
     changeCaseNumber = (event) => {
@@ -451,19 +429,147 @@ class CarRegistrationForm extends React.Component {
         });
     }
 
-    changeImage = (event) => {
+    changeImage1 = (event) => {
         const fileUpload = event.target.files[0];
         const { newVehiclePayload } = this.state;
-        var { images } = newVehiclePayload;
-        images.push(fileUpload);
+        var { imagesInput } = newVehiclePayload;
+        if (imagesInput.size < 1) {
+            imagesInput.push(fileUpload);
+        }
+        else {
+            imagesInput[0] = fileUpload;
+        }
         this.setState({
-           newVehiclePayload: {
-               ...newVehiclePayload,
-               images
-           }
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                imagesInput
+            }
         });
     }
 
+    changeImage2 = (event) => {
+        const fileUpload = event.target.files[0];
+        const { newVehiclePayload } = this.state;
+        var { imagesInput } = newVehiclePayload;
+        if (imagesInput.size < 2) {
+            imagesInput.push(fileUpload);
+        }
+        else {
+            imagesInput[1] = fileUpload;
+        }
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                imagesInput
+            }
+        });
+    }
+
+    changeImage3 = (event) => {
+        const fileUpload = event.target.files[0];
+        const { newVehiclePayload } = this.state;
+        var { imagesInput } = newVehiclePayload;
+        if (imagesInput.size < 3) {
+            imagesInput.push(fileUpload);
+        }
+        else {
+            imagesInput[2] = fileUpload;
+        }
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                imagesInput
+            }
+        });
+    }
+
+    changeImage4 = (event) => {
+        const fileUpload = event.target.files[0];
+        const { newVehiclePayload } = this.state;
+        var { imagesInput } = newVehiclePayload;
+        if (imagesInput.size < 4) {
+            imagesInput.push(fileUpload);
+        }
+        else {
+            imagesInput[3] = fileUpload;
+        }
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                imagesInput
+            }
+        });
+    }
+
+    changeImage5 = (event) => {
+        const fileUpload = event.target.files[0];
+        const { newVehiclePayload } = this.state;
+        var { imagesInput } = newVehiclePayload;
+        if (imagesInput.size < 5) {
+            imagesInput.push(fileUpload);
+        }
+        else {
+            imagesInput[4] = fileUpload;
+        }
+        this.setState({
+            newVehiclePayload: {
+                ...newVehiclePayload,
+                imagesInput
+            }
+        });
+    }
+
+    
+
+
+    toggleCategoryInputMode = (event) => {
+        const { isCategoryOther } = this.state;
+        this.setState({
+            isCategoryOther: !isCategoryOther
+        });
+    }
+
+    toggleColorInputMode = (event) => {
+        const { isColorOther } = this.state;
+        this.setState({
+            isColorOther: ! isColorOther
+        });
+    }
+
+    toggleCodeInputMode = (event) => {
+        const { isCodeOther } = this.state;
+        this.setState({
+            isCodeOther: ! isCodeOther
+        });
+    }
+
+    toggleMakeInputMode = (event) => {
+        const { isMakeOther } = this.state;
+        this.setState({
+            isMakeOther: ! isMakeOther
+        });
+    }
+
+    toggleModelInputMode = (event) => {
+        const { isModelOther } = this.state;
+        this.setState({
+            isModelOther: ! isModelOther
+        });
+    }
+
+    toggleTypeInputMode = (event) => {
+        const { isTypeOther } = this.state;
+        this.setState({
+            isTypeOther: ! isTypeOther
+        });
+    }
+
+    toggleEmirateInputMode = (event) => {
+        const { isEmirateOther } = this.state;
+        this.setState({
+            isEmirateOther: ! isEmirateOther
+        });
+    }
 
     submitVehicle = (event) => {
         event.preventDefault();
@@ -489,7 +595,7 @@ class CarRegistrationForm extends React.Component {
             emirate,
             category,
             code,
-            images,
+            imagesInput,
             remarks,
             owner,
         }, selectedSlot } = this.state;
@@ -519,8 +625,8 @@ class CarRegistrationForm extends React.Component {
         if (updateMode) {
             UserService.updateVehicleDetails(vehicleId, finalPayload)
                 .then((response) => {
-                    if (images.length > 0) {
-                        UserService.assignImageToVehicle(vehicleId, images)
+                    if (imagesInput.length > 0) {
+                        UserService.assignImageToVehicle(vehicleId, imagesInput)
                         .then((nestedResponse) => {
                             this.setState({
                                 isVehicleAssignDone: true,
@@ -561,8 +667,8 @@ class CarRegistrationForm extends React.Component {
                 .then((response) => {
                     const { data: {parkingSpots}} = response;
                     const { occupiedVehicle: {id: vehicleId}} = parkingSpots[0];
-                    if (images.length > 0) {
-                        UserService.assignImageToVehicle(vehicleId, images)
+                    if (imagesInput.length > 0) {
+                        UserService.assignImageToVehicle(vehicleId, imagesInput)
                         .then((nestedResponse) => {
                             this.setState({
                                 isVehicleAssignDone: true,
@@ -663,6 +769,11 @@ class CarRegistrationForm extends React.Component {
             shouldShowRedirectLoginModal,
             isMakeOther,
             isModelOther,
+            isTypeOther,
+            isColorOther,
+            isEmirateOther,
+            isCategoryOther,
+            isCodeOther,
             readOnly,
             updateMode,
             makesDropDownValues,
@@ -685,6 +796,7 @@ class CarRegistrationForm extends React.Component {
             category,
             code,
             images,
+            imagesInput,
             remarks,
             owner: {
                 firstName,
@@ -728,11 +840,7 @@ class CarRegistrationForm extends React.Component {
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label className="required_form_label">Vehicle Type *</Form.Label>
-                                    <Form.Select value={type} required={true} disabled readOnly={true}>
-                                        <option value="MOTORCYCLE">Motorcycle</option>
-                                        <option vlaue="TRUCK">Truck</option>
-                                        <option value="CAR">Car</option>
-                                    </Form.Select>
+                                    <Form.Control type="text" readOnly disabled value={type} />
                                 </Form.Group>
                                 
                            </Row>
@@ -745,6 +853,27 @@ class CarRegistrationForm extends React.Component {
                                     <Form.Label className="required_form_label">Chassis Number *</Form.Label>
                                     <Form.Control type="text" value={chassisNumber} disabled={readOnly} readOnly={true} />
                                 </Form.Group>
+                           </Row>
+                           <Row className="mb-3">
+                               <Form.Group as={Col}>
+                                   <Form.Label className="required_form_label">Emirate/Country</Form.Label>
+                                   <Form.Control type="text" value={emirate} disabled={readOnly} readOnly={true} />
+                               </Form.Group>
+                               <Form.Group as={Col}>
+                                   <Form.Label className="required_form_label">Category</Form.Label>
+                                   <Form.Control type="text" value={category} disabled={readOnly} readOnly={true} />
+                               </Form.Group>
+                               
+                           </Row>
+                           <Row className="mb-3">
+                           <Form.Group as={Col}>
+                                   <Form.Label className="required_form_label">Code</Form.Label>
+                                   <Form.Control type="text" value={code} disabled={readOnly} readOnly={true} />
+                               </Form.Group>
+                               <Form.Group as={Col}>
+                                   <Form.Label className="required_form_label">Number Plate</Form.Label>
+                                   <Form.Control type="text" value={numberPlate} disabled={readOnly} readOnly={true} />
+                               </Form.Group>
                            </Row>
                        </Form.Group>
                         <Form.Group as={Col}>
@@ -765,62 +894,97 @@ class CarRegistrationForm extends React.Component {
                     <>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Make *</Form.Label>
+                                <span><Form.Label className="required_form_label">Make *</Form.Label> <Form.Check reverse inline type="switch"  onChange={this.toggleMakeInputMode}/> </span>
+                                
+                                
                                 {
                                     isMakeOther ? <Form.Control type="text" value={make} onChange={this.changeMake} />
                                     : <Form.Select value={make} onChange={this.changeMake}>
                                         <option value=''>Select an option</option>
-                                        <option value="OTHER">Other</option>
                                         {
                                             Array.from(makesDropDownValues).map((value) => (
                                                 <option value={value}>{value}</option>
                                             ))
                                         }
                                     </Form.Select>
+
                                 }
+                                
                                 {/* <Form.Control type="text"  required={true} value={make} onChange={this.changeMake} disabled={readOnly}/> */}
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Model *</Form.Label>
+                                <span><Form.Label className="required_form_label">Model *</Form.Label> <Form.Check inline type="switch" disabled={isMakeOther} onChange={this.toggleModelInputMode}/> </span>
                                 {
-                                    isModelOther ? <Form.Control type="text" value={model} onChange={this.changeModel} />
+                                    isModelOther || isMakeOther ? <Form.Control type="text" value={model} onChange={this.changeModel} />
                                     : <Form.Select value={model} onChange={this.changeModel}>
                                         <option value=''>Select an option</option>
-                                        <option value="OTHER">Other</option>
                                         {
                                             Array.from(modelsDropDownValues).map((value) => (
                                                 <option value={value}>{value}</option>
                                             ))
                                         }
                                     </Form.Select>
+                                    
                                 }
+                                
                                 {/* <Form.Control type="text"  required={true} value={model} onChange={this.changeModel} disabled={readOnly}/> */}
                             </Form.Group> 
 
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Type *</Form.Label>
-                                <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
-                                    <option value=''>Select an option</option>
-                                    {
-                                        parkingSlot.startsWith('T') ? <option value='TRUCK'>Truck</option>
-                                        : <>
+                                <span><Form.Label className="required_form_label">Type *</Form.Label> <Form.Check inline type="switch" onChange={this.toggleTypeInputMode} /></span>
+                                {
+                                    isTypeOther ? <Form.Control type="text" required={true} onChange={this.changeType} /> : 
+                                
+                                    <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
+                                        <option value=''>Select an option</option>
+                                        {
+                                            parkingSlot.startsWith('T') ? <option value='TRUCK'>Truck</option>
+                                            : <>
                                             <option value='CAR'>Car</option>
                                             <option value='MOTORCYCLE'>Motorcycle</option>
-                                        </>
-                                    }
-                                </Form.Select>
+                                            </>
+                                        }
+                                    </Form.Select>
+                                }
+                                
+                                
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label className="required_form_label">Colour *</Form.Label>
-                                <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
+                                <span>
+                                    <Form.Label className="required_form_label">Colour *</Form.Label> 
+                                    <Form.Check type="switch" inline onChange={this.toggleColorInputMode} />
+                                </span>
+                                {
+                                    isColorOther ? <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
+                                    :
+                                    <Form.Select value={color} required={true} onChange={this.changeColor}>
+                                        <option value=''>Select an option</option>
+                                        <option value='RED'> Red</option>
+                                        <option value='YELLOW'>Yellow</option>
+                                        <option value='GREEN'>Green</option>
+                                        <option value='BLUE'>Blue</option>
+                                        <option value='BLACK'>Black</option>
+                                        <option value='WHITE'>White</option>
+                                        <option value='PINK'>Pink</option>
+                                        <option value='GREY'>Grey</option>
+                                        <option value='SILVER'>Silver</option>
+                                        <option value='BROWN'>Brown</option>
+                                    </Form.Select>
+                                }
+                                
                             </Form.Group>
                         </Row>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <Form.Label >Emirate</Form.Label>
-                                <Form.Select required disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
+                                <span><Form.Label >Emirate/Country</Form.Label> <Form.Check inline type="switch" onChange={this.toggleEmirateInputMode} /></span>
+                                {
+                                    isEmirateOther ?
+                                    <Form.Control type="text" required onChange={this.changeEmirate} value={emirate} />
+                                    :
+                                    <Form.Select disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
+                                        <option value=''>Select Emirate/Country</option>
                                     <option value="ABU_DHABI">Abu Dhabi</option>
                                     <option value="AJMAN">Ajman</option>
                                     <option value="DUBAI">Dubai</option>
@@ -829,24 +993,39 @@ class CarRegistrationForm extends React.Component {
                                     <option value="SHARJAH">Sharjah</option>
                                     <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
                                 </Form.Select>
+                                }
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label>Category</Form.Label>
-                                <Form.Select disabled={readOnly} onChange={this.changeCategory} value={category}>
+                                <span>
+                                    <Form.Label>Category</Form.Label> 
+                                    <Form.Check type="switch" inline disabled={isEmirateOther} onChange={this.toggleCategoryInputMode} />
+                                </span>
+                                {
+                                    isCategoryOther || isEmirateOther ? <Form.Control type="text" required onChange={this.changeCategory} value={category} />
+                                    :
+                                    <Form.Select disabled={readOnly} onChange={this.changeCategory} value={category}>
                                     <option value=''>Select a category</option>
                                     {
                                         this.populateCategoryDropdown()
                                     }
-                                </Form.Select>
+                                    </Form.Select>
+                                }
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label >Code</Form.Label>
-                                <Form.Select disabled={readOnly} onChange={this.changeCode} value={code}>
+                                <span>
+                                    <Form.Label>Code</Form.Label>
+                                    <Form.Check type="switch" inline disabled={isEmirateOther || isCategoryOther} onChange={this.toggleCodeInputMode} />
+                                </span>
+                                {
+                                    isCodeOther || isEmirateOther || isCategoryOther ? <Form.Control type="text" required onChange={this.changeCode} value={code} />
+                                    :
+                                    <Form.Select disabled={readOnly} onChange={this.changeCode} value={code}>
                                     <option value=''>Select Code</option>
                                     {this.populateCodeDropdown()}
-                                </Form.Select>
+                                    </Form.Select>
+                                }
                             </Form.Group>
                             <Form.Group as={Col}>
                                 <Form.Label>Car No. Plate</Form.Label>
@@ -911,23 +1090,28 @@ class CarRegistrationForm extends React.Component {
                     <Row className="mb-3">
                         <Form.Group as={Col}>
                             <Form.Label>Image 1</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
+                            <Form.Control type="file" onChange={this.changeImage1} size="sm"/>
+                            { updateMode && imagesInput.length > 0 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 2</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
+                            <Form.Control type="file" onChange={this.changeImage2} size="sm"/>
+                            { updateMode && imagesInput.length > 1 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 3</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
+                            <Form.Control type="file" onChange={this.changeImage3} size="sm"/>
+                            { updateMode && imagesInput.length > 2 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 4</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
+                            <Form.Control type="file" onChange={this.changeImage4} size="sm"/>
+                            { updateMode && imagesInput.length > 3 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Image 5</Form.Label>
-                            <Form.Control type="file" onChange={this.changeImage} size="sm"/>
+                            <Form.Control type="file" onChange={this.changeImage5} size="sm"/>
+                            { updateMode && imagesInput.length > 4 ?  <Form.Text className="text-muted">Replace</Form.Text> : null}
                         </Form.Group>
                     </Row> : <></>}
                     

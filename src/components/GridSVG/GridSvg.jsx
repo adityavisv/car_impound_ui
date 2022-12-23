@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Container } from 'react-bootstrap';
 import '../../styles/gridsvg.css';
 import CarRegistrationForm from '../CarRegistrationForm';
+import ReassignCarForm from '../ReassignCarForm';
 import ReleaseCarForm from '../ReleaseCarForm';
 import SingleSlotOverviewModal from '../SingleSlotOverview';
 
@@ -15,6 +16,7 @@ class GridSvg extends React.Component {
             zoneLabel,
             selectedSlot: [{}],
             currentUser,
+            shouldShowReassignModal: false,
             shouldDisplaySlotModal: false,
             shouldShowRegisterModal: false,
             showShowReleaseModal: false,
@@ -78,6 +80,7 @@ class GridSvg extends React.Component {
     showRegisterModal = () => {
         this.setState({
             shouldShowRegisterModal: true,
+            shouldShowReleaseModal: false,
             shouldDisplaySlotModal: false,
             shouldShowReleaseModal: false,
             shouldShowUpdateModal: false
@@ -86,9 +89,11 @@ class GridSvg extends React.Component {
 
     showReleaseModal = () => {
         this.setState({
+            
+            shouldShowReleaseModal: true,
             shouldShowRegisterModal: false,
             shouldDisplaySlotModal: false,
-            shouldShowReleaseModal: true,
+            shouldShowReassignModal: false,
             shouldShowUpdateModal: false
         });
     }
@@ -98,7 +103,18 @@ class GridSvg extends React.Component {
             shouldShowUpdateModal: true,
             shouldDisplaySlotModal: false,
             shouldShowReleaseModal: false,
+            shouldShowReassignModal: false,
             shouldShowRegisterModal: false
+        });
+    }
+
+    showReassignModal = () => {
+        this.setState({
+            shouldShowReassignModal: true,
+            shouldShowUpdateModal: false,
+            shouldShowReleaseModal: false,
+            shouldShowRegisterModal: false,
+            shouldDisplaySlotModal: false
         });
     }
 
@@ -129,8 +145,17 @@ class GridSvg extends React.Component {
     closeReleaseModal = () => {
         this.setState({
             shouldShowReleaseModal: false,
+            selectedSlot: [{}],
             isMultSlotMode: false
         });
+    }
+
+    closeReassignModal = () => {
+        this.setState({
+            shouldShowReassignModal: false,
+            isMultSlotMode: false,
+            selectedSlot: [{}],
+        })
     }
 
     setFirstSelectedSlot = () => {
@@ -1522,7 +1547,7 @@ class GridSvg extends React.Component {
     }
 
     render = () => {
-        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, shouldShowUpdateModal, currentUser } = this.state;
+        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, shouldShowReassignModal, shouldShowUpdateModal, currentUser } = this.state;
 
         return (
             <div>
@@ -1534,6 +1559,7 @@ class GridSvg extends React.Component {
                     showRegisterModal={this.showRegisterModal}
                     showUpdateModal={this.showUpdateModal}
                     showReleaseModal={this.showReleaseModal}
+                    showReassignModal={this.showReassignModal}
                     setFirstSelectedSlot={this.setFirstSelectedSlot}
                 />
                  <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="xl" centered>
@@ -1581,6 +1607,22 @@ class GridSvg extends React.Component {
                             closeGridSvg={this.props.closeGridSvg}
                             callLogout={this.props.callLogout}
                         />
+                    </Modal.Body>
+                </Modal>
+
+
+                <Modal show={shouldShowReassignModal} onHide={this.closeReassignModal} size="lg" centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title className="ms-auto">Vehicle Re-Assign</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <ReassignCarForm
+                            selectedSlot={selectedSlot}
+                            closeForm={this.closeReassignModal}
+                            callZoneSummaryService={this.props.callZoneSummaryService}
+                            closeGridSvg={this.props.closeGridSvg}
+                            callLogout={this.props.callLogout}
+                            />
                     </Modal.Body>
                 </Modal>
 

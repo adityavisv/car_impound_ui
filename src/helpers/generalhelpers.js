@@ -37,6 +37,18 @@ export const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
     return blob;
 }
 
+export const generateFileObjectsFromData = (fileDataArray) => {
+    let fileObjArray = [];
+    for (const file of fileDataArray) {
+        var fileContentBlob = b64toBlob(file.base64EncodedBlob);
+        var fileObj = new File([fileContentBlob], "filename", {
+            type: file.contentType
+        });
+        fileObjArray.push(fileObj);
+    }
+    return fileObjArray;
+}
+
 
 export const getDateTimeString = (dateValue) => {
     if (dateValue !== '' && dateValue !== null) {
@@ -141,4 +153,384 @@ export const getEmirateDisplay = (emirate) => {
         case "SHARJAH":
             return "Sharjah"
     }
+}
+
+export const getAdjacentSpots = (spot) => {
+    const {
+        zoneLabel,
+        slotNumber
+    } = spot;
+    switch (zoneLabel) {
+        case 'A':
+            {
+                if (slotNumber === 28 || slotNumber === 56 || slotNumber === 88) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 29 || slotNumber === 57) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'B':
+            {
+                if (slotNumber === 34 || slotNumber === 71) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 35) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'C':
+            {
+                if (slotNumber === 37 || slotNumber === 75) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 38) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'D':
+            {
+                if (slotNumber === 39 || slotNumber === 84) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 40) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'E':
+            {
+                if (slotNumber === 46 || slotNumber === 95) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 47) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'F':
+            {
+                if (slotNumber === 49 || slotNumber === 101) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 50) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'G':
+            {
+                if (slotNumber === 53 || slotNumber === 109) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 54) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'H':
+            {
+                if (slotNumber === 57 || slotNumber === 117) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 58) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'I':
+            {
+                if (slotNumber === 62 || slotNumber === 129) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 63) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'J':
+            {
+                if (slotNumber === 69 || slotNumber === 144) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 70) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'K':
+            {
+                if (slotNumber === 78 || slotNumber === 165) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 79) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'L':
+            {
+                if (slotNumber === 92 || slotNumber === 193) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 93) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'M':
+            {
+                if (slotNumber === 104 || slotNumber === 213) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1 || slotNumber === 105) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'N':
+            {
+                if (slotNumber === 111) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+        case 'O':
+            {
+                if (slotNumber === 134) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }];
+                } else if (slotNumber === 1) {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                } else {
+                    return [{
+                        zoneLabel,
+                        slotNumber: slotNumber - 1
+                    }, {
+                        zoneLabel,
+                        slotNumber: slotNumber + 1
+                    }];
+                }
+                break;
+            }
+    }
+}
+
+
+export const getAvailableSpotPairs = (allSpotData) => {
+    var spotAdjacentSpotsPairing = [];
+    for (const spot of allSpotData) {
+        var adjacentSpots = getAdjacentSpots(spot);
+        var availableAdjacentSpots = [];
+        for (const adjSpot of adjacentSpots) {
+            const {
+                zoneLabel,
+                slotNumber
+            } = adjSpot;
+            const actualSpotData = allSpotData.find(s => (s.zoneLabel === zoneLabel && s.slotNumber === slotNumber));
+            if (actualSpotData !== undefined && actualSpotData !== null) {
+                availableAdjacentSpots.push(actualSpotData);
+
+            }
+
+        }
+        spotAdjacentSpotsPairing.push({
+            spot,
+            availableAdjacentSpots
+        });
+    }
+    return spotAdjacentSpotsPairing;
 }

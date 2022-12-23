@@ -28,6 +28,11 @@ export default class SearchForm extends React.Component {
             shouldShowRedirectLoginModal: false,
             isMakeOther: false,
             isModelOther: false,
+            isTypeOther: false,
+            isColorOther: false,
+            isEmirateOther: false,
+            isCategoryOther: false,
+            isCodeOther: false,
             makesDropdownValues: [... new Set(allMakes)],
             modelsDropdownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
             slotNumberDropdownValues: [],
@@ -92,37 +97,16 @@ export default class SearchForm extends React.Component {
 
     changeMake = (event) => {
         const make = event.target.value;
-        const { isMakeOther } = this.state;
-        if (isMakeOther) {
-            this.setState({
-                make
-            });
-        }
-        else {
-            const modelsByMake = getAllModelsByMake(make);
-            this.setState({
-                make,
-                isMakeOther: make === 'OTHER',
-                isModelOther: make === 'OTHER',
-                modelsDropdownValues: [... new Set(modelsByMake)]
-            });
-        }
+        this.setState({
+            make
+        });
     }
 
     changeModel = (event) => {
-        const { isModelOther } = this.state;
         const { value: model } = event.target;
-        if (isModelOther) {
-            this.setState({
-                model
-            });
-        }
-        else {
-            this.setState({
-                model,
-                isModelOther: model === 'OTHER'
-            });
-        }
+        this.setState({
+            model
+        });
     }
 
     changeColor = (event) => {
@@ -253,6 +237,55 @@ export default class SearchForm extends React.Component {
     closeResultModal = () => {
         this.setState({
             showResultModal: false
+        });
+    }
+
+    toggleMakeInputMode = () => {
+        const { isMakeOther } = this.state;
+        this.setState({
+            isMakeOther: ! isMakeOther
+        });
+    }
+
+    toggleModelInputMode = () => {
+        const { isModelOther } = this.state;
+        this.setState({
+            isModelOther: ! isModelOther
+        });
+    }
+
+    toggleTypeInputMode = () => {
+        const { isTypeOther }  = this.state;
+        this.setState({
+            isTypeOther: ! isTypeOther
+        });
+    }
+
+    toggleColorInputMode = () => {
+        const { isColorOther } = this.state;
+        this.setState({
+            isColorOther: ! isColorOther
+        });
+    }
+
+    toggleEmirateInputMode = () => {
+        const { isEmirateOther } = this.state;
+        this.setState({
+            isEmirateOther: ! isEmirateOther
+        });
+    }
+
+    toggleCategoryInputMode = () => {
+        const { isCategoryOther } = this.state;
+        this.setState({
+            isCategoryOther: ! isCategoryOther
+        });
+    }
+
+    toggleCodeInputMode = () => {
+        const { isCodeOther } = this.state;
+        this.setState({
+            isCodeOther: ! isCodeOther
         });
     }
 
@@ -519,6 +552,11 @@ export default class SearchForm extends React.Component {
             showResults, 
             isMakeOther,
             isModelOther,
+            isTypeOther,
+            isColorOther,
+            isEmirateOther,
+            isCategoryOther,
+            isCodeOther,
             make, 
             model, 
             color,
@@ -596,13 +634,14 @@ export default class SearchForm extends React.Component {
                                             }
                                         </Form.Select>
                                     }
+                                    <Form.Check type="switch" label="Other Make" onChange={this.toggleMakeInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Model</Form.Label>
                                     {
-                                        isModelOther ? <Form.Control type="text" size="sm" onChange={this.changeModel} value={model} /> :
+                                        isModelOther || isMakeOther ? <Form.Control type="text" size="sm" onChange={this.changeModel} value={model} /> :
                                         
                                     
                                         <Form.Select size="sm" value={model} onChange={this.changeModel}>
@@ -615,17 +654,23 @@ export default class SearchForm extends React.Component {
                                             }
                                         </Form.Select>
                                     }
+                                    <Form.Check type="switch" label="Other Model" onChange={this.toggleModelInputMode} disabled={isMakeOther} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Vehicle Type</Form.Label>
-                                    <Form.Select size="sm" value={type} onChange={this.changeType}>
+                                    {
+                                        isTypeOther ? <Form.Control type="text" size="sm" onChange={this.changeType} value={type} />
+                                        :
+                                        <Form.Select size="sm" value={type} onChange={this.changeType}>
                                         <option value=''>Select an option</option>
                                         <option value="CAR">Car</option>
                                         <option value="TRUCK">Truck</option>
                                         <option value="MOTORCYCLE">Motorcycle</option>
-                                    </Form.Select>
+                                        </Form.Select>
+                                    }
+                                    <Form.Check type="switch" label="Other Vehicle Type" onChange={this.toggleTypeInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
@@ -642,7 +687,24 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Colour</Form.Label>
-                                    <Form.Control type="text" size="sm" value={color} onChange={this.changeColor} />
+                                    {
+                                        isColorOther ? <Form.Control type="text" size="sm" value={color} onChange={this.changeColor} />
+                                        :
+                                        <Form.Select size="sm" value={color} onChange={this.changeColor}>
+                                            <option value=''>Select an option</option>
+                                            <option value='RED'> Red</option>
+                                            <option value='YELLOW'>Yellow</option>
+                                            <option value='GREEN'>Green</option>
+                                            <option value='BLUE'>Blue</option>
+                                            <option value='BLACK'>Black</option>
+                                            <option value='WHITE'>White</option>
+                                            <option value='PINK'>Pink</option>
+                                            <option value='GREY'>Grey</option>
+                                            <option value='SILVER'>Silver</option>
+                                            <option value='BROWN'>Brown</option>
+                                        </Form.Select>
+                                    }
+                                    <Form.Check type="switch" label="Other Color" onChange={this.toggleColorInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
@@ -666,7 +728,10 @@ export default class SearchForm extends React.Component {
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Emirate</Form.Label>
-                                    <Form.Select size="sm" value={emirate} onChange={this.changeEmirate}>
+                                    {
+                                        isEmirateOther ? <Form.Control type="text"  size="sm" onChange={this.changeEmirate} value={emirate} />
+                                        :
+                                        <Form.Select size="sm" value={emirate} onChange={this.changeEmirate}>
                                         <option value=''>Select an option</option>
                                         <option value="ABU_DHABI">Abu Dhabi</option>
                                         <option value="AJMAN">Ajman</option>
@@ -675,25 +740,37 @@ export default class SearchForm extends React.Component {
                                         <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
                                         <option value="SHARJAH">Sharjah</option>
                                         <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
-                                    </Form.Select>
+                                        </Form.Select>
+                                    }
+                                    <Form.Check type="switch" label="Other Emirate" onChange={this.toggleEmirateInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Category</Form.Label>
-                                    <Form.Select size="sm" value={category} onChange={this.changeCategory}>
-                                        <option value=''>Select an option</option>
-                                        {this.populateCategoryDropdown()}
-                                    </Form.Select>
+                                    {
+                                        isCategoryOther || isEmirateOther ? <Form.Control type="text" size="sm" value={category} onChange={this.changeCategory} />
+                                        :
+                                        <Form.Select size="sm" value={category} onChange={this.changeCategory}>
+                                            <option value=''>Select an option</option>
+                                            {this.populateCategoryDropdown()}
+                                        </Form.Select>
+                                    }
+                                    <Form.Check type="switch" label="Other Category" onChange={this.toggleCategoryInputMode} disabled={isEmirateOther}/>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>Code</Form.Label>
-                                    <Form.Select size="sm" value={code} onChange={this.changeCode}>
-                                        <option value=''>Select an option</option>
-                                        {this.populateCodeDropdown()}
-                                    </Form.Select>
+                                    {
+                                        isEmirateOther || isCategoryOther || isCodeOther ? <Form.Control type="text" size="sm" value={code} onChange={this.changeCode} />
+                                        :
+                                        <Form.Select size="sm" value={code} onChange={this.changeCode}>
+                                            <option value=''>Select an option</option>
+                                            {this.populateCodeDropdown()}
+                                        </Form.Select>
+                                    }
+                                    <Form.Check type="switch" label="Other Code" onChange={this.toggleCodeInputMode} disabled={isCategoryOther || isEmirateOther} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">

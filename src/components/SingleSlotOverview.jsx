@@ -12,6 +12,7 @@ class SingleSlotOverviewModal extends React.Component {
             showRegisterModal,
             showReleaseModal,
             showUpdateModal,
+            showReassignModal,
             setFirstSelectedSlot,
             selectedSlot: {zoneLabel}
         } = this.props;
@@ -28,6 +29,7 @@ class SingleSlotOverviewModal extends React.Component {
                 return <>
                 <Button variant="secondary" onClick={showReleaseModal}>Release</Button>
                 <Button variant="secondary" onClick={showUpdateModal}>Modify</Button>
+                <Button variant="secondary" onClick={showReassignModal}>Re-Assign</Button>
                 </>;
 
             }
