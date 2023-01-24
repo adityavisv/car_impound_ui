@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Button, Col, Modal, Row, Form } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import { parkingSlotNumberMap } from '../parkingSlotMap';
 import LoadingOverlay from 'react-loading-overlay';
 import UserService from '../services/user.service';
@@ -13,7 +14,7 @@ import { makeModelData } from '../newcardb';
 import { convertResultsToCsv, getAllModelsByMake, getSlotsByZone } from '../helpers/generalhelpers';
 import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 
-export default class SearchForm extends React.Component {
+class SearchForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -589,6 +590,8 @@ export default class SearchForm extends React.Component {
             status
         } = this.state;
 
+        const { t } = this.props;
+
         return (
             <LoadingOverlay
                 active={this.loadingOverlayController()}
@@ -600,33 +603,33 @@ export default class SearchForm extends React.Component {
                         <Form onSubmit={this.hitSearch}>
                             <Row id="searchform_topbar" className="mb-3">
                                 <Col>
-                                    <Button onClick={this.clearSearchForm} id="search_btn" variant="secondary">Clear</Button>
+                                    <Button onClick={this.clearSearchForm} id="search_btn" variant="secondary">{t("search_page_form_btn_clear")}</Button>
                                 </Col>
                                     
                                 <Col id="search_btn_col">
-                                    <Button type="submit" id="search_btn" variant="secondary">Search</Button>
+                                    <Button type="submit" id="search_btn" variant="secondary">{t("search_page_form_btn_search")}</Button>
                                 </Col>
                             </Row>
                                 
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Start Date</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_start_date")}</Form.Label>
                                     <Form.Control type="date" size="sm" value={startDate} onChange={this.changeStartDate} />
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    <Form.Label>End Date</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_end_date")}</Form.Label>
                                     <Form.Control type="date" size="sm" value={endDate} onChange={this.changeEndDate} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Make</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_make")}</Form.Label>
                                     {
 
                                         isMakeOther ? <Form.Control type="text" size="sm" onChange={this.changeMake} value={make} /> :
                                         <Form.Select size="sm" value={make} onChange={this.changeMake}>
-                                            <option value=''>Select an option</option>
-                                            <option value='OTHER'>Other</option>
+                                            <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                            <option value='OTHER'>{t("search_page_form_dropdown_other")}</option>
                                             {
                                                 Array.from(makesDropdownValues).map((item) => (
                                                     <option value={item}>{item}</option>
@@ -634,19 +637,19 @@ export default class SearchForm extends React.Component {
                                             }
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Make" onChange={this.toggleMakeInputMode} />
+                                    <Form.Check size="xs" type="switch" label={t("search_page_form_check_label_other_make")} onChange={this.toggleMakeInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Model</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_model")}</Form.Label>
                                     {
                                         isModelOther || isMakeOther ? <Form.Control type="text" size="sm" onChange={this.changeModel} value={model} /> :
                                         
                                     
                                         <Form.Select size="sm" value={model} onChange={this.changeModel}>
-                                            <option value='OTHER'>Other</option>
-                                            <option value=''>Select an option</option>
+                                            <option value='OTHER'>{t("search_page_form_dropdown_other")}</option>
+                                            <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
                                             {
                                                 Array.from(modelsDropdownValues).map((item) => (
                                                     <option value={item}>{item}</option>
@@ -654,158 +657,158 @@ export default class SearchForm extends React.Component {
                                             }
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Model" onChange={this.toggleModelInputMode} disabled={isMakeOther} />
+                                    <Form.Check size="xs" type="switch" label={t("search_page_form_check_label_other_model")} onChange={this.toggleModelInputMode} disabled={isMakeOther} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Vehicle Type</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_vehicle_type")}</Form.Label>
                                     {
                                         isTypeOther ? <Form.Control type="text" size="sm" onChange={this.changeType} value={type} />
                                         :
                                         <Form.Select size="sm" value={type} onChange={this.changeType}>
-                                        <option value=''>Select an option</option>
-                                        <option value="CAR">Car</option>
-                                        <option value="TRUCK">Truck</option>
-                                        <option value="MOTORCYCLE">Motorcycle</option>
+                                        <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                        <option value="CAR">{t("search_page_form_type_dropdown_car")}</option>
+                                        <option value="TRUCK">{t("search_page_form_type_dropdown_truck")}</option>
+                                        <option value="MOTORCYCLE">{t( "search_page_form_type_dropdown_motorcycle")}</option>
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Vehicle Type" onChange={this.toggleTypeInputMode} />
+                                    <Form.Check size="xs" type="switch" label={t("search_page_form_check_label_other_vehicle_type")} onChange={this.toggleTypeInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Status</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_status")}</Form.Label>
                                     <Form.Select size="sm" value={status} onChange={this.changeStatus}>
-                                        <option value=''>Select an option</option>
-                                        <option value='REGISTERED'>Registered</option>
-                                        <option value='APPROVED_FOR_RELEASE'>Approved for release</option>
-                                        <option value='RELEASED'>Released</option>
+                                        <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                        <option value='REGISTERED'>{t("search_page_form_status_dropdown_registered")}</option>
+                                        <option value='APPROVED_FOR_RELEASE'>{t("search_page_form_status_dropdown_approved_for_release")}</option>
+                                        <option value='RELEASED'>{t("search_page_form_status_dropdown_released")}</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Colour</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_color")}</Form.Label>
                                     {
                                         isColorOther ? <Form.Control type="text" size="sm" value={color} onChange={this.changeColor} />
                                         :
                                         <Form.Select size="sm" value={color} onChange={this.changeColor}>
-                                            <option value=''>Select an option</option>
-                                            <option value='RED'> Red</option>
-                                            <option value='YELLOW'>Yellow</option>
-                                            <option value='GREEN'>Green</option>
-                                            <option value='BLUE'>Blue</option>
-                                            <option value='BLACK'>Black</option>
-                                            <option value='WHITE'>White</option>
-                                            <option value='PINK'>Pink</option>
-                                            <option value='GREY'>Grey</option>
-                                            <option value='SILVER'>Silver</option>
-                                            <option value='BROWN'>Brown</option>
+                                            <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                            <option value='RED'>{t("search_page_form_color_dropdown_red")}</option>
+                                            <option value='YELLOW'>{t("search_page_form_color_dropdown_yellow")}</option>
+                                            <option value='GREEN'>{t("search_page_form_color_dropdown_green")}</option>
+                                            <option value='BLUE'>{t("search_page_form_color_dropdown_blue")}</option>
+                                            <option value='BLACK'>{t("search_page_form_color_dropdown_black")}</option>
+                                            <option value='WHITE'>{t("search_page_form_color_dropdown_white")}</option>
+                                            <option value='PINK'>{t("search_page_form_color_dropdown_pink")}</option>
+                                            <option value='GREY'>{t("search_page_form_color_dropdown_grey")}</option>
+                                            <option value='SILVER'>{t("search_page_form_color_dropdown_silver")}</option>
+                                            <option value='BROWN'>{t("search_page_form_color_dropdown_brown")}</option>
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Color" onChange={this.toggleColorInputMode} />
+                                    <Form.Check size="xs" type="switch" label={t("search_page_form_check_label_other_color")} onChange={this.toggleColorInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Number Plate</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_number_plate")}</Form.Label>
                                     <Form.Control type="text" size="sm" value={numberPlate} onChange={this.changeNumberPlate} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Case Number</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_case_number")}</Form.Label>
                                     <Form.Control type="text" size="sm" value={caseNumber} onChange={this.changeCaseNumber} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Chassis Number</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_chassis_number")}</Form.Label>
                                     <Form.Control type="text" size="sm" value={chassisNumber} onChange={this.changeChassisNumber} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Emirate</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_emirate")}</Form.Label>
                                     {
                                         isEmirateOther ? <Form.Control type="text"  size="sm" onChange={this.changeEmirate} value={emirate} />
                                         :
                                         <Form.Select size="sm" value={emirate} onChange={this.changeEmirate}>
-                                        <option value=''>Select an option</option>
-                                        <option value="ABU_DHABI">Abu Dhabi</option>
-                                        <option value="AJMAN">Ajman</option>
-                                        <option value="DUBAI">Dubai</option>
-                                        <option value="FUJAIRAH">Fujairah</option>
-                                        <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
-                                        <option value="SHARJAH">Sharjah</option>
-                                        <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
+                                        <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                        <option value="ABU_DHABI">{t( "search_page_form_emirate_dropdown_abu_dhabi")}</option>
+                                        <option value="AJMAN">{t("search_page_form_emirate_dropdown_ajman")}</option>
+                                        <option value="DUBAI">{t("search_page_form_emirate_dropdown_dubai")}</option>
+                                        <option value="FUJAIRAH">{t( "search_page_form_emirate_dropdown_fujairah")}</option>
+                                        <option value="RAS_AL_KHAYMAH">{t("search_page_form_emirate_dropdown_ras_al_khaymah")}</option>
+                                        <option value="SHARJAH">{t("search_page_form_emirate_dropdown_sharjah")}</option>
+                                        <option value="UMM_AL_QUWAIN">{t("search_page_form_emirate_dropdown_umm_al_quwain")}</option>
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Emirate" onChange={this.toggleEmirateInputMode} />
+                                    <Form.Check size="xs" type="switch" label={t("search_page_form_check_label_other_emirate")} onChange={this.toggleEmirateInputMode} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Category</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_category")}</Form.Label>
                                     {
                                         isCategoryOther || isEmirateOther ? <Form.Control type="text" size="sm" value={category} onChange={this.changeCategory} />
                                         :
                                         <Form.Select size="sm" value={category} onChange={this.changeCategory}>
-                                            <option value=''>Select an option</option>
+                                            <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
                                             {this.populateCategoryDropdown()}
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Category" onChange={this.toggleCategoryInputMode} disabled={isEmirateOther}/>
+                                    <Form.Check size="xs" type="switch" label={t("search_page_form_check_label_other_category")} onChange={this.toggleCategoryInputMode} disabled={isEmirateOther}/>
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Code</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_code")}</Form.Label>
                                     {
                                         isEmirateOther || isCategoryOther || isCodeOther ? <Form.Control type="text" size="sm" value={code} onChange={this.changeCode} />
                                         :
                                         <Form.Select size="sm" value={code} onChange={this.changeCode}>
-                                            <option value=''>Select an option</option>
+                                            <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
                                             {this.populateCodeDropdown()}
                                         </Form.Select>
                                     }
-                                    <Form.Check type="switch" label="Other Code" onChange={this.toggleCodeInputMode} disabled={isCategoryOther || isEmirateOther} />
+                                    <Form.Check size="xs" type="switch" label={t( "search_page_form_check_label_other_code")} onChange={this.toggleCodeInputMode} disabled={isCategoryOther || isEmirateOther} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Is Wanted?</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_is_wanted")}</Form.Label>
                                     <Form.Select size="sm" value={isWanted} onChange={this.changeIsWanted}>
-                                        <option value=''>Select an option</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
+                                        <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                        <option value="Yes">{t("search_page_form_wanted_dropdown_yes")}</option>
+                                        <option value="No">{t("search_page_form_wanted_dropdown_no")}</option>
                                     </Form.Select>
                                 </Form.Group>    
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Owner First Name</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_owner_firstname")}</Form.Label>
                                     <Form.Control size="sm" type="text" value={ownerFirstname} onChange={this.changeOwnerFirstname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Owner Last Name</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_owner_lastname")}</Form.Label>
                                     <Form.Control size="sm" type="text" value={ownerLastname} onChange={this.changeOwnerLastname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Owner Nationality</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_owner_nationality")}</Form.Label>
                                     <Form.Control size="sm" type="text" value={ownerNationality} onChange={this.changeOwnerNationality} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                <Form.Label>Zone Label</Form.Label>
+                                <Form.Label>{t("search_page_form_label_zone_label")}</Form.Label>
                                 <Form.Select value={zoneLabel} size="sm" onChange={this.changeZoneLabel}>
-                                    <option value=''>Select an option</option>
+                                    <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
                                     {
                                         Array.from(parkingSlotNumberMap).map((element, index) => (
                                             <option value={element.zoneLabel}>{element.zoneLabel}</option>
@@ -816,9 +819,9 @@ export default class SearchForm extends React.Component {
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Slot Number</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_slot_number")}</Form.Label>
                                     <Form.Select value={slot} size="sm" onChange={this.changeSlot}>
-                                        <option value=''>Select an option</option>
+                                        <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
                                         {
                                             Array.from(slotNumberDropdownValues).map((element, index) => (
                                             <option value={element}>{element}</option>
@@ -829,32 +832,32 @@ export default class SearchForm extends React.Component {
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Estimated Release Date</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_estimated_release_date")}</Form.Label>
                                     <Form.Control type="date" size="sm" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} />
                                 </Form.Group>
                             </Row>
                             
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Actual Release Date</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_actual_release_date")}</Form.Label>
                                     <Form.Control type="date" size="sm" value={releaseDate} onChange={this.changeReleaseDate} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Release Personnel First Name</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_release_personnel_first_name")}</Form.Label>
                                     <Form.Control type="text" size="sm" value={releaseFirstname} onChange={this.changeReleaseFirstname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Release Personnel Last Name</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_release_personnel_last_name")}</Form.Label>
                                     <Form.Control type="text" size="sm" value={releaseLastname} onChange={this.changeReleaseLastname} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Keywords in remarks</Form.Label>
+                                    <Form.Label>{t("search_page_form_label_keywords_in_remarks")}</Form.Label>
                                     <Form.Control type="text" size="sm" value={remarksKeyword} onChange={this.changeremarksKeyword} />
                                 </Form.Group>
                             </Row>
@@ -865,10 +868,10 @@ export default class SearchForm extends React.Component {
                             <>
                             <Row className="result_header">
                                 <Col xs={10}>
-                                    <Form.Text className="result_header_text">Found results: {results.length} </Form.Text>
+                                    <Form.Text className="result_header_text">{t("search_page_form_text_found_results")} {results.length} </Form.Text>
                                 </Col>
                                
-                                <Col id="button_col"><Button variant="secondary" disabled={results.length === 0} onClick={this.downloadResultsCSV}>Export to CSV</Button></Col>
+                                <Col id="button_col"><Button variant="secondary" disabled={results.length === 0} onClick={this.downloadResultsCSV}>{t("search_page_form_btn_export_to_csv")}</Button></Col>
                             </Row>
                             <div className="table_overflow">
                                 <ResultsTable results={results} handleRowClick={this.handleRowClick} />
@@ -879,7 +882,7 @@ export default class SearchForm extends React.Component {
             
             <Modal show={showResultModal} onHide={this.closeResultModal} animation={false} size="xl" centered>
                 <Modal.Header closeButton>
-                    <Modal.Title className="ms-auto">Registration Information</Modal.Title>
+                    <Modal.Title className="ms-auto">{t("search_page_modal_title_registration_information")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {selectedResult !== null && selectedResult.owner !== undefined ?
@@ -895,3 +898,5 @@ export default class SearchForm extends React.Component {
         )
     }
 }
+
+export default withTranslation()(SearchForm);

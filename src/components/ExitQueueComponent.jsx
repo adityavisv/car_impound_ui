@@ -1,5 +1,6 @@
 import React from 'react';
 import { Carousel, Modal, Table, Button, Form } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import LoginRedirectModal from './LoginRedirectModal';
 import UserService from '../services/user.service';
 import { getEmirateDisplay, b64ToBlob } from '../helpers/generalhelpers';
@@ -95,35 +96,36 @@ class ExitQueueComponent extends React.Component {
 
     render = () => {
         const { releaseQueue, shouldShowFinalReleaseModal,  selectedVehicle, shouldShowRedirectLoginModal } = this.state;
+        const { t } = this.props;
         return (
             <>
             <Modal show={shouldShowFinalReleaseModal} onHide={this.hideFinalReleaseModal} size="lg" centered>
                 <Modal.Header closeButton>
-                    <Modal.Title className="ms-auto">Vehicle Release Exit</Modal.Title>
+                    <Modal.Title className="ms-auto">{t("exit_queue_page_modal_header_vehicle_release_exit")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="modal_table">
                         <Table striped bordered>
                             <tbody>
                                 <tr>
-                                    <td>Case Number</td>
+                                    <td>{t("exit_queue_page_modal_table_header_case_number")}</td>
                                     <td>{selectedVehicle.caseNumber !== "" ? selectedVehicle.caseNumber : "--"}</td>
                                 </tr>
                                 <tr>
-                                    <td>Regisered Date/Time</td>
+                                    <td>{t("exit_queue_page_modal_table_header_registration_datetime")}</td>
                                     <td>{new Date(selectedVehicle.releaseIdentity.releaseDateTime).toLocaleString("en-IN")}</td>
                                 </tr>
                                 <tr>
-                                    <td>Release Identity ID Type</td>
+                                    <td>{t("exit_queue_page_modal_table_header_release_identity_id_type")}</td>
                                     <td>{selectedVehicle.releaseIdentity.idType}</td>
                                 </tr>
                                 <tr>
-                                    <td>Release Identity ID Number</td>
+                                    <td>{t("exit_queue_page_modal_table_header_release_identity_id_number")}</td>
                                     <td>{selectedVehicle.releaseIdentity.idNumber}</td>
                                 </tr>
                                 <tr>
-                                    <td>Release Document</td>
-                                    <td><a href="#" onClick={this.downloadReleaseDoc}>Download PDF</a></td>
+                                    <td>{t("exit_queue_page_modal_table_header_release_document")}</td>
+                                    <td><a href="#" onClick={this.downloadReleaseDoc}>{t( "exit_queue_page_modal_link_download_pdf")}</a></td>
                                 </tr>
                             </tbody>
                             
@@ -142,7 +144,7 @@ class ExitQueueComponent extends React.Component {
                             </Carousel.Item>
                         ))}
                         </Carousel>
-                        : <><h3 className="no_img_text">No images found</h3></>}
+                        : <><h3 className="no_img_text">{t("exit_queue_page_modal_text_no_images_found")}</h3></>}
                         
                     </div>
                    
@@ -150,12 +152,12 @@ class ExitQueueComponent extends React.Component {
                 <Modal.Footer>
                     <div id="button_footer_container">
                                 
-                        <Button onClick={this.doFinalRelease} variant="secondary">Approve Exit</Button>    
+                        <Button onClick={this.doFinalRelease} variant="secondary">{t("exit_queue_page_modal_footer_btn_approve_exit")}</Button>    
                     </div>
                 </Modal.Footer>
             </Modal>
             <div className="upcoming_release_header_text">
-                    <Form.Text className="upcoming_release_header_text">Approved For Release</Form.Text>
+                    <Form.Text className="upcoming_release_header_text">{t("exit_queue_page_header_approved_for_release")}</Form.Text>
                 </div>
             {
 
@@ -165,15 +167,15 @@ class ExitQueueComponent extends React.Component {
                     <thead className="table-light">
                         <tr>
                             
-                            <th>Emirate</th>
-                            <th>Category</th>
-                            <th>Code</th>
-                            <th>Number Plate</th>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Colour</th>
-                            <th>Type</th>
-                            <th>Release Approval Date/Time</th>
+                            <th>{t("exit_queue_page_table_header_emirate")}</th>
+                            <th>{t("exit_queue_page_table_header_category")}</th>
+                            <th>{t("exit_queue_page_table_header_code")}</th>
+                            <th>{t( "exit_queue_page_table_header_number_plate")}</th>
+                            <th>{t("exit_queue_page_table_header_make")}</th>
+                            <th>{t("exit_queue_page_table_header_model")}</th>
+                            <th>{t("exit_queue_page_table_header_color")}</th>
+                            <th>{t("exit_queue_page_table_header_type")}</th>
+                            <th>{t("exit_queue_page_table_header_release_approval_datetime")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,7 +198,7 @@ class ExitQueueComponent extends React.Component {
                         }
                     </tbody>
                 </Table>
-            </div> : <h3>No vehicles currently in exit queue.</h3>}
+            </div> : <h3>{t("exit_queue_page_text_no_vehicles_in_queue")}</h3>}
             <LoginRedirectModal
                 shouldShowRedirectLoginModal={shouldShowRedirectLoginModal}
                 hideRedirectLoginModal={this.hideRedirectLoginModal}
@@ -206,4 +208,4 @@ class ExitQueueComponent extends React.Component {
     }
 }
 
-export default ExitQueueComponent;
+export default withTranslation()(ExitQueueComponent);

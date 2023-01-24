@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Col, Row, Button, Alert, Carousel } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import LoadingOverlay from 'react-loading-overlay';
 import '../styles/carregistrationcomponent.css';
 import UserService from '../services/user.service';
@@ -819,59 +820,60 @@ class CarRegistrationForm extends React.Component {
                 releaseTime
             }
         }, selectedSlot } = this.state;
+        const { t } = this.props;
         return (
             <LoadingOverlay active={this.shouldShowLoadingScreen()} spinner text='Saving vehicle...'>
-                {readOnly ? <Alert variant="info">You are viewing a read-only report of this registration</Alert> : null}
+                {readOnly ? <Alert variant="info">{t("car_registration_form_alert_readonly_header")}</Alert> : null}
                 <Form onSubmit={this.submitVehicle}>
                     <Row className="mb-3">
-                        <Form.Text className="form_text">Vehicle Information</Form.Text>
+                        <Form.Text className="form_text">{t("car_registration_form_subheader_vehicle_information")}</Form.Text>
                     </Row>
                     { readOnly ?
                     <Row className="mb-3">
                        <Form.Group as={Col}>
                            <Row className="mb-3">
                                <Form.Group as={Col}>
-                                    <Form.Label className="required_form_label">Make *</Form.Label>
+                                    <Form.Label className="required_form_label">{t("car_registration_form_label_make")}</Form.Label>
                                     <Form.Control type="text" readOnly disabled value={make} />
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    <Form.Label className="required_form_label">Model *</Form.Label>
+                                    <Form.Label className="required_form_label">{t("car_registration_form_label_model")}</Form.Label>
                                     <Form.Control type="text" readOnly disabled value={model} />
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    <Form.Label className="required_form_label">Vehicle Type *</Form.Label>
+                                    <Form.Label className="required_form_label">{t("car_registration_form_label_type")}</Form.Label>
                                     <Form.Control type="text" readOnly disabled value={type} />
                                 </Form.Group>
                                 
                            </Row>
                            <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label className="required_form_label">Colour *</Form.Label>
+                                    <Form.Label className="required_form_label">{t("car_registration_form_label_color")}</Form.Label>
                                     <Form.Control type="text"  required={true} value={color} disabled={readOnly} readOnly={true}/>
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    <Form.Label className="required_form_label">Chassis Number *</Form.Label>
+                                    <Form.Label className="required_form_label">{t("car_registration_form_label_chassis_number")}</Form.Label>
                                     <Form.Control type="text" value={chassisNumber} disabled={readOnly} readOnly={true} />
                                 </Form.Group>
                            </Row>
                            <Row className="mb-3">
                                <Form.Group as={Col}>
-                                   <Form.Label className="required_form_label">Emirate/Country</Form.Label>
+                                   <Form.Label className="required_form_label">{t("car_registration_form_label_emirate")}</Form.Label>
                                    <Form.Control type="text" value={emirate} disabled={readOnly} readOnly={true} />
                                </Form.Group>
                                <Form.Group as={Col}>
-                                   <Form.Label className="required_form_label">Category</Form.Label>
+                                   <Form.Label className="required_form_label">{t("car_registration_form_label_category")}</Form.Label>
                                    <Form.Control type="text" value={category} disabled={readOnly} readOnly={true} />
                                </Form.Group>
                                
                            </Row>
                            <Row className="mb-3">
                            <Form.Group as={Col}>
-                                   <Form.Label className="required_form_label">Code</Form.Label>
+                                   <Form.Label className="required_form_label">{t("car_registration_form_label_code")}</Form.Label>
                                    <Form.Control type="text" value={code} disabled={readOnly} readOnly={true} />
                                </Form.Group>
                                <Form.Group as={Col}>
-                                   <Form.Label className="required_form_label">Number Plate</Form.Label>
+                                   <Form.Label className="required_form_label">{t("car_registration_form_label_car_num_plate")}</Form.Label>
                                    <Form.Control type="text" value={numberPlate} disabled={readOnly} readOnly={true} />
                                </Form.Group>
                            </Row>
@@ -888,19 +890,19 @@ class CarRegistrationForm extends React.Component {
                                             />
                                         </Carousel.Item>
                                     ))}
-                                </Carousel> : <><h3>No Images Available</h3></>}
+                                </Carousel> : <><h3>{t("car_registration_form_text_no_images_available")}</h3></>}
                         </Form.Group>
                     </Row> : 
                     <>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <span><Form.Label className="required_form_label">Make *</Form.Label> <Form.Check reverse inline type="switch"  onChange={this.toggleMakeInputMode}/> </span>
+                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_make")}</Form.Label> <Form.Check reverse inline type="switch"  onChange={this.toggleMakeInputMode}/> </span>
                                 
                                 
                                 {
                                     isMakeOther ? <Form.Control type="text" value={make} onChange={this.changeMake} />
                                     : <Form.Select value={make} onChange={this.changeMake}>
-                                        <option value=''>Select an option</option>
+                                        <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
                                         {
                                             Array.from(makesDropDownValues).map((value) => (
                                                 <option value={value}>{value}</option>
@@ -914,11 +916,11 @@ class CarRegistrationForm extends React.Component {
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <span><Form.Label className="required_form_label">Model *</Form.Label> <Form.Check inline type="switch" disabled={isMakeOther} onChange={this.toggleModelInputMode}/> </span>
+                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_model")}</Form.Label> <Form.Check inline type="switch" disabled={isMakeOther} onChange={this.toggleModelInputMode}/> </span>
                                 {
                                     isModelOther || isMakeOther ? <Form.Control type="text" value={model} onChange={this.changeModel} />
                                     : <Form.Select value={model} onChange={this.changeModel}>
-                                        <option value=''>Select an option</option>
+                                        <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
                                         {
                                             Array.from(modelsDropDownValues).map((value) => (
                                                 <option value={value}>{value}</option>
@@ -932,17 +934,17 @@ class CarRegistrationForm extends React.Component {
                             </Form.Group> 
 
                             <Form.Group as={Col}>
-                                <span><Form.Label className="required_form_label">Type *</Form.Label> <Form.Check inline type="switch" onChange={this.toggleTypeInputMode} /></span>
+                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_type")}</Form.Label> <Form.Check inline type="switch" onChange={this.toggleTypeInputMode} /></span>
                                 {
                                     isTypeOther ? <Form.Control type="text" required={true} onChange={this.changeType} /> : 
                                 
                                     <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
-                                        <option value=''>Select an option</option>
+                                        <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
                                         {
-                                            parkingSlot.startsWith('T') ? <option value='TRUCK'>Truck</option>
+                                            parkingSlot.startsWith('T') ? <option value='TRUCK'>{t("car_registration_form_type_dropdown_truck")}</option>
                                             : <>
-                                            <option value='CAR'>Car</option>
-                                            <option value='MOTORCYCLE'>Motorcycle</option>
+                                            <option value='CAR'>{t("car_registration_form_type_dropdown_car")}</option>
+                                            <option value='MOTORCYCLE'>{t( "car_registration_form_type_dropdown_motorcycle")}</option>
                                             </>
                                         }
                                     </Form.Select>
@@ -953,24 +955,24 @@ class CarRegistrationForm extends React.Component {
 
                             <Form.Group as={Col}>
                                 <span>
-                                    <Form.Label className="required_form_label">Colour *</Form.Label> 
+                                    <Form.Label className="required_form_label">{t("car_registration_form_label_color")}</Form.Label> 
                                     <Form.Check type="switch" inline onChange={this.toggleColorInputMode} />
                                 </span>
                                 {
                                     isColorOther ? <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
                                     :
                                     <Form.Select value={color} required={true} onChange={this.changeColor}>
-                                        <option value=''>Select an option</option>
-                                        <option value='RED'> Red</option>
-                                        <option value='YELLOW'>Yellow</option>
-                                        <option value='GREEN'>Green</option>
-                                        <option value='BLUE'>Blue</option>
-                                        <option value='BLACK'>Black</option>
-                                        <option value='WHITE'>White</option>
-                                        <option value='PINK'>Pink</option>
-                                        <option value='GREY'>Grey</option>
-                                        <option value='SILVER'>Silver</option>
-                                        <option value='BROWN'>Brown</option>
+                                        <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
+                                        <option value='RED'> {t("car_registration_form_color_dropdown_red")}</option>
+                                        <option value='YELLOW'>{t("car_registration_form_color_dropdown_yellow")}</option>
+                                        <option value='GREEN'>{t("car_registration_form_color_dropdown_green")}</option>
+                                        <option value='BLUE'>{t("car_registration_form_color_dropdown_blue")}</option>
+                                        <option value='BLACK'>{t("car_registration_form_color_dropdown_black")}</option>
+                                        <option value='WHITE'>{t("car_registration_form_color_dropdown_white")}</option>
+                                        <option value='PINK'>{t("car_registration_form_color_dropdown_pink")}</option>
+                                        <option value='GREY'>{t("car_registration_form_color_dropdown_grey")}</option>
+                                        <option value='SILVER'>{t("car_registration_form_color_dropdown_silver")}</option>
+                                        <option value='BROWN'>{t("car_registration_form_color_dropdown_brown")}</option>
                                     </Form.Select>
                                 }
                                 
@@ -978,34 +980,34 @@ class CarRegistrationForm extends React.Component {
                         </Row>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <span><Form.Label >Emirate/Country</Form.Label> <Form.Check inline type="switch" onChange={this.toggleEmirateInputMode} /></span>
+                                <span><Form.Label >{t("car_registration_form_label_emirate")}</Form.Label> <Form.Check inline type="switch" onChange={this.toggleEmirateInputMode} /></span>
                                 {
                                     isEmirateOther ?
                                     <Form.Control type="text" required onChange={this.changeEmirate} value={emirate} />
                                     :
                                     <Form.Select disabled={readOnly} value={emirate} onChange={this.changeEmirate}>
-                                        <option value=''>Select Emirate/Country</option>
-                                    <option value="ABU_DHABI">Abu Dhabi</option>
-                                    <option value="AJMAN">Ajman</option>
-                                    <option value="DUBAI">Dubai</option>
-                                    <option value="FUJAIRAH">Fujairah</option>
-                                    <option value="RAS_AL_KHAYMAH">Ras Al Khaymah</option>
-                                    <option value="SHARJAH">Sharjah</option>
-                                    <option value="UMM_AL_QUWAIN">Umm Al Quwain</option>
+                                        <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
+                                    <option value="ABU_DHABI">{t("car_registration_form_emirate_dropdown_abu_dhabi")}</option>
+                                    <option value="AJMAN">{t("car_registration_form_emirate_dropdown_ajman")}</option>
+                                    <option value="DUBAI">{t("car_registration_form_emirate_dropdown_dubai")}</option>
+                                    <option value="FUJAIRAH">{t("car_registration_form_emirate_dropdown_fujairah")}</option>
+                                    <option value="RAS_AL_KHAYMAH">{t("car_registration_form_emirate_dropdown_ras_al_khaymah")}</option>
+                                    <option value="SHARJAH">{t("car_registration_form_emirate_dropdown_sharjah")}</option>
+                                    <option value="UMM_AL_QUWAIN">{t("car_registration_form_emirate_dropdown_umm_al_quwain")}</option>
                                 </Form.Select>
                                 }
                             </Form.Group>
 
                             <Form.Group as={Col}>
                                 <span>
-                                    <Form.Label>Category</Form.Label> 
+                                    <Form.Label>{t("car_registration_form_label_category")}</Form.Label> 
                                     <Form.Check type="switch" inline disabled={isEmirateOther} onChange={this.toggleCategoryInputMode} />
                                 </span>
                                 {
                                     isCategoryOther || isEmirateOther ? <Form.Control type="text" required onChange={this.changeCategory} value={category} />
                                     :
                                     <Form.Select disabled={readOnly} onChange={this.changeCategory} value={category}>
-                                    <option value=''>Select a category</option>
+                                    <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
                                     {
                                         this.populateCategoryDropdown()
                                     }
@@ -1015,24 +1017,24 @@ class CarRegistrationForm extends React.Component {
 
                             <Form.Group as={Col}>
                                 <span>
-                                    <Form.Label>Code</Form.Label>
+                                    <Form.Label>{t("car_registration_form_label_code")}</Form.Label>
                                     <Form.Check type="switch" inline disabled={isEmirateOther || isCategoryOther} onChange={this.toggleCodeInputMode} />
                                 </span>
                                 {
                                     isCodeOther || isEmirateOther || isCategoryOther ? <Form.Control type="text" required onChange={this.changeCode} value={code} />
                                     :
                                     <Form.Select disabled={readOnly} onChange={this.changeCode} value={code}>
-                                    <option value=''>Select Code</option>
+                                    <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
                                     {this.populateCodeDropdown()}
                                     </Form.Select>
                                 }
                             </Form.Group>
                             <Form.Group as={Col}>
-                                <Form.Label>Car No. Plate</Form.Label>
+                                <Form.Label>{t("car_registration_form_label_car_num_plate")}</Form.Label>
                                 <Form.Control type="text" value={numberPlate} onChange={this.changeNumberPlate} disabled={readOnly}/>
                             </Form.Group>
                             <Form.Group as={Col}>
-                                <Form.Label>Chassis Number </Form.Label>
+                                <Form.Label>{t("car_registration_form_label_chassis_number")}</Form.Label>
                                 <Form.Control type="text" value={chassisNumber} onChange={this.changeChassisNumber} disabled={readOnly} />
                             </Form.Group>
                     
@@ -1042,21 +1044,21 @@ class CarRegistrationForm extends React.Component {
                     }
                     
                     <Row className="mb-3">
-                        <Form.Text className="form_text">Registration</Form.Text>
+                        <Form.Text className="form_text">{t("car_registration_form_subheader_registration")}</Form.Text>
                     </Row>
                    
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Department *</Form.Label>
+                            <Form.Label className="required_form_label">{t("car_registration_form_label_department")}</Form.Label>
                             <Form.Control type="text" value={department} required onChange={this.changeDepartment} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Registration Date *</Form.Label>
+                            <Form.Label className="required_form_label">{t("car_registration_form_label_registration_date")}</Form.Label>
                                <Form.Control type="date" disabled={readOnly} required={true} value={registrationDate} onChange={this.changeRegistrationDate} data-date-format="DD/MM/YYYY" />
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Registration Time* </Form.Label>
+                            <Form.Label className="required_form_label">{t("car_registration_form_label_registration_time")} </Form.Label>
                             <Form.Control type="time" disabled={readOnly} required={true} value={registrationTime} onChange={this.changeRegistrationTime} />
                         </Form.Group>
 
@@ -1064,160 +1066,160 @@ class CarRegistrationForm extends React.Component {
 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Wanted * (Yes/No)</Form.Label>
+                            <Form.Label className="required_form_label">{t("car_registration_form_label_wanted")}</Form.Label>
                             <Form.Select required={true} value={isWanted ? "Yes" : "No"} onChange={this.changeIsWanted} disabled={readOnly}>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
+                                <option value="Yes">{t("car_registration_form_wanted_dropdown_yes")}</option>
+                                <option value="No">{t("car_registration_form_wanted_dropdown_no")}</option>
                                 </Form.Select>
                         </Form.Group>
                         {isWanted ?
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Case Number *</Form.Label>
+                            <Form.Label className="required_form_label">{t("car_registration_form_label_case_number")}</Form.Label>
                             <Form.Control type="text"  required={true} value={caseNumber} onChange={this.changeCaseNumber} disabled={readOnly} />
                         </Form.Group> : <></>}
                         <Form.Group as={Col}>
-                            <Form.Label>Estimated Release Date</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_estimated_release_date")}</Form.Label>
                             <Form.Control type="date" value={estimatedReleaseDate} onChange={this.changeEstimatedReleaseDate} disabled={readOnly} />
                         </Form.Group>
                         
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Parking Slot Number *</Form.Label>
-                            <Form.Control type="text" disabled value={parkingSlot} disabled />
+                            <Form.Label className="required_form_label">{t("car_registration_form_label_parking_slot_number")}</Form.Label>
+                            <Form.Control type="text" disabled value={parkingSlot} />
                         </Form.Group>
                     </Row>
                     
                     {! readOnly ? 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Image 1</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_image_1")}</Form.Label>
                             <Form.Control type="file" onChange={this.changeImage1} size="sm"/>
-                            { updateMode && imagesInput.length > 0 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
+                            { updateMode && imagesInput.length > 0 ? <Form.Text className="text-muted">{t("car_registration_form_label_replace")}</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Image 2</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_image_2")}</Form.Label>
                             <Form.Control type="file" onChange={this.changeImage2} size="sm"/>
-                            { updateMode && imagesInput.length > 1 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
+                            { updateMode && imagesInput.length > 1 ? <Form.Text className="text-muted">{t("car_registration_form_label_replace")}</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Image 3</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_image_3")}</Form.Label>
                             <Form.Control type="file" onChange={this.changeImage3} size="sm"/>
-                            { updateMode && imagesInput.length > 2 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
+                            { updateMode && imagesInput.length > 2 ? <Form.Text className="text-muted">{t("car_registration_form_label_replace")}</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Image 4</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_image_4")}</Form.Label>
                             <Form.Control type="file" onChange={this.changeImage4} size="sm"/>
-                            { updateMode && imagesInput.length > 3 ? <Form.Text className="text-muted">Replace</Form.Text> : null}
+                            { updateMode && imagesInput.length > 3 ? <Form.Text className="text-muted">{t("car_registration_form_label_replace")}</Form.Text> : null}
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Image 5</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_image_5")}</Form.Label>
                             <Form.Control type="file" onChange={this.changeImage5} size="sm"/>
-                            { updateMode && imagesInput.length > 4 ?  <Form.Text className="text-muted">Replace</Form.Text> : null}
+                            { updateMode && imagesInput.length > 4 ?  <Form.Text className="text-muted">{t("car_registration_form_label_replace")}</Form.Text> : null}
                         </Form.Group>
                     </Row> : <></>}
                     
                     <Row className="mb-3">
-                        <Form.Label>Remarks:</Form.Label>
+                        <Form.Label>{t("car_registration_form_label_remarks")}</Form.Label>
                         <Form.Control as="textarea" rows={3} value={remarks} onChange={this.changeRemarks} disabled={readOnly} />
                     </Row>
                     <Row className="mb-3">
                         <Form.Text className="form_text">
-                            Owner Profile
+                            {t("car_registration_form_subheader_owner_profile")}
                         </Form.Text>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>First Name</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_firstname")}</Form.Label>
                             <Form.Control type="text" value={firstName} onChange={this.changeFirstName}  disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Last Name</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_lastname")}</Form.Label>
                             <Form.Control type="text" value={lastName} onChange={this.changeLastName} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Contact No.</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_contact_no")}</Form.Label>
                             <Form.Control type="text"  value={contactNumber} onChange={this.changeContactNumber} disabled={readOnly}/>
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label>Email</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_email")}</Form.Label>
                             <Form.Control type="email" value={emailAddress} onChange={this.changeEmailAddress} disabled={readOnly}/>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                     <Form.Group as={Col}>
-                            <Form.Label>Nationality</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_nationality")}</Form.Label>
                             <Form.Control type="text"  value={nationality} onChange={this.changeNationality} disabled={readOnly} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>ID Type</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_id_type")}</Form.Label>
                             <Form.Select onChange={this.changeIdType} value={idType} disabled={readOnly} >
-                                <option value="">Select an option</option>
-                                <option value="Passport">Passport</option>
-                                <option value="Emirates ID">Emirates ID</option>
-                                <option value="National ID">National ID</option>
-                                <option value="Driving License">Driving License</option>
+                                <option value="">{t("car_registration_form_dropdown_select_an_option")}</option>
+                                <option value="Passport">{t( "car_registration_form_id_type_dropdown_passport")}</option>
+                                <option value="Emirates ID">{t("car_registration_form_id_type_dropdown_emirates_id")}</option>
+                                <option value="National ID">{t("car_registration_form_id_type_dropdown_national_id")}</option>
+                                <option value="Driving License">{t("car_registration_form_id_type_dropdown_driving_license")}</option>
                             </Form.Select>
                         </Form.Group>
 
                         <Form.Group as={Col}>
-                            <Form.Label>ID Number</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_id_number")}</Form.Label>
                             <Form.Control type="text"  value={idNumber} onChange={this.changeIdNumber} disabled={readOnly} />
                         </Form.Group>
                     </Row>
                     {parkingSlot === null ? <>
                     <Row className="mb-3">
                         <Form.Text className="form_text">
-                            Release Identity
+                            {t("car_registration_form_subheader_release_identity")}
                         </Form.Text>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>First Name</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_firstname")}</Form.Label>
                             <Form.Control type="text" value={releaseFirstName} disabled={true} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Last Name</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_lastname")}</Form.Label>
                             <Form.Control type="text" value={releaseLastName} disabled />
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Release Date</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_release_date")}</Form.Label>
                             <Form.Control type="date" value={releaseDate} disabled />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Release Time</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_release_time")}</Form.Label>
                             <Form.Control type="time" value={releaseTime} disabled />
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Nationality</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_nationality")}</Form.Label>
                             <Form.Control type="text" value={releaseNationality} disabled />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>ID Type</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_id_type")}</Form.Label>
                             <Form.Select  value={releaseIdType} disabled >
-                                <option value=''>Select an option</option>
-                                <option value="Passport">Passport</option>
-                                <option value="Emirates ID">Emirates ID</option>
-                                <option value="National ID">National ID</option>
-                                <option value="Driving License">Driving License</option>
+                                <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
+                                <option value="Passport">{t("car_registration_form_id_type_dropdown_passport")}</option>
+                                <option value="Emirates ID">{t("car_registration_form_id_type_dropdown_emirates_id")}</option>
+                                <option value="National ID">{t("car_registration_form_id_type_dropdown_national_id")}</option>
+                                <option value="Driving License">{t("car_registration_form_id_type_dropdown_driving_license")}</option>
                             </Form.Select>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>ID Number</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_id_number")}</Form.Label>
                             <Form.Control type="text" disabled value={releaseIdNumber} />
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Contact No.</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_contact_no")}</Form.Label>
                             <Form.Control type="text" value={releaseContactNumber} disabled />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Email Address</Form.Label>
+                            <Form.Label>{t("car_registration_form_label_email")}</Form.Label>
                             <Form.Control type="email" value={releaseEmailAddress} disabled />
                         </Form.Group>
                     </Row></> : <></>}
@@ -1225,7 +1227,7 @@ class CarRegistrationForm extends React.Component {
                    
 
                     <div id="button_container">
-                        {!readOnly ?  <Button type="submit" variant="secondary">{updateMode ? 'Update' : 'Register'}</Button> : <></>}
+                        {!readOnly ?  <Button type="submit" variant="secondary">{updateMode ? t("car_registration_form_btn_update") : t("car_registration_form_btn_register")}</Button> : <></>}
                     </div>
                 </Form>
 
@@ -1239,4 +1241,4 @@ class CarRegistrationForm extends React.Component {
     };
 }
 
-export default CarRegistrationForm;
+export default withTranslation()(CarRegistrationForm);

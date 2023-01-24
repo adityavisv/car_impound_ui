@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Table, Button, Carousel } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import '../styles/singleslotoverview.css';
 
 class SingleSlotOverviewModal extends React.Component {
@@ -8,6 +9,7 @@ class SingleSlotOverviewModal extends React.Component {
     }
 
     shouldShowButton = (ocStatus) => {
+        const { t } = this.props;
         const { currentUser,
             showRegisterModal,
             showReleaseModal,
@@ -21,15 +23,15 @@ class SingleSlotOverviewModal extends React.Component {
         else {
             if (ocStatus === "AVAILABLE") {
                 return  <>
-                    <Button variant="secondary" onClick={showRegisterModal}>Assign</Button>
-                    {zoneLabel !== 'T' ? <Button variant="secondary" onClick={setFirstSelectedSlot}>Assign to Multiple Slots</Button> : <></>}
+                    <Button variant="secondary" onClick={showRegisterModal}>{t("single_slot_overview_modal_assign_btn_body")}</Button>
+                    {zoneLabel !== 'T' ? <Button variant="secondary" onClick={setFirstSelectedSlot}>{t("single_slot_overview_modal_assign_multiple_btn_body")}</Button> : <></>}
                 </>
             }
             else {
                 return <>
-                <Button variant="secondary" onClick={showReleaseModal}>Release</Button>
-                <Button variant="secondary" onClick={showUpdateModal}>Modify</Button>
-                <Button variant="secondary" onClick={showReassignModal}>Re-Assign</Button>
+                <Button variant="secondary" onClick={showReleaseModal}>{t("single_slot_overview_modal_release_btn_body")}</Button>
+                <Button variant="secondary" onClick={showUpdateModal}>{t("single_slot_overview_modal_modify_btn_body")}</Button>
+                <Button variant="secondary" onClick={showReassignModal}>{t("single_slot_overview_modal_reassign_btn_body")}</Button>
                 </>;
 
             }
@@ -41,6 +43,7 @@ class SingleSlotOverviewModal extends React.Component {
             closeSlotModal,
             shouldDisplaySlotModal,
             selectedSlot,
+            t
         } = this.props;
 
         var selectedSlotVar = {
@@ -66,7 +69,7 @@ class SingleSlotOverviewModal extends React.Component {
         return (
             <Modal show={shouldDisplaySlotModal} onHide={closeSlotModal} centered size="lg">
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">Slot Status - <span className={occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
+                        <Modal.Title className="ms-auto">{t("single_slot_overview_modal_slot_status_title")} <span className={occupancyStatus === "AVAILABLE" ? "availableMode" : "occupiedMode"}>
                                     {occupancyStatus}</span> </Modal.Title>
                     </Modal.Header>
 
@@ -75,29 +78,29 @@ class SingleSlotOverviewModal extends React.Component {
                         <Table  variant="dark">
                             <tbody>
                                 <tr>
-                                    <td>Zone Label</td>
+                                    <td>{t("single_slot_overview_modal_zone_label_body")}</td>
                                     <td>{zoneLabel}</td>
                                 </tr>
                                 <tr>
-                                    <td>Slot Number</td>
+                                    <td>{t("single_slot_overview_modal_slot_number_body")}</td>
                                     <td>{slotNumber}</td>
                                 </tr>
                                 { occupancyStatus === 'OCCUPIED' ? 
                                 <>
                                     <tr>
-                                        <td>Make</td>
+                                        <td>{t("single_slot_overview_modal_make_body")}</td>
                                         <td>{make}</td>
                                     </tr>
                                     <tr>
-                                        <td>Model</td>
+                                        <td>{t("single_slot_overview_modal_model_body")}</td>
                                         <td>{model}</td>
                                     </tr>
                                     <tr>
-                                        <td>Number Plate</td>
+                                        <td>{t("single_slot_overview_modal_number_plate_body")}</td>
                                         <td>{numberPlate}</td>
                                     </tr>
                                     <tr>
-                                        <td>Vehicle Type</td>
+                                        <td>{t("single_slot_overview_modal_vehicle_type_body")}</td>
                                         <td>{type}</td>
                                     </tr>
                                 </> : null}
@@ -119,7 +122,7 @@ class SingleSlotOverviewModal extends React.Component {
                             </Carousel.Item>
                         ))}
                         </Carousel>
-                        : <><h3 className="no_img_text">No images found</h3></>}
+                        : <><h3 className="no_img_text">{t("single_slot_overview_modal_no_images_found_body")}</h3></>}
                         
                     </div> : <></>}
                     </Modal.Body>
@@ -133,4 +136,4 @@ class SingleSlotOverviewModal extends React.Component {
     }
 }
 
-export default SingleSlotOverviewModal;
+export default withTranslation()(SingleSlotOverviewModal);

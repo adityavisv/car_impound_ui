@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Row, Col, Container, Button } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import UserService from '../services/user.service';
 import LoginRedirectModal from './LoginRedirectModal';
 import '../styles/releasecarform.css';
@@ -233,34 +234,35 @@ class ReleaseCarForm extends React.Component {
         const { shouldShowRedirectLoginModal, isIdTypeOther, releasePayload: {
             firstName, lastName, emailAddress, idNumber, idType, contactNumber, nationality, releaseDocumentNumber,
         }} = this.state;
+        const { t } = this.props;
 
         return (
             <Container>
                 <Form onSubmit={this.hitRelease}>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">First Name *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_firstname")}</Form.Label>
                             <Form.Control type="text" required={true} value={firstName} onChange={this.changeFirstName}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Last Name *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_lastname")}</Form.Label>
                             <Form.Control type="text" required={true} value={lastName} onChange={this.changeLastName}/>
                         </Form.Group>
                         
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Contact Number *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_contact_number")}</Form.Label>
                             <Form.Control type="text" required={true} value={contactNumber} onChange={this.changeContactNumber}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Email Address *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_email_address")}</Form.Label>
                             <Form.Control type="email" required={true} value={emailAddress} onChange={this.changeEmailAddress}/>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>    
-                            <Form.Label className="required_form_label">ID Type *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_id_type")}</Form.Label>
                             {
                                 isIdTypeOther ? <Form.Control type="text" value={idType} onChange={this.changeIdType} />
                                 :
@@ -271,30 +273,30 @@ class ReleaseCarForm extends React.Component {
                                     <option value="Driving License">Driving License</option>
                                 </Form.Select>
                             }
-                            <Form.Check type="switch" label="Select other ID type" onChange={this.toggleIdTypeInputMode}/>
+                            <Form.Check type="switch" label={t("release_car_form_label_select_other_id_type")} onChange={this.toggleIdTypeInputMode}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">Nationality *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_nationality")}</Form.Label>
                             <Form.Control type="text" required={true} value={nationality} onChange={this.changeNationality}/>
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label className="required_form_label">ID Number *</Form.Label>
+                            <Form.Label className="required_form_label">{t("release_car_form_label_id_number")}</Form.Label>
                             <Form.Control type="text" required={true} value={idNumber} onChange={this.changeIdNumber} />
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}>
-                            <Form.Label>Release Document Number</Form.Label>
+                            <Form.Label>{t("release_car_form_label_release_document_number")}</Form.Label>
                             <Form.Control type="text" value={releaseDocumentNumber} onChange={this.changeReleaseDocumentNumber} />
                         </Form.Group>
                         <Form.Group as={Col}>
-                            <Form.Label>Release Document</Form.Label> 
+                            <Form.Label>{t("release_car_form_label_release_document")}</Form.Label> 
                             <Form.Control type="file"  onChange={this.changeReleaseDocument} />
                         </Form.Group>
                     </Row>
                    
                     <div id="button_container">
-                            <Button type="submit" variant="secondary">Approve Release</Button>
+                            <Button type="submit" variant="secondary">{t("release_car_form_btn_approve_release")}</Button>
                     </div>
                 </Form>
                 <LoginRedirectModal
@@ -306,4 +308,4 @@ class ReleaseCarForm extends React.Component {
     }
 }
 
-export default ReleaseCarForm;
+export default withTranslation()(ReleaseCarForm);

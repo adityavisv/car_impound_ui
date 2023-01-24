@@ -1,5 +1,6 @@
 import NavbarComponent from '../components/NavbarComponent';
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/newsignuppage.css';
 import{ Button, Form, Modal, Row }from 'react-bootstrap';
@@ -190,6 +191,7 @@ class NewSignUpPage extends React.Component {
 
     render = () => {
         const { showFailureAlert, showSuccessModal, shouldRedirectHome, showPasswordMismatchAlert, username, password, passwordRep, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases } = this.state;
+        const { t } = this.props;
         if (! isLoggedIn ) {
             return <Navigate to="/login" replace />
         }
@@ -204,30 +206,30 @@ class NewSignUpPage extends React.Component {
                     <div>
                         <Modal centered onHide={this.redirectToHome} show={showSuccessModal}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Sign up confirmation</Modal.Title>
+                                <Modal.Title>{t("signup_page_modal_header_signup_confirmation")}</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                New user has been created.
+                                {t("signup_page_modal_body_new_user_has_been_created")}
                             </Modal.Body>
                             <Modal.Footer>
                                 <Button variant="secondary" onClick={this.redirectToHome}>
-                                    OK
+                                    {t("signup_page_modal_footer_btn_ok")}
                                 </Button>
                                 <Button variant="secondary" onClick={this.callLogout}>
-                                    Sign Out
+                                    {t("signup_page_modal_footer_btn_sign_out")}
                                 </Button>                            
                             </Modal.Footer>
                         </Modal>
                         <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} />
                         <div className="form_box">
-                            <Alert variant="danger" show={showFailureAlert}>A user with this username already exists! Please pick a different username.</Alert>
-                            <Alert variant="danger" show={showPasswordMismatchAlert}>Make sure passwords match!</Alert>
+                            <Alert variant="danger" show={showFailureAlert}>{t("signup_page_alert_user_exists")}</Alert>
+                            <Alert variant="danger" show={showPasswordMismatchAlert}>{t("signup_page_alert_password_mismatch")}</Alert>
                             <Form className="actual_form" onSubmit={this.hitSignUp}>
                                 <Row className="mb-3">
-                                    <Form.Text className="form_text">Sign up new operator</Form.Text>
+                                    <Form.Text className="form_text">{t("signup_page_form_text_sign_up_new_operator")}</Form.Text>
                                 </Row>
                                 <Row className="mb-3">
-                                    <Form.Label className="login_field_label">Username (*)</Form.Label>
+                                    <Form.Label className="login_field_label">{t("signup_page_form_label_username")}</Form.Label>
                                     <Form.Control
                                         type="text" 
                                         required={true} 
@@ -237,7 +239,7 @@ class NewSignUpPage extends React.Component {
                                     />
                                 </Row>
                                 <Row className="mb-3">
-                                    <Form.Label className="login_field_label">Password (*)</Form.Label>
+                                    <Form.Label className="login_field_label">{t("signup_page_form_label_password")}</Form.Label>
                                     <Form.Control
                                         type="password"
                                         required={true}  
@@ -247,24 +249,24 @@ class NewSignUpPage extends React.Component {
                                     />
                                 </Row>
                                 <Row className="mb-3">
-                                    <Form.Label className="login_field_label">Confirm password (*)</Form.Label>
+                                    <Form.Label className="login_field_label">{t("signup_page_form_label_confirm_password")}</Form.Label>
                                     <Form.Control type="password" 
                                         required={true} className="form_control" 
                                         onChange={this.changePasswordRep} 
                                         value={passwordRep}/>
                                 </Row>
                                 <Row className="mb-3">
-                                    <Form.Label className="login_field_label">Role (*)</Form.Label>
+                                    <Form.Label className="login_field_label">{t("signup_page_form_label_role")}</Form.Label>
                                     <Form.Select value={role} onChange={this.changeRole}>
-                                        <option value="admin">ADMIN</option>
-                                        <option value="exit_operator">USER</option>
-                                        <option value="superuser">SUPER ADMIN</option>
+                                        <option value="admin">{t("signup_page_form_role_dropdown_admin")}</option>
+                                        <option value="exit_operator">{t("signup_page_form_role_dropdown_user")}</option>
+                                        <option value="superuser">{t("signup_page_form_role_dropdown_super_admin")}</option>
                                     </Form.Select>
                                 </Row>
                                
                                     <div id="button_container_signup">
                                         <Button variant="outline-primary" type="submit" className="form_button_login" >
-                                            Sign Up
+                                            {t("signup_page_form_btn_sign_up")}
                                         </Button>
                                     </div>
                                
@@ -296,4 +298,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(NewSignUpPage);
+export default connect(mapStateToProps)(withTranslation()(NewSignUpPage));

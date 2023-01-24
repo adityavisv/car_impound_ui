@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faParking, faSearch, faUser, faUserPlus, faTimes, faFileImage, faUnlock, faClock } from '@fortawesome/free-solid-svg-icons';
 import '../styles/navbarcomponent.css';
@@ -39,6 +40,7 @@ class NavbarComponent extends React.Component {
 
     render = () => {
         const { username, roles, highlight } = this.state;
+        const { t, i18n } = this.props;
         return (
             <div>
                 <Navbar bg="dark" variant="dark" expand="lg fixed=">
@@ -49,12 +51,12 @@ class NavbarComponent extends React.Component {
                             <Nav className="me-auto">
                                 <Nav.Link href="/" className="nav_link">
                                     <FontAwesomeIcon icon={faParking} fixedWidth />
-                                    <span className="nav_text"> Parking View </span>
+                                    <span className="nav_text"> {t("navbar_parking_view_link")} </span>
                                 </Nav.Link>
                                 { roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
                                 <Nav.Link href="/search" className="nav_link">
                                     <FontAwesomeIcon icon={faSearch} fixedWidth />
-                                    <span className="nav_text"> Search </span>
+                                    <span className="nav_text"> {t("navbar_search_link")} </span>
                                 </Nav.Link> : <></>}
 
                                 
@@ -62,24 +64,24 @@ class NavbarComponent extends React.Component {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") ?
                                     <Nav.Link href="/upcomingrelease" className="nav_link">
                                         <FontAwesomeIcon icon={faClock} fixedWidth />
-                                        <span className={"nav_text " + highlight}> Upcoming Releases</span>
+                                        <span className={"nav_text " + highlight}> {t("navbar_upcoming_releases_link")}</span>
                                     </Nav.Link> : <></>
                                 }
                                 {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
                                 <Nav.Link href="/exitqueue" className="nav_link">
                                     <FontAwesomeIcon icon={faUnlock} fixedWidth />
-                                    <span className="nav_text"> Exit Queue</span>
+                                    <span className="nav_text"> {t("navbar_exit_queue_link")}</span>
                                 </Nav.Link> : <></> }
                                 
                                 <Nav.Link href="/layoutref" className="nav_link">
                                     <FontAwesomeIcon icon={faFileImage} fixedWidth />
-                                    <span className="nav_text"> Layout Reference </span>
+                                    <span className="nav_text"> {t("navbar_layout_reference_link")} </span>
                                 </Nav.Link>
                                 {roles.includes("ROLE_SUPERUSER") ? 
                                     <Nav.Link href="/signup" className="nav_link">
                                         <FontAwesomeIcon icon={faUserPlus} fixedWidth />
-                                        <span className="nav_text"> Sign up</span>
+                                        <span className="nav_text"> {t("navbar_signup_link")}</span>
                                     </Nav.Link> : <></>
                                 }
                             </Nav>
@@ -92,7 +94,7 @@ class NavbarComponent extends React.Component {
                             <Nav>
                                 <NavDropdown align="end">
                                     <NavDropdown.Item href="#" className="clickable_text" onClick={this.props.callLogout}>
-                                        <FontAwesomeIcon icon={faTimes} fixedWidth /> Logout</NavDropdown.Item>
+                                        <FontAwesomeIcon icon={faTimes} fixedWidth /> {t("navbar_logout_link")}</NavDropdown.Item>
 
                                 </NavDropdown>
                             </Nav>
@@ -104,4 +106,4 @@ class NavbarComponent extends React.Component {
     }
 }
 
-export default NavbarComponent;
+export default withTranslation()(NavbarComponent);

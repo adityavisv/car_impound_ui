@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Modal, Table, Button } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import '../styles/upcomingreleases.css';
 import CarRegistrationForm from './CarRegistrationForm';
 import ReleaseCarForm from './ReleaseCarForm';
@@ -77,24 +78,25 @@ class UpcomingReleaseComponent extends React.Component {
 
     render = () => {
         const { upcomingReleases, missedReleases, selectedVehicle, showVehicleProfile, showReleaseModal, selectedSlot } = this.state;
+        const { t } = this.props;
         return (
             <div className="upcoming_release_padded">
                 <Modal show={showVehicleProfile} onHide={this.closeResultModal} animation={false} size="xl" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">Registration Information</Modal.Title>
+                        <Modal.Title className="ms-auto">{t("upcoming_releases_page_modal_header_registration_information")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {selectedVehicle !== {} && selectedVehicle.owner !== undefined ?
                         <CarRegistrationForm vehicle={selectedVehicle} /> : <></>}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={this.openReleaseModal}>Release</Button>
+                        <Button variant="secondary" onClick={this.openReleaseModal}>{t("upcoming_releases_page_modal_footer_btn_release")}</Button>
                     </Modal.Footer>
                 </Modal>
 
                 <Modal show={showReleaseModal} onHide={this.closeReleaseModal} size="lg">
                     <Modal.Header closeButton>
-                        <Modal.Title>Vehicle Release</Modal.Title>
+                        <Modal.Title>{t("upcoming_releases_page_modal_header_vehicle_release")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {
@@ -111,21 +113,21 @@ class UpcomingReleaseComponent extends React.Component {
                 </Modal>
 
                 <div className="upcoming_release_header_text">
-                    <Form.Text className="upcoming_release_header_text">UPCOMING RELEASES</Form.Text>
+                    <Form.Text className="upcoming_release_header_text">{t("upcoming_releases_page_header_upcoming_releases")}</Form.Text>
                 </div>
                 <div>
                     <Table hover variant="dark" bordered>
                         <thead className="table-light">
                             <tr>
-                                <th>Parking Slot Number</th>
-                                <th>Emirate</th>
-                                <th>Category</th>
-                                <th>Code</th>
-                                <th>Number Plate</th>
-                                <th>Make</th>
-                                <th>Model</th>
-                                <th>Colour</th>
-                                <th>Type</th>
+                                <th>{t("upcoming_releases_page_table_header_parking_slot_number")}</th>
+                                <th>{t("upcoming_releases_page_table_header_emirate")}</th>
+                                <th>{t("upcoming_releases_page_table_header_category")}</th>
+                                <th>{t("upcoming_releases_page_table_header_code")}</th>
+                                <th>{t("upcoming_releases_page_table_header_number_plate")}</th>
+                                <th>{t("upcoming_releases_page_table_header_make")}</th>
+                                <th>{t("upcoming_releases_page_table_header_model")}</th>
+                                <th>{t("upcoming_releases_page_table_header_color")}</th>
+                                <th>{t("upcoming_releases_page_table_header_type")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -168,4 +170,4 @@ class UpcomingReleaseComponent extends React.Component {
     }
 }
 
-export default UpcomingReleaseComponent;
+export default withTranslation()(UpcomingReleaseComponent);

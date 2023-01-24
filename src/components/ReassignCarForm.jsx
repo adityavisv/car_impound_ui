@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import LoadingOverlay from 'react-loading-overlay';
+import { withTranslation } from 'react-i18next';
 import { getAvailableSpotPairs } from '../helpers/generalhelpers';
 import { parkingSlotNumberMap } from '../parkingSlotMap';
 import UserService from '../services/user.service';
@@ -149,6 +150,7 @@ class ReassignCarForm extends React.Component {
 
     render = () => {
         const { newSlotNum1, newSlotNum2, newSlotNum, zoneLabel, multSlotMode, zoneRequestInit, availableSpots, firstSpotList, secondSpotList } = this.state;
+        const { t } = this.props;
         return (
             <LoadingOverlay
                 active={zoneRequestInit}
@@ -159,9 +161,9 @@ class ReassignCarForm extends React.Component {
             <Form onSubmit={this.hitReassign}>
                 <Row className="mb-3">
                     <Form.Group as={Col}>
-                        <Form.Label>Zone Label</Form.Label>
+                        <Form.Label>{t("reassign_car_form_label_zone_label")}</Form.Label>
                         <Form.Select required onChange={this.changeZoneLabel} value={zoneLabel}>
-                            <option value=''>Select an option</option>
+                            <option value=''>{t("reassign_car_form_dropdown_select_an_option")}</option>
                             {this.populateZoneLabels()}
                         </Form.Select>
                     </Form.Group>
@@ -169,9 +171,9 @@ class ReassignCarForm extends React.Component {
                         multSlotMode ? 
                         <>
                             <Form.Group as={Col}>
-                                <Form.Label>Slot Number 1</Form.Label>
+                                <Form.Label>{t("reassign_car_form_label_slot_number_1")}</Form.Label>
                                 <Form.Select required onChange={this.changeSlotNumber1} value={newSlotNum1}>
-                                    <option value=''>Select an option</option>
+                                    <option value=''>{t("reassign_car_form_dropdown_select_an_option")}</option>
                                     {
                                         Array.from(firstSpotList).map((element, index) => (
                                             <option id={element.index} value={element.slotNumber}>{element.slotNumber}</option>
@@ -180,9 +182,9 @@ class ReassignCarForm extends React.Component {
                                 </Form.Select>
                             </Form.Group>
                             <Form.Group as={Col}>
-                                <Form.Label>Slot Number 2</Form.Label>
+                                <Form.Label>{t("reassign_car_form_label_slot_number_2")}</Form.Label>
                                 <Form.Select required onChange={this.changeSlotNumber2} value={newSlotNum2}>
-                                    <option value=''>Select an option</option>
+                                    <option value=''>{t("reassign_car_form_dropdown_select_an_option")}</option>
                                     {
                                         Array.from(secondSpotList).map((element, index) => (
                                             <option id={element.index} value={element.slotNumber}>{element.slotNumber}</option>
@@ -193,9 +195,9 @@ class ReassignCarForm extends React.Component {
                         </>
                         :
                         <Form.Group as={Col}>
-                            <Form.Label>Slot Number</Form.Label>
+                            <Form.Label>{t("reassign_car_form_label_slot_number")}</Form.Label>
                             <Form.Select required onChange={this.changeSlotNum} value={newSlotNum}>
-                                    <option value=''>Select an option</option>
+                                    <option value=''>{t("reassign_car_form_dropdown_select_an_option")}</option>
                                {
                                    Array.from(availableSpots).map((element, index) => (
                                        <option id={element.index} value={element.slotNumber}>{element.slotNumber}</option>
@@ -208,7 +210,7 @@ class ReassignCarForm extends React.Component {
                 </Row>
                 <Row className="mb-3">
                     <Form.Group as={Col}>
-                        <Button type="submit" variant="secondary">Re-Assign</Button>
+                        <Button type="submit" variant="secondary">{t("reassign_car_form_btn_reassign")}</Button>
                     </Form.Group>
                         
                 </Row>
@@ -218,4 +220,4 @@ class ReassignCarForm extends React.Component {
     }
 }
 
-export default ReassignCarForm;
+export default withTranslation()(ReassignCarForm);

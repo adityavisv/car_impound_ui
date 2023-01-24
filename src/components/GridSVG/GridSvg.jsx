@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Container } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import '../../styles/gridsvg.css';
 import CarRegistrationForm from '../CarRegistrationForm';
 import ReassignCarForm from '../ReassignCarForm';
@@ -1548,7 +1549,7 @@ class GridSvg extends React.Component {
 
     render = () => {
         const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, shouldShowReassignModal, shouldShowUpdateModal, currentUser } = this.state;
-
+        const { t } = this.props;
         return (
             <div>
                 <SingleSlotOverviewModal
@@ -1564,7 +1565,7 @@ class GridSvg extends React.Component {
                 />
                  <Modal show={shouldShowRegisterModal} onHide={this.closeRegisterModal} size="xl" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">New Vehicle Registration</Modal.Title>
+                        <Modal.Title className="ms-auto">{t( "gridsvg_modal_title_new_vehicle_registration")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <CarRegistrationForm
@@ -1580,7 +1581,7 @@ class GridSvg extends React.Component {
 
                 <Modal show={shouldShowUpdateModal} onHide={this.closeUpdateModal} size="xl" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">Modify Vehicle Registration</Modal.Title>
+                        <Modal.Title className="ms-auto">{t("gridsvg_modal_title_modify_vehicle_registration")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <CarRegistrationForm
@@ -1597,7 +1598,7 @@ class GridSvg extends React.Component {
 
                 <Modal show={shouldShowReleaseModal} onHide={this.closeReleaseModal} size="lg" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">Vehicle Release</Modal.Title>
+                        <Modal.Title className="ms-auto">{t("gridsvg_modal_title_vehicle_release")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <ReleaseCarForm 
@@ -1613,7 +1614,7 @@ class GridSvg extends React.Component {
 
                 <Modal show={shouldShowReassignModal} onHide={this.closeReassignModal} size="lg" centered>
                     <Modal.Header closeButton>
-                        <Modal.Title className="ms-auto">Vehicle Re-Assign</Modal.Title>
+                        <Modal.Title className="ms-auto">{t("gridsvg_modal_title_vehicle_reassign")}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <ReassignCarForm
@@ -1640,4 +1641,4 @@ class GridSvg extends React.Component {
     }
 }
 
-export default GridSvg;
+export default withTranslation()(GridSvg);

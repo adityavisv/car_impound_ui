@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert, CloseButton, Modal, ProgressBar, Table } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import LoadingOverlay from 'react-loading-overlay';
 import GridSvg from './GridSVG/GridSvg';
 import '../styles/parkinglotcounter.css';
@@ -96,7 +97,7 @@ class ParkingLotCounter extends React.Component {
 
     render = () => {
         const { parkingZoneSummaries, selectedZoneRequestInit, selectedZoneRequestFail, showGridSvg, clickedZone } = this.state;
-
+        const { t, i18n } = this.props;
         return (
             <LoadingOverlay
                 active={selectedZoneRequestInit}
@@ -117,10 +118,10 @@ class ParkingLotCounter extends React.Component {
                 <Table responsive hover size="sm" variant="dark">
                     <thead>
                         <tr>
-                            <th>Zone</th>
-                            <th>Available</th>
-                            <th>Occupied</th>
-                            <th>Live Counter</th>
+                            <th>{t("parking_counter_view_page_zone_table_header")}</th>
+                            <th>{t("parking_counter_view_page_available_table_header")}</th>
+                            <th>{t("parking_counter_view_page_occupied_table_header")}</th>
+                            <th>{t("parking_counter_view_page_live_counter_table_header")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -142,4 +143,4 @@ class ParkingLotCounter extends React.Component {
     }
 }
 
-export default ParkingLotCounter;
+export default withTranslation()(ParkingLotCounter);

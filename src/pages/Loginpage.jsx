@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import '../styles/Loginpage.css';
-import { useTranslation } from "react-i18next";
+import { withTranslation } from 'react-i18next';
 import "../translations/i18n";
 import { login, logout } from '../actions/auth';
 import { connect } from 'react-redux';
@@ -49,10 +49,7 @@ class Loginpage extends React.Component {
         }
     }
     
-    // const { t, i18n } = useTranslation();
-    // const changeLanguage = lng => {
-    //     i18n.changeLanguage(lng);
-    // };
+    
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -82,6 +79,7 @@ class Loginpage extends React.Component {
     }
 
     render = () => {
+        const {t, i18n} = this.props;
         const {username, password, isLoggedIn, isPasswordVisible, shouldShowInvalidLoginAlert, shouldShowNetworkErrAlert} = this.state;
         if (isLoggedIn) {
             return <Navigate to="/" replace />
@@ -103,16 +101,16 @@ class Loginpage extends React.Component {
                         <img src={require("../SharjahPoliceLogo.png")} height="120" width="120" alt="logo" />
                     </div>
                     <div className="login_box_header">
-                        {/* {t("login")} */}
-                        Login
+                        {t("login_page_box_header")}
+                        {/* Login */}
                     </div>
 
                     <Form className="actual_form" onSubmit={this.handleSubmit}>
                         <Form.Group className="mb-3">
-                            <Form.Label className="login_field_label">Username (*)</Form.Label>
+                            <Form.Label className="login_field_label">{t("login_page_username_label")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Username"
+                                placeholder={t("login_page_username_placeholder")}
                                 required={true}
                                 className="form_control"
                                 value={username}
@@ -121,21 +119,21 @@ class Loginpage extends React.Component {
                         </Form.Group>
 
                         <Form.Group className="mb-3 password_form_group">
-                            <Form.Label className="login_field_label">Password (*)</Form.Label>
+                            <Form.Label className="login_field_label">{t("login_page_password_label")}</Form.Label>
                             <Form.Control
                                 type={isPasswordVisible ? "text" : "password"}
-                                placeholder="Password"
+                                placeholder={t("login_page_password_placeholder")}
                                 required={true}
                                 className="form_control"
                                 value={password}
                                 onChange={this.onChangePassword}
                             />
-                            <Form.Check type="checkbox" label="Show password" onChange={this.togglePasswordView} />
+                            <Form.Check type="checkbox" label={t("login_page_show_password_label")} onChange={this.togglePasswordView} />
                         </Form.Group>
                         <div id="button_container">
-                            <Button variant="outline-primary" type="submit" className="form_button_login">
+                            <Button variant="outline-primary" type="submit" className="form_button_login" onClick={() => i18n.changeLanguage("arab")}>
                                 {/* onClick={() => changeLanguage("arab")}> */}
-                                Sign in
+                                {t("login_page_sign_in_btn")}
                                     </Button>
                             {/* <Button variant="outline-secondary" className="form_button_reset">Sign Up</Button> */}
                         </div>
@@ -157,4 +155,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Loginpage);
+export default connect(mapStateToProps)(withTranslation()(Loginpage));

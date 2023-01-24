@@ -1,6 +1,7 @@
 import React from 'react';
 import { getVehicleStatusDisplay, getEmirateDisplay, getDateTimeString, getDateString, b64toBlob } from '../helpers/generalhelpers';
 import { Table, Button } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 
@@ -92,6 +93,7 @@ class ResultsTable extends React.Component {
                 releaseDateTime = ''
             } = {}
         } = resultObj;
+        const { t } = this.props;
         return (
             <tr id={id} key={id} className="clickable">
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{parkingSlot === null ? '--' : parkingSlot}</span></td>
@@ -130,7 +132,7 @@ class ResultsTable extends React.Component {
                                     vehicleStatus === 'REGISTERED' ? '--' : 
                                     <Button variant="secondary"
                                         onClick={() => this.downloadSelectedReleaseDoc(id)}>
-                                            <FontAwesomeIcon faIcon={faFileDownload} fixedWidth /> Download
+                                            <FontAwesomeIcon faIcon={faFileDownload} fixedWidth /> {t("results_table_btn_download")}
                                     </Button>}
                                     </span>
                                 </td>
@@ -140,44 +142,44 @@ class ResultsTable extends React.Component {
 
     render = () => {
         const { results } = this.state;
-        const { handleRowClick } = this.props;
+        const { handleRowClick, t } = this.props;
         return (
             <Table hover bordered >
             
                 <thead className="table-dark">
                     <tr>
-                        <th>Parking Slot Number</th>
-                        <th>Registration Date/Time</th>
-                        <th>Status</th>
-                        <th>Make</th>
-                        <th>Model</th>
-                        <th>Colour</th>
-                        <th>Vehicle Type</th>
-                        <th>Emirate</th>
-                        <th>Category</th>
-                        <th>Code</th>
-                        <th>Number Plate</th>
-                        <th>Chassis Number</th>
-                        <th>Department</th>
-                        <th>Is Wanted?</th>
-                        <th>Case Number</th>
-                        <th>Owner First Name</th>
-                        <th>Owner Last Name</th>
-                        <th>Owner Nationality</th>
-                        <th>Owner Contact Number</th>
-                        <th>Owner Email ID</th>
-                        <th>Owner ID Type</th>
-                        <th>Owner ID Number</th>
-                        <th>Release Identity First Name</th>
-                        <th>Release Identity Last name</th>
-                        <th>Release Identity Nationality</th>
-                        <th>Release Identity Contact Number</th>
-                        <th>Release Identity Email ID</th>
-                        <th>Release Identity ID Type</th>
-                        <th>Release identity ID Number</th>
-                        <th>Estimated Release Date</th>
-                        <th>Actual Release Date/Time</th>
-                        <th>Release Document</th>
+                        <th>{t("results_table_header_parking_slot_number")}</th>
+                        <th>{t("results_table_header_registration_datetime")}</th>
+                        <th>{t("results_table_header_status")}</th>
+                        <th>{t("results_table_header_make")}</th>
+                        <th>{t("results_table_header_model")}</th>
+                        <th>{t("results_table_header_color")}</th>
+                        <th>{t("results_table_header_vehicle_type")}</th>
+                        <th>{t("results_table_header_emirate")}</th>
+                        <th>{t("results_table_header_category")}</th>
+                        <th>{t("results_table_header_code")}</th>
+                        <th>{t("results_table_header_number_plate")}</th>
+                        <th>{t("results_table_header_chassis_number")}</th>
+                        <th>{t("results_table_header_department")}</th>
+                        <th>{t("results_table_header_is_wanted")}</th>
+                        <th>{t("results_table_header_case_number")}</th>
+                        <th>{t("results_table_header_owner_firstname")}</th>
+                        <th>{t( "results_table_header_owner_lastname")}</th>
+                        <th>{t("results_table_header_owner_nationality")}</th>
+                        <th>{t("results_table_header_owner_contact_number")}</th>
+                        <th>{t("results_table_header_owner_email_id")}</th>
+                        <th>{t( "results_table_header_owner_id_type")}</th>
+                        <th>{t("results_table_header_owner_id_number")}</th>
+                        <th>{t("results_table_header_release_identity_firstname")}</th>
+                        <th>{t("results_table_header_release_identity_lastname")}</th>
+                        <th>{t("results_table_header_release_identity_nationality")}</th>
+                        <th>{t("results_table_header_release_identity_contact_number")}</th>
+                        <th>{t("results_table_header_release_identity_email_id")}</th>
+                        <th>{t("results_table_header_release_identity_id_type")}</th>
+                        <th>{t("results_table_header_release_identity_id_number")}</th>
+                        <th>{t("results_table_header_estimated_release_date")}</th>
+                        <th>{t("results_table_header_actual_release_datetime")}</th>
+                        <th>{t("results_table_header_release_document")}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -193,4 +195,4 @@ class ResultsTable extends React.Component {
     }
 }
 
-export default ResultsTable;
+export default withTranslation()(ResultsTable);
