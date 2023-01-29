@@ -1,9 +1,11 @@
 import React from 'react';
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Container, Form, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { connect } from 'react-redux';
 import { faParking, faSearch, faUser, faUserPlus, faTimes, faFileImage, faUnlock, faClock } from '@fortawesome/free-solid-svg-icons';
 import '../styles/navbarcomponent.css';
+import { setUILanguage } from '../actions/uilanguage';
 // import 'bootstrap/dist/css/bootstrap.css';
 
 class NavbarComponent extends React.Component {
@@ -14,16 +16,19 @@ class NavbarComponent extends React.Component {
                 username,
                 roles
             },
+            uiLanguage,
             highlight
         } = this.props;
         this.state = {
             username,
             roles,
-            highlight
+            highlight,
+            uiLanguage
         };
     }
 
     componentDidUpdate = (prevProps, prevState) => {
+        const { i18n } = this.props;
         if (this.props.currentUser !== prevProps.currentUser) {
             const {username, roles} = this.props.currentUser;
             this.setState({
@@ -36,11 +41,32 @@ class NavbarComponent extends React.Component {
                 highlight: this.props.highlight
             });
         }
+        if (this.props.uiLanguage !== prevProps.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            i18n.changeLanguage(this.props.uiLanguage);
+        }
+    }
+
+    toggleLanguage = () => {
+        const { uiLanguage } = this.state;
+        const { dispatch } = this.props;
+        switch(uiLanguage) {
+            case "arab": {
+                dispatch(setUILanguage("en"));
+                break;
+            }
+            case "en": {
+                dispatch(setUILanguage("arab"));
+                break;
+            }
+        }
     }
 
     render = () => {
         const { username, roles, highlight } = this.state;
-        const { t, i18n } = this.props;
+        const { t } = this.props;
         return (
             <div>
                 <Navbar bg="dark" variant="dark" expand="lg fixed=">
@@ -91,6 +117,7 @@ class NavbarComponent extends React.Component {
                             <Navbar.Text>
                                 <FontAwesomeIcon icon={faUser} fixedWidth/> {username}
                             </Navbar.Text>
+                            
                             <Nav>
                                 <NavDropdown align="end">
                                     <NavDropdown.Item href="#" className="clickable_text" onClick={this.props.callLogout}>
@@ -98,6 +125,10 @@ class NavbarComponent extends React.Component {
 
                                 </NavDropdown>
                             </Nav>
+
+                            <Navbar.Text>
+                                <Form.Check type="switch" label="Arabic" onChange={this.toggleLanguage} />
+                            </Navbar.Text>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
@@ -106,4 +137,11 @@ class NavbarComponent extends React.Component {
     }
 }
 
-export default withTranslation()(NavbarComponent);
+function mapStateToProps(state) {
+    const { uiLanguage } = state.uilanguage;
+    return {
+        uiLanguage
+    };
+}
+
+export default connect(mapStateToProps)(withTranslation()(NavbarComponent));

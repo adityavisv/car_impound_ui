@@ -131,7 +131,7 @@ class Loginpage extends React.Component {
                             <Form.Check type="checkbox" label={t("login_page_show_password_label")} onChange={this.togglePasswordView} />
                         </Form.Group>
                         <div id="button_container">
-                            <Button variant="outline-primary" type="submit" className="form_button_login" onClick={() => i18n.changeLanguage("arab")}>
+                            <Button variant="outline-primary" type="submit" className="form_button_login">
                                 {/* onClick={() => changeLanguage("arab")}> */}
                                 {t("login_page_sign_in_btn")}
                                     </Button>
