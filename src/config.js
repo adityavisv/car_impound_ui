@@ -1,1 +1,1 @@
-export const SERVICE_URL = 'http://PTS-WS:8080';
+export const SERVICE_URL = 'http://PTS-WS:8080/impoundsrv-0.0.1-SNAPSHOT';
