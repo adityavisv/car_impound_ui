@@ -49,6 +49,77 @@ export const generateFileObjectsFromData = (fileDataArray) => {
     return fileObjArray;
 }
 
+export const translateColor = (t, colorInEnglish) => {
+    switch(colorInEnglish) {
+        case "RED":
+            return t("car_registration_form_color_dropdown_red");
+        case "YELLOW":
+            return t("car_registration_form_color_dropdown_yellow");
+        case "GREEN":
+            return t("car_registration_form_color_dropdown_green");
+        case "BLUE":
+            return t("car_registration_form_color_dropdown_blue");
+        case "BLACK":
+            return t("car_registration_form_color_dropdown_black");
+        case "WHITE":
+            return t("car_registration_form_color_dropdown_white");
+        case "PINK":
+            return t("car_registration_form_color_dropdown_pink");
+        case "GREY":
+            return t("car_registration_form_color_dropdown_grey");
+        case "SILVER":
+            return t("car_registration_form_color_dropdown_silver");
+        case "BROWN":
+            return t("car_registration_form_color_dropdown_brown");
+    }
+}
+
+export const translateEmirate = (t, emirateInEnglish) => {
+    switch(emirateInEnglish) {
+        case "ABU_DHABI":
+            return t("car_registration_form_emirate_dropdown_abu_dhabi");
+        case "AJMAN":
+            return t("car_registration_form_emirate_dropdown_ajman");
+        case "DUBAI":
+            return t("car_registration_form_emirate_dropdown_dubai");
+        case "FUJAIRAH":
+            return t("car_registration_form_emirate_dropdown_fujairah");
+        case "RAS_AL_KHAYMAH":
+            return t("car_registration_form_emirate_dropdown_ras_al_khaymah");
+        case "SHARJAH":
+            return t("car_registration_form_emirate_dropdown_sharjah");
+        case "UMM_AL_QUWAIN":
+            return t("car_registration_form_emirate_dropdown_umm_al_quwain");
+
+    }
+}
+
+export const translateStatus = (t, statusValue) => {
+    switch(statusValue) {
+        case "APPROVED_FOR_RELEASE":
+            return t("search_page_form_status_dropdown_approved_for_release");
+        case "REGISTERED":
+            return t("search_page_form_status_dropdown_registered");
+        case "RELEASED":
+            return t("search_page_form_status_dropdown_released");
+    }
+}
+
+export const translateIsWanted = (t, wantedValue) => {
+    return wantedValue ? t("car_registration_form_wanted_dropdown_yes") : t("car_registration_form_wanted_dropdown_no");
+}
+
+export const translateVehicleType = (t, vehicleType) => {
+    switch(vehicleType) {
+        case "CAR":
+            return t("car_registration_form_type_dropdown_car");
+        case "MOTORCYCLE":
+            return t( "car_registration_form_type_dropdown_motorcycle");
+        case "TRUCK":
+            return t("car_registration_form_type_dropdown_truck");
+    }
+}
+
 
 export const getDateTimeString = (dateValue) => {
     if (dateValue !== '' && dateValue !== null) {

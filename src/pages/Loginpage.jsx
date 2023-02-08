@@ -7,17 +7,19 @@ import "../translations/i18n";
 import { login, logout } from '../actions/auth';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import { setUILanguage } from '../actions/uilanguage';
 
 class Loginpage extends React.Component {
 
     constructor(props) {
         super(props);
-        const { isLoggedIn, message, statusCode, loginFail } = this.props;
+        const { isLoggedIn, message, statusCode, loginFail, uiLanguage } = this.props;
         this.state = {
             username: '',
             password: '',
             isLoading: false,
             isLoggedIn,
+            uiLanguage,
             isPasswordVisible: false,
             message,
             shouldShowNetworkErrAlert: false,
@@ -46,6 +48,12 @@ class Loginpage extends React.Component {
             this.setState({
                 shouldShowInvalidLoginAlert: this.props.loginFail
             });
+        }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            this.props.i18n.changeLanguage(this.props.uiLanguage);
         }
     }
     
@@ -78,9 +86,29 @@ class Loginpage extends React.Component {
         return message !== '' && message !== undefined;
     }
 
+    toggleLanguage = () => {
+        const { uiLanguage } = this.state;
+        const { dispatch } = this.props;
+        switch(uiLanguage) {
+            case "arab":
+                dispatch(setUILanguage("en"));
+                this.setState({
+                    uiLanguage: "en"
+                });
+                break;
+            case "en": {
+                dispatch(setUILanguage("arab"));
+                this.setState({
+                    uiLanguage: "arab"
+                });
+                break;
+            }
+        }
+    }
+
     render = () => {
         const {t, i18n} = this.props;
-        const {username, password, isLoggedIn, isPasswordVisible, shouldShowInvalidLoginAlert, shouldShowNetworkErrAlert} = this.state;
+        const {username, password, isLoggedIn, isPasswordVisible, shouldShowInvalidLoginAlert, shouldShowNetworkErrAlert, uiLanguage } = this.state;
         if (isLoggedIn) {
             return <Navigate to="/" replace />
         }
@@ -128,13 +156,24 @@ class Loginpage extends React.Component {
                                 value={password}
                                 onChange={this.onChangePassword}
                             />
-                            <Form.Check type="checkbox" label={t("login_page_show_password_label")} onChange={this.togglePasswordView} />
+                            <div>
+                                <div style={{ float: 'left' }}>
+                                    <Form.Check type="checkbox" label={t("login_page_show_password_label")} onChange={this.togglePasswordView} />
+                                </div>
+                                <div style={{ float: 'right' }}>
+                                    <Form.Check type="switch" label="Arabic" onChange={this.toggleLanguage} reverse checked={uiLanguage === 'arab'}/>
+                                </div>  
+                            </div>
+                            
+                            
+                            
+                            
                         </Form.Group>
                         <div id="button_container">
                             <Button variant="outline-primary" type="submit" className="form_button_login">
                                 {/* onClick={() => changeLanguage("arab")}> */}
                                 {t("login_page_sign_in_btn")}
-                                    </Button>
+                            </Button>
                             {/* <Button variant="outline-secondary" className="form_button_reset">Sign Up</Button> */}
                         </div>
                     </Form>
@@ -147,11 +186,13 @@ class Loginpage extends React.Component {
 function mapStateToProps(state) {
     const { isLoggedIn, loginFail } = state.auth;
     const { message, statusCode } = state.message;
+    const { uiLanguage } = state.uilanguage;
     return {
         isLoggedIn,
         message,
         statusCode,
-        loginFail
+        loginFail,
+        uiLanguage
     };
 }
 

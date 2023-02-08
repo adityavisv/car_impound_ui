@@ -22,7 +22,8 @@ class NewSignUpPage extends React.Component {
             upcomingReleases,
             upcomingReleasesReqInit, 
             upcomingReleasesReqFail,
-            upcomingReleasesStatusCode 
+            upcomingReleasesStatusCode,
+            uiLanguage
         } = this.props;
         this.state = {
             username: '',
@@ -33,6 +34,7 @@ class NewSignUpPage extends React.Component {
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
             upcomingReleasesStatusCode,
+            uiLanguage,
             role: 'admin',
             showFailureAlert: false,
             showPasswordMismatchAlert: false,
@@ -83,6 +85,12 @@ class NewSignUpPage extends React.Component {
             this.setState({
                 upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode
             });
+        }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            this.props.i18n.changeLanguage(this.props.uiLanguage);
         }
     }
 
@@ -190,7 +198,7 @@ class NewSignUpPage extends React.Component {
     }
 
     render = () => {
-        const { showFailureAlert, showSuccessModal, shouldRedirectHome, showPasswordMismatchAlert, username, password, passwordRep, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases } = this.state;
+        const { showFailureAlert, showSuccessModal, shouldRedirectHome, showPasswordMismatchAlert, username, password, passwordRep, role, isLoggedIn, user, hasClickedOkInsufficientPriv, upcomingReleases, uiLanguage } = this.state;
         const { t } = this.props;
         if (! isLoggedIn ) {
             return <Navigate to="/login" replace />
@@ -220,7 +228,7 @@ class NewSignUpPage extends React.Component {
                                 </Button>                            
                             </Modal.Footer>
                         </Modal>
-                        <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} />
+                        <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} uiLanguage={uiLanguage} dispatch={this.props.dispatch}/>
                         <div className="form_box">
                             <Alert variant="danger" show={showFailureAlert}>{t("signup_page_alert_user_exists")}</Alert>
                             <Alert variant="danger" show={showPasswordMismatchAlert}>{t("signup_page_alert_password_mismatch")}</Alert>
@@ -285,6 +293,7 @@ class NewSignUpPage extends React.Component {
 function mapStateToProps(state) {
     const { isLoggedIn, user } = state.auth;
     const { message } = state.message;
+    const { uiLanguage } = state.uilanguage;
     const { missedReleases, upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         isLoggedIn,
@@ -294,7 +303,8 @@ function mapStateToProps(state) {
         upcomingReleases,
         upcomingReleasesReqInit,
         upcomingReleasesReqFail,
-        upcomingReleasesStatusCode
+        upcomingReleasesStatusCode,
+        uiLanguage
     };
 }
 

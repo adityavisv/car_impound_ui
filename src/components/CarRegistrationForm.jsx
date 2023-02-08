@@ -7,7 +7,7 @@ import UserService from '../services/user.service';
 import LoginRedirectModal from './LoginRedirectModal';
 import 'bootstrap/dist/css/bootstrap.css';
 import { makeModelData } from '../newcardb';
-import { getAllModelsByMake, generateFileObjectsFromData } from '../helpers/generalhelpers';
+import { getAllModelsByMake, generateFileObjectsFromData, translateVehicleType, translateEmirate, translateColor, translateIsWanted } from '../helpers/generalhelpers';
 import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 
 class CarRegistrationForm extends React.Component {
@@ -823,7 +823,7 @@ class CarRegistrationForm extends React.Component {
         const { t } = this.props;
         return (
             <LoadingOverlay active={this.shouldShowLoadingScreen()} spinner text='Saving vehicle...'>
-                {readOnly ? <Alert variant="info">{t("car_registration_form_alert_readonly_header")}</Alert> : null}
+                {/* {readOnly ? <Alert variant="info">{t("car_registration_form_alert_readonly_header")}</Alert> : null} */}
                 <Form onSubmit={this.submitVehicle}>
                     <Row className="mb-3">
                         <Form.Text className="form_text">{t("car_registration_form_subheader_vehicle_information")}</Form.Text>
@@ -842,14 +842,14 @@ class CarRegistrationForm extends React.Component {
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label className="required_form_label">{t("car_registration_form_label_type")}</Form.Label>
-                                    <Form.Control type="text" readOnly disabled value={type} />
+                                    <Form.Control type="text" readOnly disabled value={translateVehicleType(t, type)} />
                                 </Form.Group>
                                 
                            </Row>
                            <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label className="required_form_label">{t("car_registration_form_label_color")}</Form.Label>
-                                    <Form.Control type="text"  required={true} value={color} disabled={readOnly} readOnly={true}/>
+                                    <Form.Control type="text"  required={true} value={translateColor(t, color)} disabled={readOnly} readOnly={true}/>
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label className="required_form_label">{t("car_registration_form_label_chassis_number")}</Form.Label>
@@ -859,7 +859,7 @@ class CarRegistrationForm extends React.Component {
                            <Row className="mb-3">
                                <Form.Group as={Col}>
                                    <Form.Label className="required_form_label">{t("car_registration_form_label_emirate")}</Form.Label>
-                                   <Form.Control type="text" value={emirate} disabled={readOnly} readOnly={true} />
+                                   <Form.Control type="text" value={translateEmirate(t, emirate)} disabled={readOnly} readOnly={true} />
                                </Form.Group>
                                <Form.Group as={Col}>
                                    <Form.Label className="required_form_label">{t("car_registration_form_label_category")}</Form.Label>

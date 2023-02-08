@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import { logout } from '../actions/auth';
 import { fetchUpcomingReleases } from '../actions/upcomingrelease';
 import NavbarComponent from '../components/NavbarComponent';
@@ -9,7 +10,7 @@ import { connect } from 'react-redux';
 class ZoneLayoutReferencePage extends React.Component {
     constructor(props) {
         super(props);
-        const { user, isLoggedIn, message, upcomingReleases, missedReleases, upcomingReleasesReqFail, upcomingReleasesReqInit, upcomingReleasesStatusCode } =  this.props;
+        const { user, isLoggedIn, message, upcomingReleases, missedReleases, upcomingReleasesReqFail, upcomingReleasesReqInit, upcomingReleasesStatusCode, uiLanguage } =  this.props;
         this.state = {
             user,
             isLoggedIn,
@@ -18,7 +19,8 @@ class ZoneLayoutReferencePage extends React.Component {
             missedReleases,
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
-            upcomingReleasesStatusCode
+            upcomingReleasesStatusCode,
+            uiLanguage
         };
     }
 
@@ -67,6 +69,12 @@ class ZoneLayoutReferencePage extends React.Component {
                 upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode
             });
         }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            this.props.i18n.changeLanguage(this.props.uiLanguage);
+        }
     }
     
     callUpcomgingReleasesService = () => {
@@ -89,7 +97,7 @@ class ZoneLayoutReferencePage extends React.Component {
     }
 
     render = () => {
-        const { user, isLoggedIn, upcomingReleases } =  this.state;
+        const { user, isLoggedIn, upcomingReleases, uiLanguage } =  this.state;
         if ( ! isLoggedIn ) {
             return (
                 <Navigate to="/login" replace />
@@ -97,7 +105,7 @@ class ZoneLayoutReferencePage extends React.Component {
         }
         return (
             <div>
-                <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} />
+                <NavbarComponent currentUser={user} callLogout={this.callLogout} highlight={this.getHighlightColor()} uiLanguage={uiLanguage} dispatch={this.props.dispatch} />
                 <ZoneLayoutReference />
             </div>
         );
@@ -108,6 +116,7 @@ class ZoneLayoutReferencePage extends React.Component {
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { message } = state.message;
+    const { uiLanguage } = state.uilanguage;
     const { missedReleases,upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         user,
@@ -118,7 +127,8 @@ function mapStateToProps(state) {
         upcomingReleasesReqInit,
         upcomingReleasesReqFail,
         upcomingReleasesStatusCode,
+        uiLanguage
     }
 }
 
-export default connect(mapStateToProps)(ZoneLayoutReferencePage);
+export default connect(mapStateToProps)(withTranslation()(ZoneLayoutReferencePage));

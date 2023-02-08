@@ -1,5 +1,6 @@
 import React from 'react';
 import LoadingOverlay from 'react-loading-overlay';
+import { withTranslation } from 'react-i18next';
 import NavbarComponent from '../components/NavbarComponent';
 import ParkingLotCounter from '../components/ParkingLotCounter';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -13,7 +14,7 @@ import { Alert, Modal, Button } from 'react-bootstrap';
 class ParkingLotViewPage extends React.Component {
     constructor(props) {
         super(props);
-        const { missedReleases, upcomingReleases, isLoggedIn, user, parkingZoneSummaries, zoneSummaryReqInit, zoneSummaryReqFail } = this.props;
+        const { missedReleases, upcomingReleases, isLoggedIn, user, parkingZoneSummaries, zoneSummaryReqInit, zoneSummaryReqFail, uiLanguage } = this.props;
         this.state = {
             isLoggedIn,
             currentUser: user,
@@ -21,7 +22,8 @@ class ParkingLotViewPage extends React.Component {
             upcomingReleases,
             parkingZoneSummaries,
             zoneSummaryReqInit,
-            zoneSummaryReqFail
+            zoneSummaryReqFail,
+            uiLanguage
         };
     }
 
@@ -62,6 +64,11 @@ class ParkingLotViewPage extends React.Component {
         if (prevProps.missedReleases !== this.props.missedReleases) {
             this.setState({missedReleases: this.props.missedReleases});
         }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({uiLanguage: this.state.uiLanguage});
+            const { i18n } = this.props;
+            i18n.changeLanguage(this.props.uiLanguage);
+        }
     }
 
     callUpcomgingReleasesService = () => {
@@ -90,7 +97,7 @@ class ParkingLotViewPage extends React.Component {
     }
 
     render = () => {
-        const { currentUser, parkingZoneSummaries, isLoggedIn, zoneSummaryReqInit, zoneSummaryReqFail } = this.state;
+        const { currentUser, parkingZoneSummaries, isLoggedIn, zoneSummaryReqInit, zoneSummaryReqFail, uiLanguage } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -115,7 +122,7 @@ class ParkingLotViewPage extends React.Component {
                             </Modal.Footer>
                         
                     </Modal>
-                    <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} highlight={this.getHighlightColor()}/>
+                    <NavbarComponent currentUser={currentUser} callLogout={this.callLogout} highlight={this.getHighlightColor()} uiLanguage={uiLanguage} dispatch={this.props.dispatch}/>
                     <div>
                         <ParkingLotCounter
                             currentUser={currentUser}
@@ -136,6 +143,7 @@ function mapStateToProps(state) {
     const { missedReleases, upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { parkingZoneSummaries, statusCode, zoneSummaryReqInit, zoneSummaryReqFail } = state.zonesummary;
     const { message } = state.message;
+    const { uiLanguage } = state.uilanguage;
     return {
         user,
         isLoggedIn,
@@ -148,8 +156,9 @@ function mapStateToProps(state) {
         upcomingReleasesReqInit,
         upcomingReleasesReqFail,
         upcomingReleasesStatusCode,
-        message
+        message,
+        uiLanguage
     }
 }
 
-export default connect(mapStateToProps)(ParkingLotViewPage);
+export default connect(mapStateToProps)(withTranslation()(ParkingLotViewPage));

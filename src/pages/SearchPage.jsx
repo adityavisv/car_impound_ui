@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 
 import { fetchUpcomingReleases } from '../actions/upcomingrelease';
 import NavbarComponent from '../components/NavbarComponent';
@@ -18,12 +19,14 @@ class SearchPage extends React.Component {
             missedReleases: this.props.missedReleases,
             upcomingReleasesReqInit: this.props.upcomingReleasesReqInit,
             upcomingReleasesReqFail: this.props.upcomingReleasesReqFail,
-            upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode
+            upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode,
+            uiLanguage: this.props.uiLanguage
         };
     }
 
     componentDidMount = () => {
         this.callUpcomgingReleasesService();
+        this.props.i18n.changeLanguage(this.props.uiLanguage);
     }
 
     componentDidUpdate = (prevProps, prevState) => {
@@ -54,6 +57,12 @@ class SearchPage extends React.Component {
                 upcomingReleasesReqFail: this.props.upcomingReleasesReqFail
             });
         }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            this.props.i18n.changeLanguage(this.props.uiLanguage);
+        }
     }
 
     callUpcomgingReleasesService = () => {
@@ -76,13 +85,13 @@ class SearchPage extends React.Component {
     }
 
     render = () => {
-        const { currentUser, isLoggedIn } = this.state;
+        const { currentUser, isLoggedIn, uiLanguage } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
         return (
             <>
-                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()}/>
+                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()} uiLanguage={uiLanguage} dispatch={this.props.dispatch}/>
                 <SearchForm callLogout={this.callLogout} />
             </>
         );
@@ -92,6 +101,7 @@ class SearchPage extends React.Component {
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { message } = state.message;
+    const { uiLanguage } = state.uilanguage;
     const { missedReleases, upcomingReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     return {
         user,
@@ -101,8 +111,9 @@ function mapStateToProps(state) {
         upcomingReleases,
         upcomingReleasesReqFail,
         upcomingReleasesReqInit,
-        upcomingReleasesStatusCode
+        upcomingReleasesStatusCode,
+        uiLanguage
     }
 }
 
-export default connect(mapStateToProps)(SearchPage)
+export default connect(mapStateToProps)(withTranslation()(SearchPage));

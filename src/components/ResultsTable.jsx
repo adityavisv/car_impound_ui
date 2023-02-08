@@ -1,5 +1,5 @@
 import React from 'react';
-import { getVehicleStatusDisplay, getEmirateDisplay, getDateTimeString, getDateString, b64toBlob } from '../helpers/generalhelpers';
+import { getVehicleStatusDisplay, getEmirateDisplay, translateColor, translateEmirate, translateIsWanted, translateVehicleType, translateStatus, getDateTimeString, getDateString, b64toBlob } from '../helpers/generalhelpers';
 import { Table, Button } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -51,7 +51,6 @@ class ResultsTable extends React.Component {
         a.click();
     }
     
-
     getTableRowFromObject = (resultObj, handleRowClick) => {
         if (resultObj.releaseIdentity === null)
             resultObj.releaseIdentity = {};
@@ -98,18 +97,18 @@ class ResultsTable extends React.Component {
             <tr id={id} key={id} className="clickable">
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{parkingSlot === null ? '--' : parkingSlot}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{getDateTimeString(registrationDateTime)}</span></td>
-                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{getVehicleStatusDisplay(vehicleStatus)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{translateStatus(t, vehicleStatus)}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{make}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{model}</span></td>
-                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{color}</span></td>
-                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{type}</span></td>
-                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{getEmirateDisplay(emirate)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{translateColor(t, color)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{translateVehicleType(t, type)}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{translateEmirate(t, emirate)}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{category}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{code}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{numberPlate}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{chassisNumber}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{department}</span></td>
-                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{isWanted ? "Yes" : "No"}</span></td>
+                                <td onClick={() => handleRowClick(id)}><span className="plaintext">{translateIsWanted(t, isWanted)}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{caseNumber === '' ? '--' : caseNumber}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerFirstName === '' ? '--' : ownerFirstName}</span></td>
                                 <td onClick={() => handleRowClick(id)}><span className="plaintext">{ownerLastName === '' ? '-- ' : ownerLastName}</span></td>

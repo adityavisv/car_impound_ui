@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 import NavbarComponent from '../components/NavbarComponent';
 import { logout } from '../actions/auth';
 import { Navigate } from 'react-router-dom';
@@ -12,7 +13,7 @@ class UpcomingReleasePage extends React.Component {
     constructor(props) {
         super(props);
         const {
-            isLoggedIn, user, upcomingReleases, missedReleases, upcomingReleasesReqFail, upcomingReleasesReqInit
+            isLoggedIn, user, upcomingReleases, missedReleases, upcomingReleasesReqFail, upcomingReleasesReqInit, uiLanguage
         } = this.props;
         this.state = {
             isLoggedIn,
@@ -21,6 +22,7 @@ class UpcomingReleasePage extends React.Component {
             missedReleases,
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
+            uiLanguage,
             hasClickedOkInsufficientPriv: false
         };
     }
@@ -55,10 +57,16 @@ class UpcomingReleasePage extends React.Component {
                 upcomingReleasesReqInit: this.props.upcomingReleasesReqInit
             });
         }
-        if (this.props.upcomfingReleasesReqFail !== this.props.upcomfingReleasesReqFail) {
+        if (prevProps.upcomingReleasesReqFail !== this.props.upcomingReleasesReqFail) {
             this.setState({
                 upcomingReleasesReqFail: this.props.upcomingReleasesReqFail
             });
+        }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            this.props.i18n.changeLanguage(this.props.uiLanguage);
         }
     }
 
@@ -88,7 +96,7 @@ class UpcomingReleasePage extends React.Component {
     }
 
     render = () => {
-        const { currentUser, isLoggedIn, missedReleases, upcomingReleases, upcomingReleasesReqInit, hasClickedOkInsufficientPriv } = this.state;
+        const { currentUser, isLoggedIn, missedReleases, upcomingReleases, upcomingReleasesReqInit, hasClickedOkInsufficientPriv, uiLanguage } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -100,7 +108,7 @@ class UpcomingReleasePage extends React.Component {
                         spinner
                         text='Loading....'
                     >
-                        <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()}/>
+                        <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()} uiLanguage={uiLanguage} dispatch={this.props.dispatch}/>
                         <UpcomingReleaseComponent
                             upcomingReleases={upcomingReleases}
                             missedReleases={missedReleases}
@@ -122,6 +130,7 @@ function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { upcomingReleases, missedReleases, statusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { message } = state.message;
+    const { uiLanguage } = state.uilanguage;
     return {
         user,
         isLoggedIn,
@@ -130,8 +139,9 @@ function mapStateToProps(state) {
         missedReleases,
         statusCode,
         upcomingReleasesReqInit,
-        upcomingReleasesReqFail
+        upcomingReleasesReqFail,
+        uiLanguage
     };
 }
 
-export default connect(mapStateToProps)(UpcomingReleasePage);
+export default connect(mapStateToProps)(withTranslation()(UpcomingReleasePage));

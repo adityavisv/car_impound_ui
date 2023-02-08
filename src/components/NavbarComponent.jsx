@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Form, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { faParking, faSearch, faUser, faUserPlus, faTimes, faFileImage, faUnlock, faClock } from '@fortawesome/free-solid-svg-icons';
 import '../styles/navbarcomponent.css';
@@ -42,10 +43,10 @@ class NavbarComponent extends React.Component {
             });
         }
         if (this.props.uiLanguage !== prevProps.uiLanguage) {
+            const { uiLanguage } = this.props;
             this.setState({
-                uiLanguage: this.props.uiLanguage
+                uiLanguage
             });
-            i18n.changeLanguage(this.props.uiLanguage);
         }
     }
 
@@ -55,17 +56,23 @@ class NavbarComponent extends React.Component {
         switch(uiLanguage) {
             case "arab": {
                 dispatch(setUILanguage("en"));
+                this.setState({
+                    uiLanguage: "en"
+                });
                 break;
             }
             case "en": {
                 dispatch(setUILanguage("arab"));
+                this.setState({
+                    uiLanguage: "arab"
+                });
                 break;
             }
         }
     }
 
     render = () => {
-        const { username, roles, highlight } = this.state;
+        const { username, roles, highlight, uiLanguage } = this.state;
         const { t } = this.props;
         return (
             <div>
@@ -75,40 +82,43 @@ class NavbarComponent extends React.Component {
                         <Navbar.Toggle />
                         <Navbar.Collapse>
                             <Nav className="me-auto">
-                                <Nav.Link href="/" className="nav_link">
-                                    <FontAwesomeIcon icon={faParking} fixedWidth />
-                                    <span className="nav_text"> {t("navbar_parking_view_link")} </span>
-                                </Nav.Link>
+                                <NavLink to="/" style={{ textDecoration: 'none', color: 'white' }} className="nav_link">
+                                    
+                                    <span className="nav_text"> 
+                                        <FontAwesomeIcon icon={faParking} fixedWidth /> 
+                                        <span className="nav_text">{t("navbar_parking_view_link")}</span> 
+                                    </span> 
+                                </NavLink>
                                 { roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
-                                <Nav.Link href="/search" className="nav_link">
+                                <NavLink to="/search" style={{ textDecoration: 'none', color: 'white' }} className="nav_link">
                                     <FontAwesomeIcon icon={faSearch} fixedWidth />
                                     <span className="nav_text"> {t("navbar_search_link")} </span>
-                                </Nav.Link> : <></>}
+                                </NavLink> : <></>}
 
                                 
                                 {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") ?
-                                    <Nav.Link href="/upcomingrelease" className="nav_link">
+                                    <NavLink to="/upcomingrelease" style={{ textDecoration: 'none', color: 'white' }} className="nav_link">
                                         <FontAwesomeIcon icon={faClock} fixedWidth />
                                         <span className={"nav_text " + highlight}> {t("navbar_upcoming_releases_link")}</span>
-                                    </Nav.Link> : <></>
+                                    </NavLink> : <></>
                                 }
                                 {
                                     roles.includes("ROLE_SUPERUSER") || roles.includes("ROLE_ADMIN") || roles.includes("ROLE_EXIT_OPERATOR") ?
-                                <Nav.Link href="/exitqueue" className="nav_link">
+                                <NavLink to="/exitqueue" style={{ textDecoration: 'none', color: 'white' }} className="nav_link">
                                     <FontAwesomeIcon icon={faUnlock} fixedWidth />
                                     <span className="nav_text"> {t("navbar_exit_queue_link")}</span>
-                                </Nav.Link> : <></> }
+                                </NavLink> : <></> }
                                 
-                                <Nav.Link href="/layoutref" className="nav_link">
+                                <NavLink to="/layoutref" style={{ textDecoration: 'none', color: 'white' }} className="nav_link">
                                     <FontAwesomeIcon icon={faFileImage} fixedWidth />
                                     <span className="nav_text"> {t("navbar_layout_reference_link")} </span>
-                                </Nav.Link>
+                                </NavLink>
                                 {roles.includes("ROLE_SUPERUSER") ? 
-                                    <Nav.Link href="/signup" className="nav_link">
+                                    <NavLink to="/signup" style={{ textDecoration: 'none', color: 'white' }} className="nav_link">
                                         <FontAwesomeIcon icon={faUserPlus} fixedWidth />
                                         <span className="nav_text"> {t("navbar_signup_link")}</span>
-                                    </Nav.Link> : <></>
+                                    </NavLink> : <></>
                                 }
                             </Nav>
                         </Navbar.Collapse>
@@ -127,7 +137,7 @@ class NavbarComponent extends React.Component {
                             </Nav>
 
                             <Navbar.Text>
-                                <Form.Check type="switch" label="Arabic" onChange={this.toggleLanguage} />
+                                <Form.Check type="switch" label="Arabic" onChange={this.toggleLanguage} checked={uiLanguage === 'arab'}/>
                             </Navbar.Text>
                         </Navbar.Collapse>
                     </Container>
@@ -137,11 +147,6 @@ class NavbarComponent extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { uiLanguage } = state.uilanguage;
-    return {
-        uiLanguage
-    };
-}
 
-export default connect(mapStateToProps)(withTranslation()(NavbarComponent));
+
+export default withTranslation()(NavbarComponent);

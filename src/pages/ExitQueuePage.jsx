@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import { fetchReleaseQueue } from "../actions/releasequeuefetch";
 import NavbarComponent from '../components/NavbarComponent';
 import { connect } from 'react-redux';
@@ -21,7 +22,8 @@ class ExitQueuePage extends React.Component {
             upcomingReleases,
             upcomingReleasesStatusCode,
             upcomingReleasesReqInit,
-            upcomingReleasesReqFail
+            upcomingReleasesReqFail,
+            uiLanguage
         } = this.props;
         this.state = {
             isLoggedIn,
@@ -34,6 +36,7 @@ class ExitQueuePage extends React.Component {
             upcomingReleasesReqInit,
             upcomingReleasesReqFail,
             upcomingReleasesStatusCode,
+            uiLanguage
         };
     }
 
@@ -93,6 +96,12 @@ class ExitQueuePage extends React.Component {
                 upcomingReleasesStatusCode: this.props.upcomingReleasesStatusCode
             });
         }
+        if (prevProps.uiLanguage !== this.props.uiLanguage) {
+            this.setState({
+                uiLanguage: this.props.uiLanguage
+            });
+            this.props.i18n.changeLanguage(this.props.uiLanguage);
+        }
     }
 
     callLogout = () => {
@@ -120,7 +129,7 @@ class ExitQueuePage extends React.Component {
     }
 
     render = () => {
-        const { currentUser, isLoggedIn, releaseQueue, releaseQueueReqFail, releaseQueueReqInit } = this.state;
+        const { currentUser, isLoggedIn, releaseQueue, releaseQueueReqFail, releaseQueueReqInit, uiLanguage } = this.state;
         if (!isLoggedIn) {
             return <Navigate replace to="/login" />
         }
@@ -129,7 +138,7 @@ class ExitQueuePage extends React.Component {
                 spinner
                 text='Loading...'
             >
-                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()}/>
+                <NavbarComponent callLogout={this.callLogout} currentUser={currentUser} highlight={this.getHighlightColor()} uiLanguage={uiLanguage} dispatch={this.props.dispatch}/>
                 <ExitQueueComponent releaseQueue={releaseQueue} callLogout={this.callLogout} callReleaseQueueService={this.callFetchReleaseQueueService}/>
             </LoadingOverlay>
         )
@@ -140,6 +149,7 @@ class ExitQueuePage extends React.Component {
 function mapStateToProps(state) {
     const { user, isLoggedIn } = state.auth;
     const { message } = state.message;
+    const { uiLanguage } = state.uilanguage;
     const { upcomingReleases, missedReleases, statusCode: upcomingReleasesStatusCode, upcomingReleasesReqInit, upcomingReleasesReqFail } = state.upcomingreleases;
     const { releaseQueue, statusCode, releaseQueueReqInit, releaseQueueReqFail } = state.releasequeue;
     return {
@@ -154,8 +164,9 @@ function mapStateToProps(state) {
         missedReleases,
         upcomingReleasesReqInit,
         upcomingReleasesStatusCode,
-        upcomingReleasesReqFail
+        upcomingReleasesReqFail,
+        uiLanguage
     }
 }
 
-export default connect(mapStateToProps)(ExitQueuePage);
+export default connect(mapStateToProps)(withTranslation()(ExitQueuePage));
