@@ -71,6 +71,8 @@ export const translateColor = (t, colorInEnglish) => {
             return t("car_registration_form_color_dropdown_silver");
         case "BROWN":
             return t("car_registration_form_color_dropdown_brown");
+        default:
+            return colorInEnglish;
     }
 }
 
@@ -90,6 +92,8 @@ export const translateEmirate = (t, emirateInEnglish) => {
             return t("car_registration_form_emirate_dropdown_sharjah");
         case "UMM_AL_QUWAIN":
             return t("car_registration_form_emirate_dropdown_umm_al_quwain");
+        default:
+            return emirateInEnglish;
 
     }
 }
@@ -117,6 +121,8 @@ export const translateVehicleType = (t, vehicleType) => {
             return t( "car_registration_form_type_dropdown_motorcycle");
         case "TRUCK":
             return t("car_registration_form_type_dropdown_truck");
+        default:
+            return vehicleType;
     }
 }
 

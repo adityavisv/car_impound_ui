@@ -83,6 +83,23 @@ class CarRegistrationForm extends React.Component {
         //     idNumber: releaseIdNumber = '', contactNumber: releaseContactNum = '',
         //     nationality: releaseNationality = ''} = vehicle.release !== undefined ? vehicle.release : {};
         
+        const isMakeInDropdownList = allMakes.includes(make);
+        var isModelInDropdownList = false;
+        if (isMakeInDropdownList) {
+            isModelInDropdownList = getAllModelsByMake(make).includes(model);
+        }
+
+        const defaultVehiclesTypes = ['CAR', 'MOTORCYCLE', 'TRUCK'];
+        const defaultColors  = ['RED', 'YELLOW', 'GREEN', 'BLUE', 'BLACK', 'WHITE', 'PINK', 'GREY', 'SILVER', 'BROWN'];
+        const defaultEmirates = ['DUBAI', 'FUJAIRAH', 'AJMAN', 'SHARJAH', 'ABU_DHABI', 'RAS_AL_KHAYMAH', 'UMM_AL_QUWAIN'];
+
+        const isTypeInDropdownList = defaultVehiclesTypes.includes(type);
+        const isColorInDropdownList = defaultColors.includes(color);
+        const isEmirateInDropdownList = defaultEmirates.includes(emirate);
+
+        const isEmirateOther = updateMode ? (! isEmirateInDropdownList) : false;
+        const isCategoryOther  = updateMode ? isEmirateOther : false;
+
         this.state = {
             selectedSlot,
             makesDropDownValues: [... new Set(allMakes)],
@@ -92,13 +109,13 @@ class CarRegistrationForm extends React.Component {
             updateMode,
             isVehicleAssignStarted: false,
             isVehicleAssignDone: false,
-            isMakeOther: false,
-            isModelOther: false,
-            isTypeOther: false,
-            isColorOther: false,
-            isEmirateOther: false,
-            isCategoryOther: false,
-            isCodeOther: false,
+            isMakeOther: updateMode ? (! isMakeInDropdownList) : false,
+            isModelOther: updateMode ? (! isMakeInDropdownList) : false,
+            isTypeOther: updateMode ? (! isTypeInDropdownList) : false,
+            isColorOther: updateMode ? (! isColorInDropdownList) : false,
+            isEmirateOther,
+            isCategoryOther,
+            isCodeOther: updateMode ? (isEmirateOther || isCategoryOther) : false,
             newVehiclePayload: {
                 vehicleId,
                 make,
@@ -896,7 +913,7 @@ class CarRegistrationForm extends React.Component {
                     <>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_make")}</Form.Label> <Form.Check reverse inline type="switch"  onChange={this.toggleMakeInputMode}/> </span>
+                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_make")}</Form.Label> <Form.Check reverse inline type="switch"  checked={isMakeOther} onChange={this.toggleMakeInputMode}/> </span>
                                 
                                 
                                 {
@@ -916,7 +933,7 @@ class CarRegistrationForm extends React.Component {
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_model")}</Form.Label> <Form.Check inline type="switch" disabled={isMakeOther} onChange={this.toggleModelInputMode}/> </span>
+                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_model")}</Form.Label> <Form.Check inline type="switch" disabled={isMakeOther} checked={isModelOther} onChange={this.toggleModelInputMode}/> </span>
                                 {
                                     isModelOther || isMakeOther ? <Form.Control type="text" value={model} onChange={this.changeModel} />
                                     : <Form.Select value={model} onChange={this.changeModel}>
@@ -934,9 +951,9 @@ class CarRegistrationForm extends React.Component {
                             </Form.Group> 
 
                             <Form.Group as={Col}>
-                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_type")}</Form.Label> <Form.Check inline type="switch" onChange={this.toggleTypeInputMode} /></span>
+                                <span><Form.Label className="required_form_label">{t("car_registration_form_label_type")}</Form.Label> <Form.Check inline type="switch" checked={isTypeOther} onChange={this.toggleTypeInputMode} /></span>
                                 {
-                                    isTypeOther ? <Form.Control type="text" required={true} onChange={this.changeType} /> : 
+                                    isTypeOther ? <Form.Control type="text" value={type} required={true} onChange={this.changeType} /> : 
                                 
                                     <Form.Select value={type} required={true} disabled={readOnly} onChange={this.changeType}>
                                         <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
@@ -956,7 +973,7 @@ class CarRegistrationForm extends React.Component {
                             <Form.Group as={Col}>
                                 <span>
                                     <Form.Label className="required_form_label">{t("car_registration_form_label_color")}</Form.Label> 
-                                    <Form.Check type="switch" inline onChange={this.toggleColorInputMode} />
+                                    <Form.Check type="switch" inline checked={isColorOther} onChange={this.toggleColorInputMode} />
                                 </span>
                                 {
                                     isColorOther ? <Form.Control type="text"  required={true} value={color} onChange={this.changeColor} disabled={readOnly}/>
@@ -980,7 +997,7 @@ class CarRegistrationForm extends React.Component {
                         </Row>
                         <Row className="mb-3">
                             <Form.Group as={Col}>
-                                <span><Form.Label >{t("car_registration_form_label_emirate")}</Form.Label> <Form.Check inline type="switch" onChange={this.toggleEmirateInputMode} /></span>
+                                <span><Form.Label >{t("car_registration_form_label_emirate")}</Form.Label> <Form.Check inline type="switch" checked={isEmirateOther} onChange={this.toggleEmirateInputMode} /></span>
                                 {
                                     isEmirateOther ?
                                     <Form.Control type="text" required onChange={this.changeEmirate} value={emirate} />
@@ -1001,10 +1018,10 @@ class CarRegistrationForm extends React.Component {
                             <Form.Group as={Col}>
                                 <span>
                                     <Form.Label>{t("car_registration_form_label_category")}</Form.Label> 
-                                    <Form.Check type="switch" inline disabled={isEmirateOther} onChange={this.toggleCategoryInputMode} />
+                                    <Form.Check type="switch" inline disabled={isEmirateOther} checked={isCategoryOther} onChange={this.toggleCategoryInputMode} />
                                 </span>
                                 {
-                                    isCategoryOther || isEmirateOther ? <Form.Control type="text" required onChange={this.changeCategory} value={category} />
+                                    isCategoryOther || isEmirateOther ? <Form.Control type="text"  onChange={this.changeCategory} value={category} />
                                     :
                                     <Form.Select disabled={readOnly} onChange={this.changeCategory} value={category}>
                                     <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
@@ -1018,10 +1035,10 @@ class CarRegistrationForm extends React.Component {
                             <Form.Group as={Col}>
                                 <span>
                                     <Form.Label>{t("car_registration_form_label_code")}</Form.Label>
-                                    <Form.Check type="switch" inline disabled={isEmirateOther || isCategoryOther} onChange={this.toggleCodeInputMode} />
+                                    <Form.Check type="switch" inline disabled={isEmirateOther || isCategoryOther} checked={isCodeOther} onChange={this.toggleCodeInputMode} />
                                 </span>
                                 {
-                                    isCodeOther || isEmirateOther || isCategoryOther ? <Form.Control type="text" required onChange={this.changeCode} value={code} />
+                                    isCodeOther || isEmirateOther || isCategoryOther ? <Form.Control type="text"  onChange={this.changeCode} value={code} />
                                     :
                                     <Form.Select disabled={readOnly} onChange={this.changeCode} value={code}>
                                     <option value=''>{t("car_registration_form_dropdown_select_an_option")}</option>
