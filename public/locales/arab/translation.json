@@ -185,6 +185,7 @@
     "search_page_form_type_dropdown_motorcycle": "دراجة نارية",
     "search_page_form_check_label_other_vehicle_type": "آخر",
     "search_page_form_label_status": "الحالة",
+    "search_page_form_label_status_action": "عمل الحالة",
     "search_page_form_status_dropdown_registered": "مسجل",
     "search_page_form_status_dropdown_approved_for_release": "تمت الموافقة على الافراج",
     "search_page_form_status_dropdown_released": "صدر",

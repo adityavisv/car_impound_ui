@@ -185,6 +185,7 @@
     "search_page_form_type_dropdown_motorcycle": "Motorcycle",
     "search_page_form_check_label_other_vehicle_type": "Other Vehicle Type",
     "search_page_form_label_status": "Status",
+    "search_page_form_label_status_action": "Status Action",
     "search_page_form_status_dropdown_registered": "Registered",
     "search_page_form_status_dropdown_approved_for_release": "Approved for release",
     "search_page_form_status_dropdown_released": "Released",

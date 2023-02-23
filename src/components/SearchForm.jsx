@@ -35,7 +35,7 @@ class SearchForm extends React.Component {
             isCategoryOther: false,
             isCodeOther: false,
             makesDropdownValues: [... new Set(allMakes)],
-            modelsDropdownValues: [... new Set(getAllModelsByMake('Alfa Romeo'))],
+            modelsDropdownValues: [],
             slotNumberDropdownValues: [],
             searchDone: false,
             data: [],
@@ -61,7 +61,8 @@ class SearchForm extends React.Component {
             releaseDate: '',
             estimatedReleaseDate: '',
             remarksKeyword: '',
-
+            statusAction: '',
+            statusActionRequired: false,
             showResultModal: false,
             selectedResult: {},
             showResults: false,
@@ -86,21 +87,31 @@ class SearchForm extends React.Component {
 
     changeStartDate = (event) => {
         this.setState({
-            startDate: event.target.value
+            startDate: event.target.value,
+            statusActionRequired: event.target.value !== '',
         });
     }
 
     changeEndDate = (event) => {
         this.setState({
-            endDate: event.target.value
+            endDate: event.target.value,
+            statusActionRequired: event.target.value !== '',
         });
     }
 
     changeMake = (event) => {
         const make = event.target.value;
-        this.setState({
-            make
-        });
+        const { isMakeOther } = this.state;
+        if ( ! isMakeOther ) {
+            this.setState({
+                make,
+                modelsDropdownValues: [... new Set(getAllModelsByMake(make))]
+            })
+        } else {
+            this.setState({
+                make
+            })
+        }
     }
 
     changeModel = (event) => {
@@ -235,6 +246,21 @@ class SearchForm extends React.Component {
         });
     }
 
+    changeStatusAction = (event) => {
+        const { value } = event.target;
+        if (value === '') {
+            this.setState({
+                statusActionRequired :false,
+                statusAction :value
+            });
+        } else {
+            this.setState({
+                statusActionRequired: true,
+                statusAction: value
+            });
+        }
+    }
+
     closeResultModal = () => {
         this.setState({
             showResultModal: false
@@ -320,7 +346,8 @@ class SearchForm extends React.Component {
             releaseLastname,
             ownerNationality,
             remarksKeyword,
-            status
+            status,
+            statusAction,
         } = this.state;
 
         if (make !== '')
@@ -371,6 +398,8 @@ class SearchForm extends React.Component {
             params.remarksKeyword = remarksKeyword;
         if (status !== '')
             params.status = status;
+        if (statusAction !== '')
+            params.statusAction = statusAction;
 
         UserService.searchVehicles(params)
             .then((response) => {
@@ -543,7 +572,9 @@ class SearchForm extends React.Component {
             selectedResult: {},
             showResults: false,
             results: [],
-            status: ''
+            status: '',
+            statusAction: '',
+            statusActionRequired: false
         })
     }
 
@@ -558,6 +589,7 @@ class SearchForm extends React.Component {
             isEmirateOther,
             isCategoryOther,
             isCodeOther,
+            statusActionRequired,
             make, 
             model, 
             color,
@@ -587,7 +619,8 @@ class SearchForm extends React.Component {
             modelsDropdownValues,
             slotNumberDropdownValues,
             remarksKeyword,
-            status
+            status,
+            statusAction
         } = this.state;
 
         const { t } = this.props;
@@ -613,12 +646,22 @@ class SearchForm extends React.Component {
                                 
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
+                                <Form.Label>{t("search_page_form_label_status_action")}</Form.Label>
+                                    <Form.Select value={statusAction} onChange={this.changeStatusAction} required={statusActionRequired}>
+                                        <option value=''>{t("search_page_form_dropdown_select_an_option")}</option>
+                                        <option value='REGISTERED'>{t("search_page_form_status_dropdown_registered")}</option>
+                                        <option value='APPROVED_FOR_RELEASE'>{t("search_page_form_status_dropdown_approved_for_release")}</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Row>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
                                     <Form.Label>{t("search_page_form_label_start_date")}</Form.Label>
-                                    <Form.Control type="date" size="sm" value={startDate} onChange={this.changeStartDate} />
+                                    <Form.Control type="date" size="sm" value={startDate} onChange={this.changeStartDate} required={statusActionRequired} />
                                 </Form.Group>
                                 <Form.Group as={Col}>
                                     <Form.Label>{t("search_page_form_label_end_date")}</Form.Label>
-                                    <Form.Control type="date" size="sm" value={endDate} onChange={this.changeEndDate} />
+                                    <Form.Control type="date" size="sm" value={endDate} onChange={this.changeEndDate} required={statusActionRequired} />
                                 </Form.Group>
                             </Row>
                             <Row className="mb-3">
