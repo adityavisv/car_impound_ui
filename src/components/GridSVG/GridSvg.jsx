@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Container } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
+import LoadingOverlay from 'react-loading-overlay';
 import '../../styles/gridsvg.css';
 import CarRegistrationForm from '../CarRegistrationForm';
 import UserService from '../../services/user.service';
@@ -16,6 +17,7 @@ class GridSvg extends React.Component {
         this.state = {
             clickedZoneData,
             zoneLabel,
+            showLoadingOverlay: false,
             selectedSlot: [{}],
             currentUser,
             shouldShowReassignModal: false,
@@ -49,6 +51,9 @@ class GridSvg extends React.Component {
                     slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber
             ));
             if (selectedSlotStatus !== 'AVAILABLE') {
+                this.setState({
+                    showLoadingOverlay: true
+                });
                 UserService.getImagesOfVehicle(selectedSlotData.occupiedVehicle.id)
                     .then((response) => {
                         const { occupiedVehicle } = selectedSlotData;
@@ -61,7 +66,8 @@ class GridSvg extends React.Component {
                         };
                         this.setState({
                             selectedSlot: [selectedSlotWithImages],
-                            shouldDisplaySlotModal:true
+                            shouldDisplaySlotModal:true,
+                            showLoadingOverlay: false
                         });
                     })
                     .catch((error) => {
@@ -74,7 +80,8 @@ class GridSvg extends React.Component {
                         else {
                             this.setState({
                                 selectedSlot: [selectedSlotData],
-                                shouldDisplaySlotModal: true
+                                shouldDisplaySlotModal: true,
+                                showLoadingOverlay: false
                             });
                         }
                     });
@@ -1583,10 +1590,10 @@ class GridSvg extends React.Component {
     }
 
     render = () => {
-        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, shouldShowReassignModal, shouldShowUpdateModal, currentUser } = this.state;
+        const { selectedSlot, shouldDisplaySlotModal, shouldShowRegisterModal, shouldShowReleaseModal, shouldShowReassignModal, shouldShowUpdateModal, currentUser, showLoadingOverlay } = this.state;
         const { t } = this.props;
         return (
-            <div>
+            <LoadingOverlay active={showLoadingOverlay} spinner text='Loading...'>
                 <SingleSlotOverviewModal
                     currentUser={currentUser}
                     selectedSlot={selectedSlot[0]}
@@ -1671,7 +1678,7 @@ class GridSvg extends React.Component {
                         {this.renderNumberSvg()}
                     </svg>
                 </div>
-            </div>
+            </LoadingOverlay>
         )
     }
 }

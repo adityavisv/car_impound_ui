@@ -264,7 +264,9 @@ class SearchForm extends React.Component {
 
     closeResultModal = () => {
         this.setState({
-            showResultModal: false
+            showResultModal: false,
+            images: [],
+            selectedResult: {}
         });
     }
 
@@ -452,6 +454,10 @@ class SearchForm extends React.Component {
     }
 
     handleRowClick = (id) => {
+        this.setState({
+            searchInit: true,
+            searchDone: false
+        });
         const resultId = id;
         const { results } = this.state;
         const selectedResult = results.find(result => result.id === parseInt(resultId));
@@ -459,6 +465,7 @@ class SearchForm extends React.Component {
             .then((response) => {
                 this.setState({
                     selectedResult,
+                    searchDone: true,
                     images : response.data.images
                 })
             })
@@ -466,14 +473,10 @@ class SearchForm extends React.Component {
                 if (error.response !== undefined && error.response.status === 401) {
                     this.setState({
                         shouldShowRedirectLoginModal: true,
-                        
+                        searchDone: true
                     });
                 }
             })
-        this.setState({
-            selectedResult,
-            showResultModal: true,
-        })
     }
 
     downloadResultsCSV = () => {
