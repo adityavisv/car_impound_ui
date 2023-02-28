@@ -466,14 +466,16 @@ class SearchForm extends React.Component {
                 this.setState({
                     selectedResult,
                     searchDone: true,
-                    images : response.data.images
+                    images : response.data.images,
+                    showResultModal: true
                 })
             })
             .catch((error) => {
                 if (error.response !== undefined && error.response.status === 401) {
                     this.setState({
                         shouldShowRedirectLoginModal: true,
-                        searchDone: true
+                        searchDone: true,
+                        showResultModal: true
                     });
                 }
             })
