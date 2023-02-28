@@ -3,6 +3,7 @@ import { Modal, Container } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import '../../styles/gridsvg.css';
 import CarRegistrationForm from '../CarRegistrationForm';
+import UserService from '../../services/user.service';
 import ReassignCarForm from '../ReassignCarForm';
 import ReleaseCarForm from '../ReleaseCarForm';
 import SingleSlotOverviewModal from '../SingleSlotOverview';
@@ -47,10 +48,35 @@ class GridSvg extends React.Component {
                 slot => (
                     slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber
             ));
-            this.setState({
-                selectedSlot: [selectedSlotData],
-                shouldDisplaySlotModal: true
-            });
+            UserService.getImagesOfVehicle(selectedSlotData.occupiedVehicle.id)
+                    .then((response) => {
+                        const { occupiedVehicle } = selectedSlotData;
+                        const selectedSlotWithImages = {
+                            ...selectedSlotData,
+                            occupiedVehicle: {
+                                ...occupiedVehicle,
+                                images: response.data.images
+                            }
+                        };
+                        this.setState({
+                            selectedSlot: [selectedSlotWithImages],
+                            shouldDisplaySlotModal:true
+                        });
+                    })
+                    .catch((error) => {
+                        if (error.response !== undefined && error.response.status === 401) {
+                            this.setState({
+                                shouldShowRedirectLoginModal: true,
+                                
+                            });
+                        }
+                        else {
+                            this.setState({
+                                selectedSlot: [selectedSlotData],
+                                shouldDisplaySlotModal: true
+                            });
+                        }
+                    });
         }
         else {
             var { selectedSlot } = this.state;

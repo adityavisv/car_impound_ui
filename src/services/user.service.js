@@ -193,6 +193,32 @@ class UserService {
             }
         });
     }
+
+    getImagesOfVehicle(vehicleId) {
+        return axios({
+            method: 'get',
+            url: VEHICLE_API_URL + '/fetchimages',
+            params: {
+                vehicleId
+            },
+            headers: {
+                ...authHeader()
+            }
+        });
+    }
+
+    getReleaseDocOfVehicle(vehicleId) {
+        return axios({
+            method: 'get',
+            url: VEHICLE_API_URL + '/fetchreleasedoc',
+            params: {
+                vehicleId
+            },
+            headers: {
+                ...authHeader()
+            }
+        });
+    }
 }
 
 export default new UserService();

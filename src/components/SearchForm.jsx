@@ -65,6 +65,7 @@ class SearchForm extends React.Component {
             statusActionRequired: false,
             showResultModal: false,
             selectedResult: {},
+            images: [],
             showResults: false,
             results: [],
             status: ''
@@ -454,6 +455,21 @@ class SearchForm extends React.Component {
         const resultId = id;
         const { results } = this.state;
         const selectedResult = results.find(result => result.id === parseInt(resultId));
+        UserService.getImagesOfVehicle(selectedResult.id)
+            .then((response) => {
+                this.setState({
+                    selectedResult,
+                    images : response.data.images
+                })
+            })
+            .catch((error) => {
+                if (error.response !== undefined && error.response.status === 401) {
+                    this.setState({
+                        shouldShowRedirectLoginModal: true,
+                        
+                    });
+                }
+            })
         this.setState({
             selectedResult,
             showResultModal: true,
@@ -598,6 +614,7 @@ class SearchForm extends React.Component {
             numberPlate, 
             showResultModal, 
             selectedResult,
+            images,
             startDate,
             endDate,
             ownerFirstname,
@@ -929,7 +946,7 @@ class SearchForm extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     {selectedResult !== null && selectedResult.owner !== undefined ?
-                        <CarRegistrationForm vehicle={selectedResult} callLogout={this.props.callLogout} updateMode={false}/> : <> </>
+                        <CarRegistrationForm vehicle={selectedResult} images={images} callLogout={this.props.callLogout} updateMode={false}/> : <> </>
                     }
                 </Modal.Body>
             </Modal>

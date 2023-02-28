@@ -13,7 +13,7 @@ import { EMIRATES_CATEGORY_CODE_MAP } from '../constants/constants';
 class CarRegistrationForm extends React.Component {
     constructor(props) {
         super(props);
-        var { selectedSlot = [], vehicle = {}, updateMode } = this.props;
+        var { selectedSlot = [], vehicle = {}, images = [], updateMode } = this.props;
         
         var parkingSlot = '';
         
@@ -48,7 +48,6 @@ class CarRegistrationForm extends React.Component {
                 chassisNumber = '',
                 color = '',
                 parkingSlot: parkingSlotPreFill = '', 
-                images,
                 isWanted = false,
                 numberPlate = '', 
                 department = '',

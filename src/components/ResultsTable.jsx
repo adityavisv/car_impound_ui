@@ -1,9 +1,10 @@
 import React from 'react';
-import { getVehicleStatusDisplay, getEmirateDisplay, translateColor, translateEmirate, translateIsWanted, translateVehicleType, translateStatus, getDateTimeString, getDateString, b64toBlob } from '../helpers/generalhelpers';
 import { Table, Button } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faFileDownload } from '@fortawesome/free-solid-svg-icons';
+import {  faFileDownload } from '@fortawesome/free-solid-svg-icons';
+import { translateColor, translateEmirate, translateIsWanted, translateVehicleType, translateStatus, getDateTimeString, getDateString, b64toBlob } from '../helpers/generalhelpers';
+import UserService from '../services/user.service';
 
 class ResultsTable extends React.Component {
     constructor(props) {
@@ -42,13 +43,21 @@ class ResultsTable extends React.Component {
       }
 
     downloadSelectedReleaseDoc = (id) => {
-        const { releaseDocument: { base64EncodedBlob, contentType} } = this.props.results.find(vehicle => vehicle.id === id);
-        const bytes = this.b64toBlob(base64EncodedBlob, contentType);
-        let url = window.URL.createObjectURL(bytes);
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = `RELEASEDOCUMENT.${contentType.split('/')[1]}`;
-        a.click();
+        UserService.getReleaseDocOfVehicle(id)
+            .then((response) => {
+                const { file: {base64EncodedBlob, contentType} } = response.data;
+                const bytes = this.b64toBlob(base64EncodedBlob, contentType);
+                let url = window.URL.createObjectURL(bytes);
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = `RELEASEDOCUMENT.${contentType.split('/')[1]}`;
+                a.click();
+            })
+            .catch((error) => {
+                console.log(error);
+                // just do nothing for now
+            })
+       
     }
     
     getTableRowFromObject = (resultObj, handleRowClick) => {
