@@ -48,7 +48,8 @@ class GridSvg extends React.Component {
                 slot => (
                     slot.zoneLabel === selectedZoneLabel && slot.slotNumber === selectedSlotNumber
             ));
-            UserService.getImagesOfVehicle(selectedSlotData.occupiedVehicle.id)
+            if (selectedSlotStatus !== 'AVAILABLE') {
+                UserService.getImagesOfVehicle(selectedSlotData.occupiedVehicle.id)
                     .then((response) => {
                         const { occupiedVehicle } = selectedSlotData;
                         const selectedSlotWithImages = {
@@ -77,7 +78,15 @@ class GridSvg extends React.Component {
                             });
                         }
                     });
+            }
+            else {
+                this.setState({
+                    selectedSlot: [selectedSlotData],
+                    shouldDisplaySlotModal: true
+                });
+            }
         }
+            
         else {
             var { selectedSlot } = this.state;
             const { slotNumber: firstSlotNumber } = selectedSlot[0];
